@@ -3,6 +3,7 @@ package nl.ralphrouwen.blindwalls;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,9 +29,11 @@ public class DetailedActivity extends AppCompatActivity {
         //System.out.println(mural.);
 
         String authorString = getString(R.string.author, mural.getAuthor());
+        String yearString = getString(R.string.year, mural.getYear());
+
         muralAuthorName.setText(authorString);
         muralDescription.setText(mural.getDescriptionENG());
-        muralYear.setText(mural.getYear());
+        muralYear.setText(yearString);
 
         int resId = this.getResources().getIdentifier(
                 mural.getImageURL(),

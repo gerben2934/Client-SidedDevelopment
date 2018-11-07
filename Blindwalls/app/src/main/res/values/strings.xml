@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Blindwalls</string>
-    <string name="author">Author %1$s</string>
+    <string name="author">Author: %1$s</string>
+    <string name="year">Year: %1$s</string>
 </resources>
