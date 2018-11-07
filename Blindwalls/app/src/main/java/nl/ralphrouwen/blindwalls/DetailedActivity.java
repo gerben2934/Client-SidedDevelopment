@@ -3,8 +3,13 @@ package nl.ralphrouwen.blindwalls;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
+import java.util.Locale;
 
 public class DetailedActivity extends AppCompatActivity {
 
@@ -28,14 +33,22 @@ public class DetailedActivity extends AppCompatActivity {
         //System.out.println(mural.);
 
         String authorString = getString(R.string.author, mural.getAuthor());
+
+        //Telefoon is in het Nederlands
+        if(Locale.getDefault().getLanguage().equals("nl")) {
+            muralDescription.setText(mural.getDescriptionNL());
+        }
+
+        //Telefoon is in het Engels
+        if(Locale.getDefault().getLanguage().equals("en")) {
+            muralDescription.setText(mural.getDescriptionENG());
+        }
+
+        muralDescription.setMovementMethod(new ScrollingMovementMethod());
         muralAuthorName.setText(authorString);
-        muralDescription.setText(mural.getDescriptionENG());
         muralYear.setText(mural.getYear());
 
-        int resId = this.getResources().getIdentifier(
-                mural.getImageURL(),
-                "drawable",
-                this.getPackageName());
-        muralImage.setImageResource(resId);
+        String imageUrl = mural.getImageURL();
+        Picasso.get().load(imageUrl).into(muralImage);
     }
 }
