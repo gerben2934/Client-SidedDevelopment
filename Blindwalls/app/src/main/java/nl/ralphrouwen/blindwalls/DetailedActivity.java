@@ -27,7 +27,8 @@ public class DetailedActivity extends AppCompatActivity {
         Mural mural = (Mural) intent.getSerializableExtra("MURAL_OBJECT");
         //System.out.println(mural.);
 
-        muralAuthorName.setText(mural.getAuthor());
+        String authorString = getString(R.string.author, mural.getAuthor());
+        muralAuthorName.setText(authorString);
         muralDescription.setText(mural.getDescriptionENG());
         muralYear.setText(mural.getYear());
 

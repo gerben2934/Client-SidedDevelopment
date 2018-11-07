@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".listview_item"></activity>
+        <activity android:name=".DetailedActivity"></activity>
     </application>
 
 </manifest>

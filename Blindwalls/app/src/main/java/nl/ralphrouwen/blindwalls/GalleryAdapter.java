@@ -41,7 +41,5 @@ public class GalleryAdapter extends ArrayAdapter<Mural> {
         Picasso.get().load(imageUrl).into(thumbnail);
 
         return convertView;
-
     }
-
 }
