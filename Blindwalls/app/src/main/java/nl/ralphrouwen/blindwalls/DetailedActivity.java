@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,8 +46,10 @@ public class DetailedActivity extends AppCompatActivity {
         }
 
         muralDescription.setMovementMethod(new ScrollingMovementMethod());
+        String yearString = getString(R.string.year, mural.getYear());
+
         muralAuthorName.setText(authorString);
-        muralYear.setText(mural.getYear());
+        muralYear.setText(yearString);
 
         String imageUrl = mural.getImageURL();
         Picasso.get().load(imageUrl).into(muralImage);
