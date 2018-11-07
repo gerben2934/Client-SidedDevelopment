@@ -22,12 +22,13 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
         muralListView = findViewById(R.id.muralsListViewID);
         murals = new ArrayList<>();
 
-        adapter = new ArrayAdapter<Mural>(
-                this,
-                android.R.layout.simple_list_item_1,
-                murals
-        );
+//        adapter = new ArrayAdapter<Mural>(
+//                this,
+//                android.R.layout.simple_list_item_1,
+//                murals
+//        );
 
+        adapter = new GalleryAdapter(this, murals);
         muralListView.setAdapter(adapter);
 
         manager = new ApiManager(getApplicationContext(), this);
