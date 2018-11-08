@@ -1,10 +1,13 @@
 package nl.ralphrouwen.blindwalls;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +21,8 @@ public class DetailedActivity extends AppCompatActivity {
     TextView muralDescription;
     TextView muralYear;
     ImageView muralImage;
+    FloatingActionButton locationButton;
+    Mural mural;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +33,10 @@ public class DetailedActivity extends AppCompatActivity {
         muralDescription = findViewById(R.id.detailedActivity_muralDescription);
         muralYear = findViewById(R.id.detailedActivity_muralYear);
         muralImage = findViewById(R.id.detailedActivity_muralImage);
+        locationButton = findViewById(R.id.locationButtonID);
 
         Intent intent = getIntent();
-        Mural mural = (Mural) intent.getSerializableExtra("MURAL_OBJECT");
+        mural = (Mural) intent.getSerializableExtra("MURAL_OBJECT");
         //System.out.println(mural.);
 
         String authorString = getString(R.string.author, mural.getAuthor());
@@ -53,5 +59,14 @@ public class DetailedActivity extends AppCompatActivity {
 
         String imageUrl = mural.getImageURL();
         Picasso.get().load(imageUrl).into(muralImage);
+
+        locationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2 = new Intent(getApplicationContext(), MapsActivity.class);
+                intent2.putExtra("MURAL_OBJECT", mural);
+                startActivity(intent2);
+            }
+        });
     }
 }

@@ -8,13 +8,43 @@ public class Mural implements Serializable {
     private String descriptionENG;
     private String imageURL;
     private String year;
+    private String address;
+    private float longitude;
+    private float latitude;
 
-    public Mural(String author, String descriptionNL, String descriptionENG, String imageURL, String year) {
+    public Mural(String author, String descriptionNL, String descriptionENG, String imageURL, String year, String address, float longitude, float latitude) {
         this.author = author;
         this.descriptionNL = descriptionNL;
         this.descriptionENG = descriptionENG;
         this.imageURL = imageURL;
         this.year = year;
+        this.address = address;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(float longitude) {
+        this.longitude = longitude;
+    }
+
+    public float getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(float latitude) {
+        this.latitude = latitude;
     }
 
     public String getYear() {
@@ -64,7 +94,10 @@ public class Mural implements Serializable {
                 ", descriptionNL='" + descriptionNL + '\'' +
                 ", descriptionENG='" + descriptionENG + '\'' +
                 ", imageURL='" + imageURL + '\'' +
-                ", year=" + year +
+                ", year='" + year + '\'' +
+                ", address='" + address + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
                 '}';
     }
 }

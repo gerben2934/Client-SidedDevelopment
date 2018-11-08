@@ -49,14 +49,19 @@ public class ApiManager {
                                 String year = response.getJSONObject(idx).getString("year");
                                 String descNL = response.getJSONObject(idx).getJSONObject("description").getString("nl");
                                 String descENG = response.getJSONObject(idx).getJSONObject("description").getString("en");
+                                String address = response.getJSONObject(idx).getString("address");
+                                float latitude = (float) response.getJSONObject(idx).getDouble("latitude");
+                                float longitude = (float) response.getJSONObject(idx).getDouble("longitude");
+
                                 JSONArray images = response.getJSONObject(idx).getJSONArray("images");
+
 
                                 int index = new Random().nextInt(images.length());
 
                                 String imageUrl = "https://api.blindwalls.gallery/" +
                                         images.getJSONObject(index).getString("url");
 
-                                Mural mural = new Mural(author, descNL, descENG, imageUrl, year);
+                                Mural mural = new Mural(author, descNL, descENG, imageUrl, year, address, longitude, latitude);
 
                                 listener.onMuralAvailable(mural);
 
