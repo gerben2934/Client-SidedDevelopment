@@ -60,13 +60,16 @@ public class DetailedActivity extends AppCompatActivity {
         String imageUrl = mural.getImageURL();
         Picasso.get().load(imageUrl).into(muralImage);
 
+
         locationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent2 = new Intent(getApplicationContext(), MapsActivity.class);
-                intent2.putExtra("MURAL_OBJECT", mural);
-                startActivity(intent2);
-            }
-        });
+        @Override
+        public void onClick(View view) {
+            Intent intent2 = new Intent(getApplicationContext(), MapsActivity.class);
+            intent2.putExtra("MURAL_OBJECT", mural);
+            startActivity(intent2);
+        }
+    });
+
     }
+
 }
