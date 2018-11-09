@@ -36,7 +36,9 @@ public class DetailedActivity extends AppCompatActivity {
         locationButton = findViewById(R.id.locationButtonID);
 
         Intent intent = getIntent();
-        mural = (Mural) intent.getSerializableExtra("MURAL_OBJECT");
+        //mural = (Mural) intent.getSerializableExtra("MURAL_OBJECT");
+        mural = (Mural) intent.getParcelableExtra("MURAL_OBJECT");
+
         //System.out.println(mural.);
 
         String authorString = getString(R.string.author, mural.getAuthor());

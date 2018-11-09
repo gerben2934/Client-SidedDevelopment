@@ -1,8 +1,11 @@
 package nl.ralphrouwen.blindwalls;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
-public class Mural implements Serializable {
+public class Mural implements Parcelable {
     private String author;
     private String descriptionNL;
     private String descriptionENG;
@@ -22,6 +25,30 @@ public class Mural implements Serializable {
         this.longitude = longitude;
         this.latitude = latitude;
     }
+
+    protected Mural(Parcel in)
+    {
+        author = in.readString();
+        descriptionNL = in.readString();
+        descriptionENG = in.readString();
+        imageURL = in.readString();
+        year = in.readString();
+        address = in.readString();
+        longitude = in.readFloat();
+        latitude = in.readFloat();
+    }
+
+    public static final Creator<Mural> CREATOR = new Creator<Mural>() {
+        @Override
+        public Mural createFromParcel(Parcel in) {
+            return new Mural(in);
+        }
+
+        @Override
+        public Mural[] newArray(int size) {
+            return new Mural[size];
+        }
+    };
 
     public String getAddress() {
         return address;
@@ -99,5 +126,22 @@ public class Mural implements Serializable {
                 ", longitude=" + longitude +
                 ", latitude=" + latitude +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(author);
+        parcel.writeString(descriptionNL);
+        parcel.writeString(descriptionENG);
+        parcel.writeString(imageURL);
+        parcel.writeString(year);
+        parcel.writeString(address);
+        parcel.writeFloat(longitude);
+        parcel.writeFloat(latitude);
     }
 }

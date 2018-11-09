@@ -1,6 +1,7 @@
 package nl.ralphrouwen.blindwalls;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,12 +47,28 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
                 Intent intent = new Intent(getApplicationContext(), DetailedActivity.class);
                 intent.putExtra("MURAL_OBJECT", mural);
                 startActivity(intent);
+
             }
         });
 
         manager = new ApiManager(getApplicationContext(), this);
         manager.getData();
     }
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//
+//        outState.putParcelableArrayList("MURALS", murals);
+//    }
+//
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//
+//        murals = savedInstanceState.getParcelableArrayList("MURALS");
+//        //murals = (ArrayList<Mural>) savedInstanceState.getParcelableArrayList("MURALS");
+//        adapter.notifyDataSetChanged();
+//    }
 
     @Override
     public void onMuralAvailable(Mural mural) {

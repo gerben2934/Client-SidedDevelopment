@@ -22,7 +22,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
 
         Intent intent = getIntent();
-        mural = (Mural) intent.getSerializableExtra("MURAL_OBJECT");
+//        mural = (Mural) intent.getSerializableExtra("MURAL_OBJECT");
+        mural = (Mural) intent.getParcelableExtra("MURAL_OBJECT");
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
