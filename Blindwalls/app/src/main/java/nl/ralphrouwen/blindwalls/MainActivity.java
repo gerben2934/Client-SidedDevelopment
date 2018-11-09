@@ -55,20 +55,22 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
         manager.getData();
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//
-//        outState.putParcelableArrayList("MURALS", murals);
-//    }
-//
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//
-//        murals = savedInstanceState.getParcelableArrayList("MURALS");
-//        //murals = (ArrayList<Mural>) savedInstanceState.getParcelableArrayList("MURALS");
-//        adapter.notifyDataSetChanged();
-//    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList("MURALS", murals);
+    }
+
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        murals = savedInstanceState.getParcelableArrayList("MURALS");
+        //murals = (ArrayList<Mural>) savedInstanceState.getParcelableArrayList("MURALS");
+
+        adapter = new GalleryAdapter(this, murals);
+        muralListView.setAdapter(adapter);
+    }
 
     @Override
     public void onMuralAvailable(Mural mural) {
