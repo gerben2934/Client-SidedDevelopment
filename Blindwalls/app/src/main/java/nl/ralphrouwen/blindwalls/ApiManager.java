@@ -13,6 +13,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class ApiManager {
@@ -20,6 +22,8 @@ public class ApiManager {
     Context context;
     RequestQueue queue;
     ApiListener listener;
+    List imageUrls;
+    String[] stringimages;
 
     public ApiManager(Context context, ApiListener listener)
     {
@@ -61,7 +65,28 @@ public class ApiManager {
                                 String imageUrl = "https://api.blindwalls.gallery/" +
                                         images.getJSONObject(index).getString("url");
 
-                                Mural mural = new Mural(author, descNL, descENG, imageUrl, year, address, longitude, latitude);
+                                imageUrls = new ArrayList<String>();
+                                for (int i = 0; i < images.length(); i++)
+                                {
+                                    imageUrls.add("https://api.blindwalls.gallery/" +
+                                            images.getJSONObject(i).getString("url"));
+                                }
+
+//                                stringimages = new String[images.length()];
+//                                for (int i = 0; i < images.length(); i++)
+//                                {
+//                                    stringimages[i] = ("https://api.blindwalls.gallery/" +
+//                                            images.getJSONObject(i).getString("url"));
+//                                }
+
+//                                for (int i = 0; i < stringimages.length; i++) {
+//                                    Log.i("IMAGES", stringimages[i]);
+//                                }
+
+
+                                //Mural mural = new Mural(author, descNL, descENG, imageUrl, year, address, longitude, latitude, imageUrls);
+
+                                Mural mural = new Mural(author, descNL, descENG, imageUrl, year, address, longitude, latitude, (ArrayList) imageUrls);
 
                                 listener.onMuralAvailable(mural);
 
@@ -84,6 +109,4 @@ public class ApiManager {
 
         queue.add(request);
     }
-
-
 }

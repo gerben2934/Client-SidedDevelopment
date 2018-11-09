@@ -1,7 +1,9 @@
 package nl.ralphrouwen.blindwalls;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class DetailedActivity extends AppCompatActivity {
@@ -62,12 +65,18 @@ public class DetailedActivity extends AppCompatActivity {
         String imageUrl = mural.getImageURL();
         Picasso.get().load(imageUrl).into(muralImage);
 
+        ArrayList list = mural.getImages();
+        String[] stringArray = (String[]) list.toArray(new String[list.size()]);
+
+        ViewPager viewPager = findViewById(R.id.detailledviewPagerID);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this, stringArray);
+        viewPager.setAdapter(adapter);
 
         locationButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Intent intent2 = new Intent(getApplicationContext(), MapsActivity.class);
-            intent2.putExtra("MURAL_OBJECT", mural);
+            intent2.putExtra("MURAL_OBJECT", (Parcelable) mural);
             startActivity(intent2);
         }
     });

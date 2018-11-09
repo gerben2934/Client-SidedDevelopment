@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Mural implements Parcelable {
     private String author;
@@ -14,8 +15,9 @@ public class Mural implements Parcelable {
     private String address;
     private float longitude;
     private float latitude;
+    private ArrayList images;
 
-    public Mural(String author, String descriptionNL, String descriptionENG, String imageURL, String year, String address, float longitude, float latitude) {
+    public Mural(String author, String descriptionNL, String descriptionENG, String imageURL, String year, String address, float longitude, float latitude, ArrayList images) {
         this.author = author;
         this.descriptionNL = descriptionNL;
         this.descriptionENG = descriptionENG;
@@ -24,7 +26,10 @@ public class Mural implements Parcelable {
         this.address = address;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.images = images;
     }
+
+
 
     protected Mural(Parcel in)
     {
@@ -36,6 +41,7 @@ public class Mural implements Parcelable {
         address = in.readString();
         longitude = in.readFloat();
         latitude = in.readFloat();
+        images = in.readArrayList(null);
     }
 
     public static final Creator<Mural> CREATOR = new Creator<Mural>() {
@@ -49,6 +55,14 @@ public class Mural implements Parcelable {
             return new Mural[size];
         }
     };
+
+    public ArrayList getImages() {
+        return images;
+    }
+
+    public void setImages(ArrayList images) {
+        this.images = images;
+    }
 
     public String getAddress() {
         return address;
@@ -114,6 +128,7 @@ public class Mural implements Parcelable {
         this.imageURL = imageURL;
     }
 
+
     @Override
     public String toString() {
         return "Mural{" +
@@ -125,6 +140,7 @@ public class Mural implements Parcelable {
                 ", address='" + address + '\'' +
                 ", longitude=" + longitude +
                 ", latitude=" + latitude +
+                ", images=" + images +
                 '}';
     }
 
@@ -143,5 +159,6 @@ public class Mural implements Parcelable {
         parcel.writeString(address);
         parcel.writeFloat(longitude);
         parcel.writeFloat(latitude);
+        parcel.writeList(images);
     }
 }
