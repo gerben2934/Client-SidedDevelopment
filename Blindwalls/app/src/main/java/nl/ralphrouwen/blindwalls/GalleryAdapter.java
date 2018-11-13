@@ -22,6 +22,7 @@ public class GalleryAdapter extends ArrayAdapter<Mural> {
     public View getView(int position, View convertView, ViewGroup parant)
     {
         Mural mural = getItem(position);
+        final ViewHolderItem holder;
 
         if(convertView == null)
         {
@@ -30,16 +31,25 @@ public class GalleryAdapter extends ArrayAdapter<Mural> {
                     parant,
                     false
             );
+            holder = new ViewHolderItem();
+            holder.author = convertView.findViewById(R.id.authorID);
+            holder.thumbnail  = convertView.findViewById(R.id.imageViewID);
+            convertView.setTag(holder);
+        } else
+        {
+            holder = (ViewHolderItem) convertView.getTag();
         }
 
-        TextView author = convertView.findViewById(R.id.authorID);
-        final ImageView thumbnail = convertView.findViewById(R.id.imageViewID);
-
-        author.setText(mural.getAuthor());
+        holder.author.setText(mural.getAuthor());
 
         String imageUrl = mural.getImageURL();
-        Picasso.get().load(imageUrl).into(thumbnail);
+        Picasso.get().load(imageUrl).into(holder.thumbnail);
 
         return convertView;
+    }
+
+    static class ViewHolderItem {
+        private TextView author;
+        private ImageView thumbnail;
     }
 }
