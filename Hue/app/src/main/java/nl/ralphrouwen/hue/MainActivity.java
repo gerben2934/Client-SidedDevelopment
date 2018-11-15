@@ -56,6 +56,11 @@ public class MainActivity extends AppCompatActivity implements RequestListener {
 
     @Override
     public void onRequestArrayAvailible(JSONArray response, Response responsetype) {
+        switch(responsetype){
+            case SETLIGHT:
+                boolean test = LightManager.handleSetLights(response);
+                Log.i("SETLIGHT", response.toString());
+        }
 
     }
 

@@ -33,4 +33,23 @@ public class LightManager {
         }
         return lights;
     }
+
+    public static boolean handleSetLights(JSONArray array)
+    {
+        Log.i("test","test");
+        try {
+            String response = array.getJSONObject(0).getString("success");
+            if(response != null)
+            {
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }
