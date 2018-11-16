@@ -28,7 +28,9 @@ public class MainActivity extends AppCompatActivity implements RequestListener {
     private RecyclerView mRecyclerView;
     private BridgeRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    public static final String EXTRA_URL = "url";
+    public static final String BRIDGE_URL = "bridgeURL";
+    public static final String LIGHT_URL = "lightURL";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
