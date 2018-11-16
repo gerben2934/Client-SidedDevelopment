@@ -52,23 +52,29 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
         Log.i("bridge", bridge.toString());
         Log.i("bridge", "hallo");
 
+    }
+
+    public void createCardView()
+    {
         mRecyclerView = (RecyclerView) findViewById(R.id.bridgeActivity_RecycleView);
         mRecyclerView.setHasFixedSize(true);
-
-        //linear layout
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
 
         //specify an adapter
         mAdapter = new LightRecyclerAdapter(this, lights);
         mRecyclerView.setAdapter(mAdapter);
+
+        //linear layout
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
     }
+
 
     @Override
     public void onRequestObjectAvailible(JSONObject response, Response responsetype) {
         switch (responsetype) {
             case GETLICHTS:
                 lights = LightManager.sortLights(response);
+                createCardView();
                 break;
         }
     }
