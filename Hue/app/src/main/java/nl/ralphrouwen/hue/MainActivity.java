@@ -1,5 +1,6 @@
 package nl.ralphrouwen.hue;
 
+import android.content.Intent;
 import android.service.autofill.Dataset;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,13 +16,17 @@ import com.android.volley.Request;
 
 import nl.ralphrouwen.hue.Helper.VolleyHelper;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerAdapter.OnItemClickListener {
+
+
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private RecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private String[] dataSet = new String[5];
+    private ArrayList<Light> lights = new ArrayList();
+
+    public static final String EXTRA_URL = "url";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +41,10 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         //specify an adapter
-        mAdapter = new MyAdapter(dataSet);
+        mAdapter = new RecyclerAdapter(lights);
         mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(MainActivity.this);
 
         VolleyHelper api = new VolleyHelper(getApplicationContext());
 
@@ -53,6 +60,15 @@ public class MainActivity extends AppCompatActivity {
 //        {
 //            "on": false
 //        }
+    }
 
+    @Override
+    public void onItemClick(int position) {
+        Intent detailIntent = new Intent(this, DetailedActivity.class);
+        Light clickedLight = lights.get(position);
+
+        //use parcable --> from Mural object.
+        detailIntent.putExtra(EXTRA_URL, clickedLight);
+        startActivity(detailIntent);
     }
 }
