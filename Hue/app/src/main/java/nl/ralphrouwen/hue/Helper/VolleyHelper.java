@@ -21,7 +21,6 @@ public class VolleyHelper {
 
     private static VolleyHelper Instance = null;
     private Context context;
-    private String requestResponse;
 
 
     public VolleyHelper(Context context) {
