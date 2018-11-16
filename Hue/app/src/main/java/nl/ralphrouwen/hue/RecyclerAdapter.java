@@ -71,7 +71,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Bridge
                 Bridge bridge = dataset.get(getAdapterPosition());
 
                 Intent intent = new Intent(context, DetailedActivity.class);
-                intent.putExtra(EXTRA_URL, (Parcelable)bridge);
+                intent.putExtra(EXTRA_URL, (Parcelable) bridge);
 
                 ctx.startActivity(intent);
             });
