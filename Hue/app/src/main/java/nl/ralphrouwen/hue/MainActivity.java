@@ -28,7 +28,7 @@ import nl.ralphrouwen.hue.Models.Bridge;
 import nl.ralphrouwen.hue.Models.Light;
 import nl.ralphrouwen.hue.Models.Response;
 
-public class MainActivity extends AppCompatActivity implements RecyclerAdapter.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements RecyclerAdapter.OnItemClickListener, RequestListener {
 
     ArrayList<Light> lights;
     VolleyHelper api;
@@ -65,12 +65,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.O
 
     @Override
     public void onRequestObjectAvailible(JSONObject response, Response responsetype) {
-        switch (responsetype){
+        switch (responsetype) {
             case GETLICHTS:
                 lights = LightManager.sortLights(response);
 //                api.changeLight(bridge,lights.get(0), this,20,200,200,true);
                 break;
         }
+    }
+
     @Override
     public void onItemClick(int position) {
         Intent detailIntent = new Intent(this, DetailedActivity.class);
