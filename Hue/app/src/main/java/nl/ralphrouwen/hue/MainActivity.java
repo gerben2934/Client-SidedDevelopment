@@ -1,6 +1,7 @@
 package nl.ralphrouwen.hue;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.service.autofill.Dataset;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,11 +29,11 @@ import nl.ralphrouwen.hue.Models.Bridge;
 import nl.ralphrouwen.hue.Models.Light;
 import nl.ralphrouwen.hue.Models.Response;
 
-public class MainActivity extends AppCompatActivity implements RecyclerAdapter.OnItemClickListener, RequestListener {
+public class MainActivity extends AppCompatActivity implements RequestListener {
 
     ArrayList<Light> lights;
     VolleyHelper api;
-    ArrayList<Bridge> bridges;
+    ArrayList<Bridge> bridges = new ArrayList<Bridge>();
     private RecyclerView mRecyclerView;
     private RecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -53,14 +54,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.O
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         //specify an adapter
-        mAdapter = new RecyclerAdapter(lights);
+        mAdapter = new RecyclerAdapter(bridges);
         mRecyclerView.setAdapter(mAdapter);
 
-        mAdapter.setOnItemClickListener(MainActivity.this);
+        //mAdapter.setOnItemClickListener(MainActivity.this);
 
         VolleyHelper api = new VolleyHelper(getApplicationContext());
-
-
     }
 
     @Override
@@ -73,15 +72,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.O
         }
     }
 
-    @Override
+/*    @Override
     public void onItemClick(int position) {
         Intent detailIntent = new Intent(this, DetailedActivity.class);
-        Light clickedLight = lights.get(position);
+        Bridge clickedBridge = bridges.get(position);
 
         //use parcable --> from Mural object.
-        detailIntent.putExtra(EXTRA_URL, clickedLight);
+        detailIntent.putExtra(EXTRA_URL, (Parcelable)clickedBridge);
         startActivity(detailIntent);
-    }
+    }*/
 
     @Override
     public void onRequestArrayAvailible(JSONArray response, Response responsetype) {

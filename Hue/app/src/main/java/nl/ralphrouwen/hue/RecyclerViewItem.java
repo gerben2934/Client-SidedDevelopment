@@ -19,10 +19,7 @@ public class RecyclerViewItem extends AppCompatActivity {
         setContentView(R.layout.activity_recycler_view_item);
 
         lightNameTextView = findViewById(R.id.recycleViewItem_NameTextview);
-
         seekBar = findViewById(R.id.recycleViewItem_SeekBar);
-
         toggleButton = findViewById(R.id.recycleViewItem_ToggleButton);
-
     }
 }

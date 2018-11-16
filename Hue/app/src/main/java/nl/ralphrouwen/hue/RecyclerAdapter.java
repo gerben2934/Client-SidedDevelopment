@@ -3,37 +3,67 @@ package nl.ralphrouwen.hue;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
+import nl.ralphrouwen.hue.Models.Bridge;
 
-    private ArrayList<Light> dataset;
-    private List<String> strings;
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.BridgeViewHolder> {
+
+    private ArrayList<Bridge> dataset;
     private Context context;
-    private OnItemClickListener mListener;
+    //private OnItemClickListener mListener;
+    //public BridgeViewHolder viewHolder;
 
-    public interface OnItemClickListener {
-        void onItemClick(int position);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener)
+/*    public void setOnItemClickListener(OnItemClickListener listener)
     {
         mListener = listener;
+    }*/
+
+    public RecyclerAdapter(Context context, ArrayList<Bridge> bridges)
+    {
+        this.context = context;
+        this.dataset = bridges;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView mTextView;
+    //Returns the size of the dataset
+    @Override
+    public int getItemCount() {
+        return dataset.size();
+    }
 
-        public MyViewHolder(TextView tv) {
+    public class BridgeViewHolder extends RecyclerView.ViewHolder {
+        public View view;
+        private Bridge bridge;
+        public TextView textview;
+
+        public BridgeViewHolder(View itemView, final Context ctx)
+        {
+            super(itemView);
+            context = ctx;
+
+            textview = itemView.findViewById(R.id.textViewtest);
+
+            //Listener toevoegen;
+        }
+
+
+/*        public BridgeViewHolder(View tv) {
             super(tv);
-            mTextView = tv;
+            Log.i("View: ", tv.toString());
+            view = tv;
+
+            TextView textView;
+            textView = tv.findViewById(R.id.textViewtest);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -49,44 +79,39 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 }
             });
 
+        }*/
+
+        public void bindItem(Bridge bridge) {
+            TextView t = view.findViewById(R.id.textViewtest);
+            Log.i("textview", t.toString());
+            t.setText(bridge.getName());
         }
     }
 
         //Constructor depends on dataSet
-        public RecyclerAdapter(List<String> data, Context context)
+        public RecyclerAdapter(ArrayList<Bridge> arrayList)
         {
-            this.strings = data;
-            this.context = context;
-        }
-
-
-        public RecyclerAdapter(ArrayList<Light> lights)
-        {
-            dataset = lights;
+            this.dataset = arrayList;
+            //this.context = context;
         }
 
         //Create new views (used by the layout manager)
         @Override
-        public RecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+        public RecyclerAdapter.BridgeViewHolder onCreateViewHolder(ViewGroup parent,
                                                          int viewType)
         {
             //create a new View here
-            TextView v = (TextView) LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.activity_main, parent, false);
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.activity_recycler_view_item, parent, false);
 
-            MyViewHolder vh = new MyViewHolder(v);
-            return vh;
+            return new BridgeViewHolder(v, context);
         }
 
         @Override
-        public void onBindViewHolder(MyViewHolder holder, int position)
+        public void onBindViewHolder(BridgeViewHolder holder, int position)
         {
+            Bridge bridge = dataset.get(position);
+            holder.textview.setText(bridge.getName());
             //holder.mTextView.setText(dataset.get(position));
-        }
-
-        //Returns the size of the dataset
-        @Override
-        public int getItemCount() {
-            return strings.size();
         }
 }
