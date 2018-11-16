@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements RequestListener {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         //specify an adapter
-        mAdapter = new RecyclerAdapter(bridges);
+        mAdapter = new RecyclerAdapter(this, bridges);
         mRecyclerView.setAdapter(mAdapter);
 
         //mAdapter.setOnItemClickListener(MainActivity.this);
