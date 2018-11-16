@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity implements RequestListener {
         setContentView(R.layout.activity_main);
 
         api = new VolleyHelper(getApplicationContext());
-        bridges.add(new Bridge("Emulator Ralph Thuis", "http://192.168.178.29", ""));
-        bridges.add(new Bridge("Emulator Ralph school", "http://145.49.45.24", ""));
+        bridges.add(new Bridge(1, "Emulator Ralph Thuis", "http://192.168.178.29", ""));
+        bridges.add(new Bridge(2, "Emulator Ralph school", "http://145.49.45.24", ""));
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
 
