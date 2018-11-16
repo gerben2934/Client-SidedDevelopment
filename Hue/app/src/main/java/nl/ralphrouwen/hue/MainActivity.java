@@ -28,8 +28,7 @@ public class MainActivity extends AppCompatActivity implements RequestListener {
 
     ArrayList<Light> lights;
     VolleyHelper api;
-    Bridge bridge;
-
+    ArrayList<Bridge> bridges;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,19 +36,19 @@ public class MainActivity extends AppCompatActivity implements RequestListener {
         setContentView(R.layout.activity_main);
 
         api = new VolleyHelper(getApplicationContext());
-        bridge = new Bridge("Emulator", "http://192.168.178.29", "58cb70cf1396b156b820449aaf53e43");
+        bridges.add(new Bridge("Emulator Ralph Thuis", "http://192.168.178.29", ""));
+        bridges.add(new Bridge("Emulator Ralph school", "http://145.49.45.24", ""));
 
-        api.getLights(bridge, this);
+
+//        api.getLights(bridge, this);
     }
 
     @Override
     public void onRequestObjectAvailible(JSONObject response, Response responsetype) {
         switch (responsetype){
             case GETLICHTS:
-                Log.i("1234", response.toString());
                 lights = LightManager.sortLights(response);
-                api.changeLight(bridge,lights.get(0), this,20,200,200,true);
-
+//                api.changeLight(bridge,lights.get(0), this,20,200,200,true);
                 break;
         }
     }
@@ -60,8 +59,8 @@ public class MainActivity extends AppCompatActivity implements RequestListener {
             case SETLIGHT:
                 boolean test = LightManager.handleSetLights(response);
                 Log.i("SETLIGHT", response.toString());
+                break;
         }
-
     }
 
     @Override

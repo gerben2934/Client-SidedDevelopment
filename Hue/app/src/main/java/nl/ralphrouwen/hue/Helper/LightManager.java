@@ -43,9 +43,6 @@ public class LightManager {
             {
                 return true;
             }
-            else{
-                return false;
-            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

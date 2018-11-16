@@ -3,24 +3,16 @@ package nl.ralphrouwen.hue.Helper;
 import android.content.Context;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
 
 import nl.ralphrouwen.hue.Models.Bridge;
 import nl.ralphrouwen.hue.Models.Light;
@@ -110,9 +102,6 @@ public class VolleyHelper {
 
         putArrayRequest(url, listener, nl.ralphrouwen.hue.Models.Response.SETLIGHT,jsonObject);
     }
-
-
-
 }
 
 
