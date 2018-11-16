@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Hue</string>
+    <string name="title_activity_recycle_view_item">RecycleViewItem</string>
 </resources>
