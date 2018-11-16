@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".RecyclerViewItem" />
-        <activity android:name=".Activitys.DetailedActivity"></activity>
+        <activity android:name=".Activitys.BridgeActivity"></activity>
     </application>
 
 </manifest>

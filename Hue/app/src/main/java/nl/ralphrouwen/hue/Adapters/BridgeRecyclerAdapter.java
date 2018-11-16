@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import nl.ralphrouwen.hue.Activitys.DetailedActivity;
+import nl.ralphrouwen.hue.Activitys.BridgeActivity;
 import nl.ralphrouwen.hue.Models.Bridge;
 import nl.ralphrouwen.hue.R;
 
@@ -72,7 +72,7 @@ public class BridgeRecyclerAdapter extends RecyclerView.Adapter<BridgeRecyclerAd
             itemView.setOnClickListener((View v) -> {
                 Bridge bridge = dataset.get(getAdapterPosition());
 
-                Intent intent = new Intent(context, DetailedActivity.class);
+                Intent intent = new Intent(context, BridgeActivity.class);
                 intent.putExtra(EXTRA_URL, (Parcelable) bridge);
 
                 ctx.startActivity(intent);
