@@ -20,11 +20,13 @@ import nl.ralphrouwen.hue.Models.Light;
 public class VolleyHelper {
 
     private static VolleyHelper Instance = null;
-    private Context context;
+    private static Context context;
+    private  RequestQueue requestqueue;
 
 
     public VolleyHelper(Context context) {
         this.context = context;
+        requestqueue = Volley.newRequestQueue(context);
     }
 
     public static VolleyHelper getInstance(Context context) {
@@ -34,9 +36,10 @@ public class VolleyHelper {
         return Instance;
     }
 
+
     public void getRequest(String url, final RequestListener listener, final nl.ralphrouwen.hue.Models.Response requestResponse)
     {
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
+//        RequestQueue requestQueue = Volley.newRequestQueue(context);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
@@ -58,7 +61,7 @@ public class VolleyHelper {
                     }
                 }
         );
-        requestQueue.add(jsonObjectRequest);
+        requestqueue.add(jsonObjectRequest);
     }
 
 

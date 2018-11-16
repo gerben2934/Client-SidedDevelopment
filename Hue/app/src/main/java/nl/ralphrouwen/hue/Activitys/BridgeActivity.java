@@ -35,7 +35,8 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
         Intent intent = getIntent();
         bridge = intent.getParcelableExtra(EXTRA_URL);
 
-        api.getInstance(getApplicationContext()).getLights(bridge, this);
+         api = VolleyHelper.getInstance(getApplicationContext());
+         api.getLights(bridge, this);
 
 //        api = new VolleyHelper(getApplicationContext());
 //        api.getLights(bridge,this);
