@@ -1,4 +1,4 @@
-package nl.ralphrouwen.hue;
+package nl.ralphrouwen.hue.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,18 +11,20 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import nl.ralphrouwen.hue.Activitys.DetailedActivity;
 import nl.ralphrouwen.hue.Models.Bridge;
+import nl.ralphrouwen.hue.R;
 
-import static nl.ralphrouwen.hue.MainActivity.EXTRA_URL;
+import static nl.ralphrouwen.hue.Activitys.MainActivity.EXTRA_URL;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.BridgeViewHolder> {
+public class BridgeRecyclerAdapter extends RecyclerView.Adapter<BridgeRecyclerAdapter.BridgeViewHolder> {
 
     private ArrayList<Bridge> dataset;
     private Context context;
     //private OnItemClickListener mListener;
     //public BridgeViewHolder viewHolder;
 
-    public RecyclerAdapter(Context context, ArrayList<Bridge> bridges)
+    public BridgeRecyclerAdapter(Context context, ArrayList<Bridge> bridges)
     {
         this.context = context;
         this.dataset = bridges;

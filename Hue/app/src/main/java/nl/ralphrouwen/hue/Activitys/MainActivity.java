@@ -1,26 +1,15 @@
-package nl.ralphrouwen.hue;
+package nl.ralphrouwen.hue.Activitys;
 
-import android.content.Intent;
-import android.os.Parcelable;
-import android.service.autofill.Dataset;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
 import java.util.ArrayList;
-
-import com.android.volley.Request;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import nl.ralphrouwen.hue.Helper.LightManager;
 import nl.ralphrouwen.hue.Helper.RequestListener;
@@ -28,6 +17,8 @@ import nl.ralphrouwen.hue.Helper.VolleyHelper;
 import nl.ralphrouwen.hue.Models.Bridge;
 import nl.ralphrouwen.hue.Models.Light;
 import nl.ralphrouwen.hue.Models.Response;
+import nl.ralphrouwen.hue.R;
+import nl.ralphrouwen.hue.Adapters.BridgeRecyclerAdapter;
 
 public class MainActivity extends AppCompatActivity implements RequestListener {
 
@@ -35,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements RequestListener {
     VolleyHelper api;
     ArrayList<Bridge> bridges = new ArrayList<Bridge>();
     private RecyclerView mRecyclerView;
-    private RecyclerAdapter mAdapter;
+    private BridgeRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     public static final String EXTRA_URL = "url";
     @Override
@@ -54,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements RequestListener {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         //specify an adapter
-        mAdapter = new RecyclerAdapter(this, bridges);
+        mAdapter = new BridgeRecyclerAdapter(this, bridges);
         mRecyclerView.setAdapter(mAdapter);
 
         //mAdapter.setOnItemClickListener(MainActivity.this);

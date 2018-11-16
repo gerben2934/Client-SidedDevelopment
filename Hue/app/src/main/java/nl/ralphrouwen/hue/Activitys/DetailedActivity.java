@@ -1,4 +1,4 @@
-package nl.ralphrouwen.hue;
+package nl.ralphrouwen.hue.Activitys;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -6,8 +6,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import nl.ralphrouwen.hue.Models.Bridge;
+import nl.ralphrouwen.hue.R;
 
-import static nl.ralphrouwen.hue.MainActivity.EXTRA_URL;
+import static nl.ralphrouwen.hue.Activitys.MainActivity.EXTRA_URL;
 
 public class DetailedActivity extends AppCompatActivity {
 
