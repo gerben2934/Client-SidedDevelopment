@@ -5,17 +5,21 @@ import android.os.Parcelable;
 
 public class Bridge implements Parcelable {
 
+    public int id;
     public String name;
     public String ip;
     public String token;
 
-    public Bridge(String name, String ip, String token) {
+
+    public Bridge(int id, String name, String ip, String token) {
+        this.id = id;
         this.name = name;
         this.ip = ip;
         this.token = token;
     }
 
     protected Bridge(Parcel in) {
+        id = in.readInt();
         name = in.readString();
         ip = in.readString();
         token = in.readString();
@@ -32,6 +36,14 @@ public class Bridge implements Parcelable {
             return new Bridge[size];
         }
     };
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -52,7 +64,7 @@ public class Bridge implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-
+        parcel.writeInt(id);
         parcel.writeString(name);
         parcel.writeString(ip);
         parcel.writeString(token);
