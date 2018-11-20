@@ -73,30 +73,30 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
             viewHolder.lightSeekBar.setEnabled(false);
         }
 
-            viewHolder.lightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    api.changeLight(bridge, light, request, light.getBrightness(), light.getHue(), light.getSaturation(), isChecked);
-                    viewHolder.lightSeekBar.setEnabled(isChecked);
-                }
-            });
+        viewHolder.lightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                api.changeLight(bridge, light, request, light.getBrightness(), light.getHue(), light.getSaturation(), isChecked);
+                viewHolder.lightSeekBar.setEnabled(isChecked);
+            }
+        });
 
-            viewHolder.lightSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    api.changeLight(bridge, light, request, progress, light.getHue(), light.getSaturation(), true);
-                }
+        viewHolder.lightSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                api.changeLight(bridge, light, request, progress, light.getHue(), light.getSaturation(), true);
+            }
 
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
 
-                }
+            }
 
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
 
-                }
-            });
+            }
+        });
 
     }
 
