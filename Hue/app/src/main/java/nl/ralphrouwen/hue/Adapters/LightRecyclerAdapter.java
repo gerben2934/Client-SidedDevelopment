@@ -60,8 +60,8 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LightViewHolder viewHolder, int position) {
-        Light light = lights.get(position);
+    public void onBindViewHolder(@NonNull final LightViewHolder viewHolder, int position) {
+        final Light light = lights.get(position);
         viewHolder.lightName.setText(light.getName());
 
 
@@ -147,6 +147,7 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
                 Intent intent = new Intent(context, LightDetailedActivity.class);
                 intent.putExtra(LIGHT_URL, (Parcelable) light);
+                intent.putExtra(BRIDGE_URL, (Parcelable) bridge);
 
                 ctx.startActivity(intent);
             });

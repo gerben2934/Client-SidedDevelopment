@@ -29,12 +29,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String BRIDGE_URL = "bridgeURL";
     public static final String LIGHT_URL = "lightURL";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bridges.add(new Bridge(1,"Emulator Ralph Thuis", "http://192.168.178.29", ""));
+        bridges.add(new Bridge(1,"Emulator Ralph Thuis", "http://192.168.178.45", "ba78860f274f0060f319645406c561b"));
+        bridges.add((new Bridge(5, "Ralph thuis hue","http://192.168.178.90", "DmznyFSbvpdIpzCIB0cYAppyi18LJPsOog5A8CHD")));
         bridges.add(new Bridge(2,"Emulator Ralph school", "http://145.49.45.24", "7e720a9ef0102f25221c56f91c7f43f"));
         bridges.add(new Bridge(3, "Emulator Gerben School", "http://145.49.2.189:8000", "7746fba8ac73ca304be1ab7689180c7"));
         bridges.add(new Bridge(4, "Emulator Gerben Thuis", "http://0.0.0.0", ""));
