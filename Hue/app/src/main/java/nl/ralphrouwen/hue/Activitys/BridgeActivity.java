@@ -33,8 +33,6 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
     private RecyclerView.LayoutManager mLayoutManager;
     private LightRecyclerAdapter mAdapter;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

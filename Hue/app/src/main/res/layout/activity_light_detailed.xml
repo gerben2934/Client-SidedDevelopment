@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activitys.LightDetailedActivity">
+
+    <Switch
+        android:id="@+id/lightDetailedActivity_lightSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/lightDetailedActivity_statusTV"
+        app:layout_constraintStart_toStartOf="@+id/lightDetailedActivity_lightName"
+        app:layout_constraintTop_toTopOf="@+id/lightDetailedActivity_statusTV"
+        app:layout_constraintVertical_bias="0.2" />
+
+    <TextView
+        android:id="@+id/lightDetailedActivity_lightName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        android:text="nameHere"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lightDetailedActivity_statusTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="52dp"
+        android:text="Status:"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lightDetailedActivity_brightnessTV"
+        android:layout_width="wrap_content"
+        android:layout_height="17dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:text="Helderheid:"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/lightDetailedActivity_lightBrightness"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/lightDetailedActivity_statusTV"
+        app:layout_constraintTop_toBottomOf="@+id/lightDetailedActivity_statusTV" />
+
+    <TextView
+        android:id="@+id/lightDetailedActivity_colorTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Kleur:"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/lightDetailedActivity_brightnessTV"
+        app:layout_constraintTop_toBottomOf="@+id/lightDetailedActivity_brightnessTV" />
+
+    <SeekBar
+        android:id="@+id/lightDetailedActivity_lightBrightness"
+        android:layout_width="110dp"
+        android:layout_height="21dp"
+        app:layout_constraintBottom_toBottomOf="@+id/lightDetailedActivity_brightnessTV"
+        app:layout_constraintStart_toStartOf="@+id/lightDetailedActivity_lightSwitch"
+        app:layout_constraintTop_toTopOf="@+id/lightDetailedActivity_brightnessTV"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.35" />
+
+</android.support.constraint.ConstraintLayout>
