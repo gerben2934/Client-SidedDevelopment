@@ -16,8 +16,14 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+import nl.ralphrouwen.hue.Activitys.BridgeActivity;
+import nl.ralphrouwen.hue.Activitys.LightDetailedActivity;
+import nl.ralphrouwen.hue.Models.Bridge;
 import nl.ralphrouwen.hue.Models.Light;
 import nl.ralphrouwen.hue.R;
+
+import static nl.ralphrouwen.hue.Activitys.MainActivity.BRIDGE_URL;
+import static nl.ralphrouwen.hue.Activitys.MainActivity.LIGHT_URL;
 
 public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdapter.LightViewHolder> {
 
@@ -66,6 +72,16 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
             lightName = itemView.findViewById(R.id.recycleViewItem_NameTextview);
             lightSeekBar = itemView.findViewById(R.id.recycleViewItem_SeekBar);
             lightSwitch = itemView.findViewById(R.id.recycleViewItem_ToggleButton);
+
+            //Listener toevoegen;
+            itemView.setOnClickListener((View v) -> {
+                Light light = lights.get(getAdapterPosition());
+
+                Intent intent = new Intent(context, LightDetailedActivity.class);
+                intent.putExtra(LIGHT_URL, (Parcelable) light);
+
+                ctx.startActivity(intent);
+            });
 
 /*            itemView.setOnClickListener((View v) -> {
                 Light light = lights.get(getAdapterPosition());

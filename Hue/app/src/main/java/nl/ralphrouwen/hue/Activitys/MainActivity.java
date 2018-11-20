@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
         bridges.add(new Bridge(1,"Emulator Ralph Thuis", "http://192.168.178.29", ""));
         bridges.add(new Bridge(2,"Emulator Ralph school", "http://145.49.45.24", "7e720a9ef0102f25221c56f91c7f43f"));
+        bridges.add(new Bridge(3, "Emulator Gerben School", "http://145.49.2.189:8000", "7746fba8ac73ca304be1ab7689180c7"));
+        bridges.add(new Bridge(4, "Emulator Gerben Thuis", "http://0.0.0.0", ""));
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
 
@@ -50,8 +52,5 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         //mAdapter.setOnItemClickListener(MainActivity.this);
-
     }
-
-
 }
