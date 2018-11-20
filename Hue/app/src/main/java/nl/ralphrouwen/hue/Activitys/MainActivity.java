@@ -22,8 +22,6 @@ import nl.ralphrouwen.hue.Adapters.BridgeRecyclerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<Light> lights;
-    VolleyHelper api;
     ArrayList<Bridge> bridges = new ArrayList<Bridge>();
     private RecyclerView mRecyclerView;
     private BridgeRecyclerAdapter mAdapter;
