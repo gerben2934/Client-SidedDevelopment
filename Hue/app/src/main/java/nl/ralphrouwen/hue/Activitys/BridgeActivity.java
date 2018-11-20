@@ -52,6 +52,8 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
         Log.i("bridge", bridge.toString());
         Log.i("bridge", "hallo");
 
+
+
     }
 
     public void createCardView()
@@ -60,7 +62,7 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
         mRecyclerView.setHasFixedSize(true);
 
         //specify an adapter
-        mAdapter = new LightRecyclerAdapter(this, lights);
+        mAdapter = new LightRecyclerAdapter(this, lights, bridge);
         mRecyclerView.setAdapter(mAdapter);
 
         //linear layout
