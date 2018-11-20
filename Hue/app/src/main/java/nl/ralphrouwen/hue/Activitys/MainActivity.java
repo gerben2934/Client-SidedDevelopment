@@ -1,27 +1,25 @@
 package nl.ralphrouwen.hue.Activitys;
 
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import nl.ralphrouwen.hue.AddBridgeActivity;
 import nl.ralphrouwen.hue.Data.DatabaseHandler;
-import nl.ralphrouwen.hue.Helper.LightManager;
-import nl.ralphrouwen.hue.Helper.RequestListener;
-import nl.ralphrouwen.hue.Helper.VolleyHelper;
 import nl.ralphrouwen.hue.Models.Bridge;
-import nl.ralphrouwen.hue.Models.Light;
-import nl.ralphrouwen.hue.Models.Response;
 import nl.ralphrouwen.hue.R;
 import nl.ralphrouwen.hue.Adapters.BridgeRecyclerAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AddBridgeActivity.BridgeFragmentListener {
 
     ArrayList<Bridge> bridges = new ArrayList<Bridge>();
     private RecyclerView mRecyclerView;
@@ -29,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     public static final String BRIDGE_URL = "bridgeURL";
     public static final String LIGHT_URL = "lightURL";
+    FloatingActionButton addBridgeButton;
 
 
     @Override
@@ -37,20 +36,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         DatabaseHandler db = new DatabaseHandler(this);
+        addBridgeButton = findViewById(R.id.floatingActionButton);
 
-        db.addBridge(new Bridge(1,"Emulator Ralph Thuis", "http://192.168.178.45", "ba78860f274f0060f319645406c561b"));
-        db.addBridge((new Bridge(5, "Ralph thuis hue","http://192.168.178.90", "DmznyFSbvpdIpzCIB0cYAppyi18LJPsOog5A8CHD")));
-        db.addBridge(new Bridge(2,"Emulator Ralph school", "http://145.49.45.24", "7e720a9ef0102f25221c56f91c7f43f"));
-        db.addBridge(new Bridge(3, "Emulator Gerben School", "http://145.49.2.189:8000", "7746fba8ac73ca304be1ab7689180c7"));
-        db.addBridge(new Bridge(4, "Emulator Gerben Thuis", "http://0.0.0.0", ""));
+//        deleteDatabase(DataUtil.DB_NAME);
+//
+//        db.addBridge(new Bridge(1,"Emulator Ralph Thuis", "http://192.168.178.45", "ba78860f274f0060f319645406c561b"));
+//        db.addBridge((new Bridge(5, "Ralph thuis hue","http://192.168.178.90", "DmznyFSbvpdIpzCIB0cYAppyi18LJPsOog5A8CHD")));
+//        db.addBridge(new Bridge(2,"Emulator Ralph school", "http://145.49.45.24", "7e720a9ef0102f25221c56f91c7f43f"));
+//        db.addBridge(new Bridge(3, "Emulator Gerben School", "http://145.49.2.189:8000", "7746fba8ac73ca304be1ab7689180c7"));
+//        db.addBridge(new Bridge(4, "Emulator Gerben Thuis", "http://0.0.0.0", ""));
 
         bridges = db.getAllBridges();
-
-//        bridges.add(new Bridge(1,"Emulator Ralph Thuis", "http://192.168.178.45", "ba78860f274f0060f319645406c561b"));
-//        bridges.add((new Bridge(5, "Ralph thuis hue","http://192.168.178.90", "DmznyFSbvpdIpzCIB0cYAppyi18LJPsOog5A8CHD")));
-//        bridges.add(new Bridge(2,"Emulator Ralph school", "http://145.49.45.24", "7e720a9ef0102f25221c56f91c7f43f"));
-//        bridges.add(new Bridge(3, "Emulator Gerben School", "http://145.49.2.189:8000", "7746fba8ac73ca304be1ab7689180c7"));
-//        bridges.add(new Bridge(4, "Emulator Gerben Thuis", "http://0.0.0.0", ""));
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -64,5 +60,28 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         //mAdapter.setOnItemClickListener(MainActivity.this);
+
+        addBridgeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction ft = manager.beginTransaction();
+                ft.addToBackStack(null);
+
+//                DialogFragment fragment = AddBridgeActivity.newInstance();
+//                fragment.show(ft,"dialog");
+
+                AddBridgeActivity fragment2 = new AddBridgeActivity();
+
+                android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                fragment2.show(ft,"joejoe");
+
+            }
+        });
+    }
+
+    @Override
+    public void sendInput(String name, String ip, String token) {
+        Log.d("Joejoe", name);
     }
 }
