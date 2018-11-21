@@ -27,6 +27,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
+    public boolean doesExist(SQLiteDatabase db, String tableName) {
+        String DOES_EXIST_TABLE = "SELECT COUNT(*) FROM " + tableName;
+        Cursor cursor = db.rawQuery(DOES_EXIST_TABLE, null);
+        int count = cursor.getCount();
+        cursor.close();
+        if(count == 0){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkIfEmpty()
+    {
+        if (getAllBridges().size() > 0) {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Delete (drop) the old version of the table
@@ -43,7 +62,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         contentValues.put(DataUtil.KEY_NAME, bridge.getName());
         contentValues.put(DataUtil.KEY_IP, bridge.getIp());
         contentValues.put(DataUtil.KEY_TOKEN, bridge.getToken());
-
         db.insert(DataUtil.TABLE_BRIDGES, null, contentValues);
     }
 
@@ -84,6 +102,5 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         }
         return bridges;
-
     }
 }

@@ -14,6 +14,7 @@ import android.view.View;
 import java.util.ArrayList;
 
 import nl.ralphrouwen.hue.AddBridgeActivity;
+import nl.ralphrouwen.hue.Data.DataUtil;
 import nl.ralphrouwen.hue.Data.DatabaseHandler;
 import nl.ralphrouwen.hue.Models.Bridge;
 import nl.ralphrouwen.hue.R;
@@ -38,13 +39,16 @@ public class MainActivity extends AppCompatActivity implements AddBridgeActivity
         DatabaseHandler db = new DatabaseHandler(this);
         addBridgeButton = findViewById(R.id.floatingActionButton);
 
-//        deleteDatabase(DataUtil.DB_NAME);
+        deleteDatabase(DataUtil.DB_NAME);
 //
-//        db.addBridge(new Bridge(1,"Emulator Ralph Thuis", "http://192.168.178.45", "ba78860f274f0060f319645406c561b"));
-//        db.addBridge((new Bridge(5, "Ralph thuis hue","http://192.168.178.90", "DmznyFSbvpdIpzCIB0cYAppyi18LJPsOog5A8CHD")));
-//        db.addBridge(new Bridge(2,"Emulator Ralph school", "http://145.49.45.24", "7e720a9ef0102f25221c56f91c7f43f"));
-//        db.addBridge(new Bridge(3, "Emulator Gerben School", "http://145.49.2.189:8000", "7746fba8ac73ca304be1ab7689180c7"));
-//        db.addBridge(new Bridge(4, "Emulator Gerben Thuis", "http://0.0.0.0", ""));
+        if(db.checkIfEmpty())
+        {
+            db.addBridge(new Bridge(1,"Emulator Ralph Thuis", "http://192.168.178.45", "ba78860f274f0060f319645406c561b"));
+            db.addBridge(new Bridge(5, "Ralph thuis hue","http://192.168.178.90", "DmznyFSbvpdIpzCIB0cYAppyi18LJPsOog5A8CHD"));
+            db.addBridge(new Bridge(2,"Emulator Ralph school", "http://145.49.45.24", "7e720a9ef0102f25221c56f91c7f43f"));
+            db.addBridge(new Bridge(3, "Emulator Gerben School", "http://145.49.2.189:8000", "7746fba8ac73ca304be1ab7689180c7"));
+            db.addBridge(new Bridge(4, "Emulator Gerben Thuis", "http://0.0.0.0", ""));
+        }
 
         bridges = db.getAllBridges();
 
