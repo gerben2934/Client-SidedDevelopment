@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements AddBridgeActivity
 
                 android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 fragment2.show(ft,"joejoe");
-
             }
         });
     }

@@ -19,8 +19,8 @@ public class AddBridgeActivity extends DialogFragment {
     }
 
     private BridgeFragmentListener bridgeFragmentListener;
-    private static final String TAG = "MyCustomDialog";
 
+    private static final String TAG = "MyCustomDialog";
 
     private EditText name;
     private EditText IP;
@@ -31,12 +31,25 @@ public class AddBridgeActivity extends DialogFragment {
         // Required empty public constructor
     }
 
-    public static AddBridgeActivity newInstance() {
+    public static AddBridgeActivity newInstance(Context context) {
         AddBridgeActivity fragment = new AddBridgeActivity();
         Bundle args = new Bundle();
+        fragment.onAttach(context);
         fragment.setArguments(args);
         return fragment;
     }
+
+//    private void setListener(Context context)
+//    {
+//        if (context.instanceof(BridgeFragmentListener)
+//            {
+//                bridgeFragmentListener = (BridgeFragmentListener) context;
+//     }
+//     else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,9 +73,7 @@ public class AddBridgeActivity extends DialogFragment {
                 String IPinput = IP.getText().toString();
                 String tokeninput = Token.getText().toString();
                 
-//                bridgeFragmentListener.sendInput(nameinput, IPinput, tokeninput);
-//                bridgeFragmentListener.sendInput("joe","joe","joe");
-
+                bridgeFragmentListener.sendInput(nameinput, IPinput, tokeninput);
             }
         });
 
@@ -74,7 +85,7 @@ public class AddBridgeActivity extends DialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try{
-            bridgeFragmentListener = (BridgeFragmentListener) getTargetFragment();
+            bridgeFragmentListener = (BridgeFragmentListener) context;
         }catch (ClassCastException e){
             Log.e(TAG, "onAttach: ClassCastException : " + e.getMessage() );
         }
