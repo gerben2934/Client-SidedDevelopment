@@ -44,10 +44,6 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
         api = VolleyHelper.getInstance(getApplicationContext());
         api.getLights(bridge, this);
 
-
-        Log.i("bridge", bridge.toString());
-        Log.i("bridge", "hallo");
-
     }
 
     public void createCardView()

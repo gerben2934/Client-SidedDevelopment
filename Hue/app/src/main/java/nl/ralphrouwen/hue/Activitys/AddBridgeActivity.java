@@ -1,4 +1,4 @@
-package nl.ralphrouwen.hue;
+package nl.ralphrouwen.hue.Activitys;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import nl.ralphrouwen.hue.R;
 
 
 public class AddBridgeActivity extends DialogFragment {
@@ -39,17 +41,6 @@ public class AddBridgeActivity extends DialogFragment {
         return fragment;
     }
 
-//    private void setListener(Context context)
-//    {
-//        if (context.instanceof(BridgeFragmentListener)
-//            {
-//                bridgeFragmentListener = (BridgeFragmentListener) context;
-//     }
-//     else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,10 +65,12 @@ public class AddBridgeActivity extends DialogFragment {
                 String tokeninput = Token.getText().toString();
                 
                 bridgeFragmentListener.sendInput(nameinput, IPinput, tokeninput);
+                dismiss();
+
+                Toast.makeText(getActivity(), "Added bridge: " + nameinput,
+                        Toast.LENGTH_LONG).show();
             }
         });
-
-        // Inflate the layout for this fragment
         return view;
     }
 

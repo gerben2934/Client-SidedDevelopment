@@ -1,8 +1,14 @@
 package nl.ralphrouwen.hue.Activitys;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -13,12 +19,15 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Locale;
+
 import nl.ralphrouwen.hue.Helper.RequestListener;
 import nl.ralphrouwen.hue.Helper.VolleyHelper;
 import nl.ralphrouwen.hue.Models.Bridge;
 import nl.ralphrouwen.hue.Models.Light;
 import nl.ralphrouwen.hue.Models.Response;
 import nl.ralphrouwen.hue.R;
+import top.defaults.colorpicker.ColorPickerView;
 
 import static nl.ralphrouwen.hue.Activitys.MainActivity.BRIDGE_URL;
 import static nl.ralphrouwen.hue.Activitys.MainActivity.LIGHT_URL;
@@ -40,6 +49,9 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
     Switch lightSwitch;
     SeekBar lightSeekbar;
     TextView lightHue;
+
+    ColorPickerView colorPickerView;
+    View pickedColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +99,23 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
             }
         });
 
+        colorPickerView.subscribe((color, fromUser) -> {
+            pickedColor.setBackgroundColor(color);
 
+            // Hier komt color binnen die geselecteerd is!!!!!
+            // Color waarde omrekenen naar iets wat hue api snapt en dan vervolgens die waarde bij kleurwaarde meegeven :
+
+            //api.changeLight(bridge, light, request, light.brightness, kleurwaarde, light.getSaturation(), true);
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setStatusBarColor(color);
+            }
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setBackgroundDrawable(new ColorDrawable(color));
+            }
+        });
 
     }
 
@@ -100,7 +128,9 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         lightSwitch = findViewById(R.id.lightDetailedActivity_lightSwitch);
         lightSeekbar = findViewById(R.id.lightDetailedActivity_lightBrightness);
 
-        //Colorpicker here!
+        pickedColor = findViewById(R.id.pickedColor);
+        colorPickerView = findViewById(R.id.colorPicker);
+
     }
 
     private void setTextViews() {
@@ -112,6 +142,14 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         lightSeekbar.setMax(254);
         lightSeekbar.setMin(0);
         lightSeekbar.setProgress(light.brightness);
+    }
+
+    private String colorHex(int color) {
+        int a = Color.alpha(color);
+        int r = Color.red(color);
+        int g = Color.green(color);
+        int b = Color.blue(color);
+        return String.format(Locale.getDefault(), "0x%02X%02X%02X%02X", a, r, g, b);
     }
 
     @Override
