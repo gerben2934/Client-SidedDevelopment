@@ -2,8 +2,10 @@ package nl.ralphrouwen.hue.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,6 +66,7 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
         final Light light = lights.get(position);
         viewHolder.lightName.setText(light.getName());
 
+//        viewHolder.cardView.setCardBackgroundColor(Color.BLUE);
 
         viewHolder.lightSeekBar.setMin(0);
         viewHolder.lightSeekBar.setMax(254);
@@ -132,11 +135,13 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
         TextView lightName;
         SeekBar lightSeekBar;
         Switch lightSwitch;
+        CardView cardView;
 
         public LightViewHolder(View itemView, final Context ctx) {
             super(itemView);
             context = ctx;
 
+            cardView = itemView.findViewById(R.id.recyclerViewItem_CardView);
             lightName = itemView.findViewById(R.id.recycleViewItem_NameTextview);
             lightSeekBar = itemView.findViewById(R.id.recycleViewItem_SeekBar);
             lightSwitch = itemView.findViewById(R.id.recycleViewItem_ToggleButton);

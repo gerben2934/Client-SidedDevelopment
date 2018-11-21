@@ -64,9 +64,11 @@
 
     <SeekBar
         android:id="@+id/lightDetailedActivity_lightBrightness"
-        android:layout_width="110dp"
+        android:layout_width="0dp"
         android:layout_height="21dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/lightDetailedActivity_brightnessTV"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/lightDetailedActivity_lightSwitch"
         app:layout_constraintTop_toTopOf="@+id/lightDetailedActivity_brightnessTV"
         app:layout_constraintVertical_bias="0.0" />
@@ -77,5 +79,28 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.35" />
+
+    <View
+        android:id="@+id/pickedColor"
+        android:layout_width="0dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/lightDetailedActivity_lightBrightness" />
+
+    <top.defaults.colorpicker.ColorPickerView
+        android:id="@+id/colorPicker"
+        android:layout_width="307dp"
+        android:layout_height="306dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:enableAlpha="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
