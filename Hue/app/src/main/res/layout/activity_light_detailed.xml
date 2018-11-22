@@ -11,17 +11,16 @@
         android:id="@+id/lightDetailedActivity_lightSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/lightDetailedActivity_statusTV"
         app:layout_constraintStart_toStartOf="@+id/lightDetailedActivity_lightName"
         app:layout_constraintTop_toTopOf="@+id/lightDetailedActivity_statusTV"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/lightDetailedActivity_lightName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="nameHere"
         android:textSize="18sp"
@@ -32,8 +31,8 @@
         android:id="@+id/lightDetailedActivity_statusTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="48dp"
         android:text="Status:"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,8 +41,8 @@
     <TextView
         android:id="@+id/lightDetailedActivity_brightnessTV"
         android:layout_width="wrap_content"
-        android:layout_height="17dp"
-        android:layout_marginTop="4dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="Helderheid:"
         android:textSize="16sp"
@@ -64,14 +63,12 @@
 
     <SeekBar
         android:id="@+id/lightDetailedActivity_lightBrightness"
-        android:layout_width="0dp"
-        android:layout_height="21dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="198dp"
+        android:layout_height="23dp"
         app:layout_constraintBottom_toBottomOf="@+id/lightDetailedActivity_brightnessTV"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/lightDetailedActivity_lightSwitch"
         app:layout_constraintTop_toTopOf="@+id/lightDetailedActivity_brightnessTV"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -82,19 +79,18 @@
 
     <View
         android:id="@+id/pickedColor"
-        android:layout_width="0dp"
-        android:layout_height="26dp"
-        android:layout_marginStart="36dp"
+        android:layout_width="198dp"
+        android:layout_height="23dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/lightDetailedActivity_lightBrightness" />
+        app:layout_constraintBottom_toBottomOf="@+id/lightDetailedActivity_colorTV"
+        app:layout_constraintStart_toStartOf="@+id/lightDetailedActivity_lightBrightness"
+        app:layout_constraintTop_toTopOf="@+id/lightDetailedActivity_colorTV"
+        app:layout_constraintVertical_bias="0.888" />
 
     <top.defaults.colorpicker.ColorPickerView
         android:id="@+id/colorPicker"
-        android:layout_width="307dp"
-        android:layout_height="306dp"
+        android:layout_width="222dp"
+        android:layout_height="330dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"

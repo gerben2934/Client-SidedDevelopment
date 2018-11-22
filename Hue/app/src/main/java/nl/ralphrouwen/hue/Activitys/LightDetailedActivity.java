@@ -14,12 +14,8 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.Volley;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.Locale;
 
 import nl.ralphrouwen.hue.Helper.RequestListener;
 import nl.ralphrouwen.hue.Helper.VolleyHelper;
@@ -44,14 +40,13 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
     TextView statusTV;
     TextView brightnessTV;
     TextView colorTV;
-
     TextView lightname;
     Switch lightSwitch;
     SeekBar lightSeekbar;
-    TextView lightHue;
 
     ColorPickerView colorPickerView;
     View pickedColor;
+    int finalColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +72,10 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         lightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                light.setHue(finalColor);
                 api.changeLight(bridge, light, request, light.getBrightness(), light.getHue(), light.getSaturation(), isChecked);
                 lightSeekbar.setEnabled(isChecked);
+                colorPickerView.setEnabled(isChecked);
             }
         });
 
@@ -100,23 +97,30 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         });
 
         colorPickerView.subscribe((color, fromUser) -> {
+
+            //colorPickerView.setInitialColor();
             pickedColor.setBackgroundColor(color);
 
-            // Hier komt color binnen die geselecteerd is!!!!!
-            // Color waarde omrekenen naar iets wat hue api snapt en dan vervolgens die waarde bij kleurwaarde meegeven :
+            int[] ints = colorHex(color);
+            int r = ints[1];
+            int g = ints[2];
+            int b = ints[3];
 
-            //api.changeLight(bridge, light, request, light.brightness, kleurwaarde, light.getSaturation(), true);
+            float[] hsb = new float[3];
+            Color.RGBToHSV(r, g, b, hsb);
+            float x = hsb[0];
+            int y = (int)x;
+            finalColor = y * (65535/360);
 
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getWindow().setStatusBarColor(color);
+            //System.out.println("Final color: " + finalColor);
+            if(lightSwitch.isChecked()) {
+                api.changeLight(bridge, light, request, light.brightness, finalColor, light.getSaturation(), true);
             }
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setBackgroundDrawable(new ColorDrawable(color));
+
+            else {
+                api.changeLight(bridge, light, request, light.brightness, finalColor, light.getSaturation(), false);
             }
         });
-
     }
 
     private void bindComponents() {
@@ -130,7 +134,6 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
 
         pickedColor = findViewById(R.id.pickedColor);
         colorPickerView = findViewById(R.id.colorPicker);
-
     }
 
     private void setTextViews() {
@@ -144,12 +147,15 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         lightSeekbar.setProgress(light.brightness);
     }
 
-    private String colorHex(int color) {
-        int a = Color.alpha(color);
+    private int[] colorHex(int color) {
+
+        int a = Color.alpha(color); //niet nodig
         int r = Color.red(color);
         int g = Color.green(color);
         int b = Color.blue(color);
-        return String.format(Locale.getDefault(), "0x%02X%02X%02X%02X", a, r, g, b);
+
+        int[] integers = {a, r, g, b};
+        return integers;
     }
 
     @Override

@@ -100,6 +100,7 @@ public class VolleyHelper {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         String url = bridge.getIp() + "/api/" + bridge.getToken() + "/lights/" + light.getId() + "/state";
 
         putArrayRequest(url, listener, nl.ralphrouwen.hue.Models.Response.SETLIGHT,jsonObject);
