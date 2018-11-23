@@ -1,6 +1,7 @@
 package nl.ralphrouwen.hue.Activitys;
 
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,6 +33,10 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private LightRecyclerAdapter mAdapter;
+    private SwipeRefreshLayout swipeContainer;
+    private RequestListener request;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,7 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
 
         api = VolleyHelper.getInstance(getApplicationContext());
         api.getLights(bridge, this);
+        request = this;
 
     }
 
@@ -51,6 +57,9 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
         mRecyclerView = (RecyclerView) findViewById(R.id.bridgeActivity_RecycleView);
         mRecyclerView.setHasFixedSize(true);
 
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+
+
         //specify an adapter
         mAdapter = new LightRecyclerAdapter(this, lights, bridge);
         mRecyclerView.setAdapter(mAdapter);
@@ -58,8 +67,19 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
         //linear layout
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-    }
 
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                api.getLights(bridge, request);
+                mAdapter.clear();
+                // ...the data has come back, add new items to your adapter...
+                mAdapter = new LightRecyclerAdapter(getApplicationContext(), lights, bridge);
+                // Now we call setRefreshing(false) to signal refresh has finished
+                swipeContainer.setRefreshing(false);
+            }
+        });
+    }
 
     @Override
     public void onRequestObjectAvailible(JSONObject response, Response responsetype) {
