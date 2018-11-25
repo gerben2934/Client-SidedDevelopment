@@ -171,20 +171,6 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
                 ctx.startActivity(intent);
             });
-
-/*            itemView.setOnClickListener((View v) -> {
-                Light light = lights.get(getAdapterPosition());
-
-                Intent intent = new Intent(context, LightActivity.class);
-                intent.putExtra(EXTRA_URL, (Parcelable) light);
-
-                ctx.startActivity(intent);
-            });*/
-
-            //clicklistener
-
-            //tv
         }
-
     }
 }

@@ -65,6 +65,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(DataUtil.TABLE_BRIDGES, null, contentValues);
     }
 
+    public boolean removeBridge(int id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(DataUtil.TABLE_BRIDGES, id + "=" + DataUtil.KEY_ID, null) > 0;
+    }
+
     public Bridge getBridge(int id)
     {
         SQLiteDatabase db = this.getReadableDatabase();
