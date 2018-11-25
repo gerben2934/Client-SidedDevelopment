@@ -20,7 +20,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activitys.BridgeActivity" />
-        <activity android:name=".Activitys.LightDetailedActivity"></activity>
+        <activity android:name=".Activitys.LightDetailedActivity" />
+        <activity android:name=".Activitys.SchedulesActivity"></activity>
     </application>
 
 </manifest>

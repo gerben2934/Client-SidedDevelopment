@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -48,6 +50,8 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
     View pickedColor;
     int finalColor;
 
+    Button testbutton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +72,17 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         {
             lightSeekbar.setEnabled(false);
         }
+
+        testbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SchedulesActivity.class);
+                intent.putExtra(BRIDGE_URL, (Parcelable) bridge);
+//                intent.putExtra(LIGHT_URL, (Parcelable) li);
+                Log.i("ONCLICK", "BUTTONCLICKED?|??");
+                getApplicationContext().startActivity(intent);
+            }
+        });
 
         lightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -134,6 +149,9 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
 
         pickedColor = findViewById(R.id.pickedColor);
         colorPickerView = findViewById(R.id.colorPicker);
+
+        testbutton = findViewById(R.id.testbutton);
+
     }
 
     private void setTextViews() {
