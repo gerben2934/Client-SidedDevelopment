@@ -42,6 +42,7 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
     private VolleyHelper api;
     private Bridge bridge;
     RequestListener request;
+    int lastBrightness;
 
     public LightRecyclerAdapter(Context context, ArrayList<Light> lights, Bridge bridge) {
         this.context = context;
@@ -82,7 +83,8 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
         viewHolder.lightSeekBar.setMin(0);
         viewHolder.lightSeekBar.setMax(254);
-        viewHolder.lightSeekBar.setProgress(light.brightness);
+        viewHolder.lightSeekBar.setThumbOffset(0);
+        //viewHolder.lightSeekBar.setProgress(light.brightness);
         viewHolder.lightSwitch.setEnabled(true);
         viewHolder.lightSwitch.setChecked(light.isOn());
 
@@ -96,7 +98,8 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
         viewHolder.lightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                api.changeLight(bridge, light, request, light.getBrightness(), light.getHue(), light.getSaturation(), isChecked);
+                lastBrightness = viewHolder.lightSeekBar.getVerticalScrollbarPosition();
+                api.changeLight(bridge, light, request, lastBrightness, light.getHue(), light.getSaturation(), isChecked);
                 viewHolder.lightSeekBar.setEnabled(isChecked);
             }
         });
@@ -168,20 +171,6 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
                 ctx.startActivity(intent);
             });
-
-/*            itemView.setOnClickListener((View v) -> {
-                Light light = lights.get(getAdapterPosition());
-
-                Intent intent = new Intent(context, LightActivity.class);
-                intent.putExtra(EXTRA_URL, (Parcelable) light);
-
-                ctx.startActivity(intent);
-            });*/
-
-            //clicklistener
-
-            //tv
         }
-
     }
 }

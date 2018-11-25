@@ -41,13 +41,11 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
 
     TextView statusTV;
     TextView brightnessTV;
-    TextView colorTV;
     TextView lightname;
     Switch lightSwitch;
     SeekBar lightSeekbar;
 
     ColorPickerView colorPickerView;
-    View pickedColor;
     int finalColor;
 
     Button testbutton;
@@ -62,7 +60,6 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         Intent intent = getIntent();
         light = intent.getParcelableExtra(LIGHT_URL);
         bridge = intent.getParcelableExtra(BRIDGE_URL);
-
         api = VolleyHelper.getInstance(getApplicationContext());
 
         bindComponents();
@@ -114,7 +111,14 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         colorPickerView.subscribe((color, fromUser) -> {
 
             //colorPickerView.setInitialColor();
-            pickedColor.setBackgroundColor(color);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setStatusBarColor(color);
+            }
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setBackgroundDrawable(new ColorDrawable(color));
+            }
 
             int[] ints = colorHex(color);
             int r = ints[1];
@@ -141,13 +145,11 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
     private void bindComponents() {
         statusTV = findViewById(R.id.lightDetailedActivity_statusTV);
         brightnessTV = findViewById(R.id.lightDetailedActivity_brightnessTV);
-        colorTV = findViewById(R.id.lightDetailedActivity_colorTV);
 
         lightname = findViewById(R.id.lightDetailedActivity_lightName);
         lightSwitch = findViewById(R.id.lightDetailedActivity_lightSwitch);
         lightSeekbar = findViewById(R.id.lightDetailedActivity_lightBrightness);
 
-        pickedColor = findViewById(R.id.pickedColor);
         colorPickerView = findViewById(R.id.colorPicker);
 
         testbutton = findViewById(R.id.testbutton);
@@ -159,10 +161,10 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
 
         lightSwitch.setEnabled(true);
         lightSwitch.setChecked(light.isOn());
-
-        lightSeekbar.setMax(254);
+        lightSeekbar.setThumbOffset(0);
         lightSeekbar.setMin(0);
-        lightSeekbar.setProgress(light.brightness);
+        lightSeekbar.setMax(254);
+        //lightSeekbar.setProgress(light.brightness);
     }
 
     private int[] colorHex(int color) {

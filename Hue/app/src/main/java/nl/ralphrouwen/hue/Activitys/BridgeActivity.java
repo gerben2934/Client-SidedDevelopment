@@ -1,12 +1,14 @@
 package nl.ralphrouwen.hue.Activitys;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,8 +37,7 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
     private LightRecyclerAdapter mAdapter;
     private SwipeRefreshLayout swipeContainer;
     private RequestListener request;
-
-
+    private FloatingActionButton deleteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +56,8 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
     {
         mRecyclerView = (RecyclerView) findViewById(R.id.bridgeActivity_RecycleView);
         mRecyclerView.setHasFixedSize(true);
-
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+
 
         //specify an adapter
         mAdapter = new LightRecyclerAdapter(this, lights, bridge);
@@ -75,6 +76,7 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
                 mAdapter = new LightRecyclerAdapter(getApplicationContext(), lights, bridge);
                 // Now we call setRefreshing(false) to signal refresh has finished
                 swipeContainer.setRefreshing(false);
+
             }
         });
     }
@@ -98,4 +100,10 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
     public void onRequestError(Error error) {
 
     }
+
+/*    @Override
+    public void onResume() {
+        super.onResume();
+        //lights = db.getAllBridges();
+    }*/
 }

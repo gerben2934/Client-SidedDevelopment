@@ -5,6 +5,7 @@
     android:id="@+id/constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".Activitys.LightDetailedActivity">
 
     <Switch
@@ -22,7 +23,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:background="@drawable/textviewborder"
         android:text="nameHere"
+        android:textAlignment="viewStart"
+        android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,9 +36,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/textviewborder"
         android:text="Status:"
-        android:textSize="16sp"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,31 +50,27 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/textviewborder"
         android:text="Helderheid:"
-        android:textSize="16sp"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/lightDetailedActivity_lightBrightness"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/lightDetailedActivity_statusTV"
         app:layout_constraintTop_toBottomOf="@+id/lightDetailedActivity_statusTV" />
 
-    <TextView
-        android:id="@+id/lightDetailedActivity_colorTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Kleur:"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/lightDetailedActivity_brightnessTV"
-        app:layout_constraintTop_toBottomOf="@+id/lightDetailedActivity_brightnessTV" />
-
     <SeekBar
         android:id="@+id/lightDetailedActivity_lightBrightness"
-        android:layout_width="198dp"
-        android:layout_height="23dp"
+        android:layout_width="192dp"
+        android:layout_height="20dp"
+        android:background="@color/black"
+        android:progressDrawable="@drawable/custom_seekbar"
+        android:splitTrack="false"
+        android:thumb="@drawable/custom_thumb"
         app:layout_constraintBottom_toBottomOf="@+id/lightDetailedActivity_brightnessTV"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/lightDetailedActivity_lightSwitch"
-        app:layout_constraintTop_toTopOf="@+id/lightDetailedActivity_brightnessTV"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="@+id/lightDetailedActivity_brightnessTV" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -77,27 +79,22 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.35" />
 
-    <View
-        android:id="@+id/pickedColor"
-        android:layout_width="198dp"
-        android:layout_height="23dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/lightDetailedActivity_colorTV"
-        app:layout_constraintStart_toStartOf="@+id/lightDetailedActivity_lightBrightness"
-        app:layout_constraintTop_toTopOf="@+id/lightDetailedActivity_colorTV"
-        app:layout_constraintVertical_bias="0.888" />
-
     <top.defaults.colorpicker.ColorPickerView
         android:id="@+id/colorPicker"
-        android:layout_width="222dp"
-        android:layout_height="330dp"
+        android:layout_width="282dp"
+        android:layout_height="275dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="172dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:enableAlpha="true"
+        app:enableAlpha="false"
+        app:enableBrightness="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.214" />
 
     <Button
         android:id="@+id/testbutton"
