@@ -52,6 +52,18 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
     }
 
+    public void clear() {
+        lights.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(ArrayList<Light> list) {
+        lights.addAll(list);
+        notifyDataSetChanged();
+    }
+
+
     @NonNull
     @Override
     public LightViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
