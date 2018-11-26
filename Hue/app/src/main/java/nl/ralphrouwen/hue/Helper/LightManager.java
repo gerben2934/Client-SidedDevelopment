@@ -6,9 +6,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import nl.ralphrouwen.hue.Models.Light;
+import nl.ralphrouwen.hue.Models.Schedule;
 
 public class LightManager {
 
@@ -33,6 +35,28 @@ public class LightManager {
         }
         return lights;
     }
+
+    public static ArrayList<Schedule> sortSchedules(JSONObject jsonObject)
+    {
+        ArrayList<Schedule> schedules = new ArrayList<>();
+        for(int i = 1 ; i < jsonObject.length() + 1 ; i++)
+        {
+            try {
+                String name = jsonObject.getJSONObject(String.valueOf(i)).getString("name");
+                String description = jsonObject.getJSONObject(String.valueOf(i)).getString("description");
+                String time = jsonObject.getJSONObject(String.valueOf(i)).getString("time");
+                String light = jsonObject.getJSONObject(String.valueOf(i)).getJSONObject("command").getString("address");
+//                String light = "12uur";
+                Schedule schedule = new Schedule(name,description,time,light);
+                schedules.add(schedule);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return schedules;
+    }
+
 
     public static boolean handleSetLights(JSONArray array)
     {
