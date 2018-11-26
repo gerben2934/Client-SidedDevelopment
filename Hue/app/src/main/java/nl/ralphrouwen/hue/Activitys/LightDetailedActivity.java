@@ -70,16 +70,6 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
             lightSeekbar.setEnabled(false);
         }
 
-        testbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SchedulesActivity.class);
-                intent.putExtra(BRIDGE_URL, (Parcelable) bridge);
-//                intent.putExtra(LIGHT_URL, (Parcelable) li);
-                Log.i("ONCLICK", "BUTTONCLICKED?|??");
-                getApplicationContext().startActivity(intent);
-            }
-        });
 
         lightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -151,9 +141,6 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         lightSeekbar = findViewById(R.id.lightDetailedActivity_lightBrightness);
 
         colorPickerView = findViewById(R.id.colorPicker);
-
-        testbutton = findViewById(R.id.testbutton);
-
     }
 
     private void setTextViews() {

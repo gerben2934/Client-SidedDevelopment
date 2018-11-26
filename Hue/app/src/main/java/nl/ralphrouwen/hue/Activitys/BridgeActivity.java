@@ -1,6 +1,7 @@
 package nl.ralphrouwen.hue.Activitys;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,6 +30,7 @@ import nl.ralphrouwen.hue.Models.Response;
 import nl.ralphrouwen.hue.R;
 
 import static nl.ralphrouwen.hue.Activitys.MainActivity.BRIDGE_URL;
+import static nl.ralphrouwen.hue.Activitys.MainActivity.LIGHT_URL;
 
 public class BridgeActivity extends AppCompatActivity implements RequestListener {
 
@@ -66,6 +71,34 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
         //linear layout
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        Button button = findViewById(R.id.schedulesButton);
+        Switch alllightswitch = findViewById(R.id.allLightSwitch);
+
+        alllightswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                for (Light light : lights) {
+                    api.changeLight(bridge, light, request, light.getBrightness(), light.getHue(), light.getSaturation(), isChecked);
+                }
+                api.getLights(bridge, request);
+                mAdapter.clear();
+                // ...the data has come back, add new items to your adapter...
+                mAdapter = new LightRecyclerAdapter(getApplicationContext(), lights, bridge);
+                // Now we call setRefreshing(false) to signal refresh has finished
+                swipeContainer.setRefreshing(false);
+            }
+        });
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SchedulesActivity.class);
+                intent.putExtra(BRIDGE_URL, (Parcelable) bridge);
+                intent.putParcelableArrayListExtra(LIGHT_URL, lights);
+                getApplicationContext().startActivity(intent);
+            }
+        });
 
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

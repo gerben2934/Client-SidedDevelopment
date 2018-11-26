@@ -1,11 +1,13 @@
 package nl.ralphrouwen.hue.Activitys;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,7 +27,7 @@ import nl.ralphrouwen.hue.R;
 import static nl.ralphrouwen.hue.Activitys.MainActivity.BRIDGE_URL;
 import static nl.ralphrouwen.hue.Activitys.MainActivity.LIGHT_URL;
 
-public class SchedulesActivity extends AppCompatActivity implements RequestListener{
+public class SchedulesActivity extends AppCompatActivity implements RequestListener, ScheduleDetailled.OnFragmentInteractionListener {
 
     public Bridge bridge;
     VolleyHelper api;
@@ -45,12 +47,10 @@ public class SchedulesActivity extends AppCompatActivity implements RequestListe
 
         Intent intent = getIntent();
         bridge = intent.getParcelableExtra(BRIDGE_URL);
-//        lights = intent.getParcelableExtra(LIGHT_URL);
-        lights = new ArrayList<>();
+        lights = intent.getParcelableArrayListExtra(LIGHT_URL);
 
         api = VolleyHelper.getInstance(getApplicationContext());
         api.getSchedules(bridge,request);
-        request = this;
     }
 
     public void createCardView()
@@ -58,27 +58,29 @@ public class SchedulesActivity extends AppCompatActivity implements RequestListe
         mRecyclerView = (RecyclerView) findViewById(R.id.schedulesActivity_RecycleView);
         mRecyclerView.setHasFixedSize(true);
 
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer_schedules);
-
-        //specify an adapter
-        mAdapter = new SchedulesRecylerAdapter(this,schedules, lights, bridge);
-        mRecyclerView.setAdapter(mAdapter);
+//        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer_schedules);
 
         //linear layout
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-//                api.getLights(bridge, request);
-//                mAdapter.clear();
-//                // ...the data has come back, add new items to your adapter...
-//                mAdapter = new SchedulesRecylerAdapter(getApplicationContext(), schedules, lights, bridge);
-//                // Now we call setRefreshing(false) to signal refresh has finished
-//                swipeContainer.setRefreshing(false);
-            }
-        });
+        //specify an adapter
+        mAdapter = new SchedulesRecylerAdapter(this,schedules);
+        mRecyclerView.setAdapter(mAdapter);
+
+
+//        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                Log.i("Refresh", "refrsh");
+////                api.getLights(bridge, request);
+////                mAdapter.clear();
+////                // ...the data has come back, add new items to your adapter...
+////                mAdapter = new SchedulesRecylerAdapter(getApplicationContext(), schedules, lights, bridge);
+////                // Now we call setRefreshing(false) to signal refresh has finished
+////                swipeContainer.setRefreshing(false);
+//            }
+//        });
     }
 
     @Override
@@ -98,6 +100,11 @@ public class SchedulesActivity extends AppCompatActivity implements RequestListe
 
     @Override
     public void onRequestError(Error error) {
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
     }
 }

@@ -45,8 +45,8 @@ public class LightManager {
                 String name = jsonObject.getJSONObject(String.valueOf(i)).getString("name");
                 String description = jsonObject.getJSONObject(String.valueOf(i)).getString("description");
                 String time = jsonObject.getJSONObject(String.valueOf(i)).getString("time");
-//                String light = jsonObject.getJSONObject(String.valueOf(i)).getJSONObject("command").getString("address");
-                String light = "12uur";
+                String light = jsonObject.getJSONObject(String.valueOf(i)).getJSONObject("command").getString("address");
+//                String light = "12uur";
                 Schedule schedule = new Schedule(name,description,time,light);
                 schedules.add(schedule);
 
