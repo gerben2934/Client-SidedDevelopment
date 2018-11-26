@@ -89,6 +89,12 @@ public class VolleyHelper {
         getRequest(url, listener, nl.ralphrouwen.hue.Models.Response.GETLICHTS);
     }
 
+    public void getLight(Bridge bridge, RequestListener listener, int id)
+    {
+        String url = bridge.getIp() + "/api/" + bridge.getToken() + "/lights/" + id;
+        getRequest(url, listener, nl.ralphrouwen.hue.Models.Response.GETLIGHT);
+    }
+
     public void getSchedules(Bridge bridge, RequestListener listener)
     {
         String url = bridge.getIp() + "/api/" + bridge.getToken() + "/schedules";

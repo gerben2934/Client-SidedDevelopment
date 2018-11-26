@@ -76,7 +76,6 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
                 mAdapter = new LightRecyclerAdapter(getApplicationContext(), lights, bridge);
                 // Now we call setRefreshing(false) to signal refresh has finished
                 swipeContainer.setRefreshing(false);
-
             }
         });
     }
@@ -100,10 +99,4 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
     public void onRequestError(Error error) {
 
     }
-
-/*    @Override
-    public void onResume() {
-        super.onResume();
-        //lights = db.getAllBridges();
-    }*/
 }

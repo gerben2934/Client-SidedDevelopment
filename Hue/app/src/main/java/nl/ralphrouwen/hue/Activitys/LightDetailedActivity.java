@@ -118,11 +118,12 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
 
             //System.out.println("Final color: " + finalColor);
             if(lightSwitch.isChecked()) {
-                api.changeLight(bridge, light, request, light.brightness, finalColor, light.getSaturation(), true);
+                api.changeLight(bridge, light, request, light.getBrightness(), finalColor, light.getSaturation(), true);
             }
 
             else {
-                api.changeLight(bridge, light, request, light.brightness, finalColor, light.getSaturation(), false);
+                //color gets set, but since light is off, we will send status 'false';
+                api.changeLight(bridge, light, request, light.getBrightness(), finalColor, light.getSaturation(), false);
             }
         });
     }
@@ -140,13 +141,11 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
 
     private void setTextViews() {
         lightname.setText(light.getName());
-
-        lightSwitch.setEnabled(true);
         lightSwitch.setChecked(light.isOn());
         lightSeekbar.setThumbOffset(0);
         lightSeekbar.setMin(0);
         lightSeekbar.setMax(254);
-        //lightSeekbar.setProgress(light.brightness);
+        lightSeekbar.setProgress(light.getBrightness());
     }
 
     private int[] colorHex(int color) {
@@ -173,5 +172,19 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
     @Override
     public void onRequestError(Error error) {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        request = this;
+
+        Intent intent = getIntent();
+        light = intent.getParcelableExtra(LIGHT_URL);
+        bridge = intent.getParcelableExtra(BRIDGE_URL);
+        api = VolleyHelper.getInstance(getApplicationContext());
+
+
+        setTextViews();
     }
 }

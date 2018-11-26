@@ -39,7 +39,7 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
     private ArrayList<Light> lights;
     private Context context;
-    private VolleyHelper api;
+    public VolleyHelper api;
     private Bridge bridge;
     RequestListener request;
     int lastBrightness;
@@ -84,7 +84,7 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
         viewHolder.lightSeekBar.setMin(0);
         viewHolder.lightSeekBar.setMax(254);
         viewHolder.lightSeekBar.setThumbOffset(0);
-        //viewHolder.lightSeekBar.setProgress(light.brightness);
+        viewHolder.lightSeekBar.setProgress(light.brightness);
         viewHolder.lightSwitch.setEnabled(true);
         viewHolder.lightSwitch.setChecked(light.isOn());
 
@@ -101,6 +101,8 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
                 lastBrightness = viewHolder.lightSeekBar.getVerticalScrollbarPosition();
                 api.changeLight(bridge, light, request, lastBrightness, light.getHue(), light.getSaturation(), isChecked);
                 viewHolder.lightSeekBar.setEnabled(isChecked);
+                //notifyDataSetChanged();
+
             }
         });
 
@@ -108,6 +110,8 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 api.changeLight(bridge, light, request, progress, light.getHue(), light.getSaturation(), true);
+                //notifyDataSetChanged();
+
             }
 
             @Override
@@ -120,10 +124,8 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
             }
         });
-
     }
 
-    //Returns the size of the dataset
     @Override
     public int getItemCount() {
         return lights.size();
@@ -163,7 +165,18 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
             //Listener toevoegen;
             itemView.setOnClickListener((View v) -> {
+
+
+                //Dit is nog de oude light?!
                 Light light = lights.get(getAdapterPosition());
+               /* api = VolleyHelper.getInstance(getAdapterPosition());
+                api.getLights(bridge, this);
+
+                Light light = api.getLight(bridge, this, getAdapterPosition());
+*/
+                //Hier bij het parsen gaat het al fout!
+
+
 
                 Intent intent = new Intent(context, LightDetailedActivity.class);
                 intent.putExtra(LIGHT_URL, (Parcelable) light);
