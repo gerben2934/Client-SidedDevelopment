@@ -47,7 +47,9 @@ public class MainActivity extends AppCompatActivity implements AddBridgeActivity
             db.addBridge(new Bridge(2,"Emulator Ralph school", "http://145.49.45.24", "0296724fbea1bc84173967f322e34b7"));
             db.addBridge(new Bridge(3, "Emulator Gerben School", "http://145.49.2.189:8000", "7746fba8ac73ca304be1ab7689180c7"));
             db.addBridge(new Bridge(4, "Emulator Gerben Thuis", "http://192.168.101.1", "f01a104869921887ac45229fc2040ef"));
+            db.addBridge(new Bridge(4,"Emulator Ralph iMac", "http://192.168.178.23", "6446fb88b5a083eb630138080276167"));
         }
+        db.addBridge(new Bridge(4,"Emulator Ralph iMac", "http://192.168.178.23", "6446fb88b5a083eb630138080276167"));
 
         bridges = db.getAllBridges();
 

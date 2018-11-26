@@ -61,6 +61,15 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         light = intent.getParcelableExtra(LIGHT_URL);
         bridge = intent.getParcelableExtra(BRIDGE_URL);
         api = VolleyHelper.getInstance(getApplicationContext());
+        bindComponents();
+
+        int brig = light.getBrightness();
+
+        lightSeekbar.setProgress(light.getBrightness());
+
+        // hier de kleur van hue omrekenen naar iets wat de colorpicker snapt!
+//        colorPickerView.setInitialColor(light.get);
+
 
         bindComponents();
         setTextViews();
@@ -74,8 +83,8 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         lightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                light.setHue(finalColor);
-                api.changeLight(bridge, light, request, light.getBrightness(), light.getHue(), light.getSaturation(), isChecked);
+//                light.setHue(finalColor);
+                api.changeLight(bridge, light, request, light.getBrightness(), finalColor, light.getSaturation(), isChecked);
                 lightSeekbar.setEnabled(isChecked);
                 colorPickerView.setEnabled(isChecked);
             }
