@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -67,7 +69,6 @@ public class SchedulesActivity extends AppCompatActivity implements RequestListe
         //specify an adapter
         mAdapter = new SchedulesRecylerAdapter(this,schedules);
         mRecyclerView.setAdapter(mAdapter);
-
 
 //        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 //            @Override
