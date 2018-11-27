@@ -63,12 +63,14 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         api = VolleyHelper.getInstance(getApplicationContext());
         bindComponents();
 
-        int brig = light.getBrightness();
-
-        lightSeekbar.setProgress(light.getBrightness());
+//        lightSeekbar.setProgress(light.getBrightness());
 
         // hier de kleur van hue omrekenen naar iets wat de colorpicker snapt!
-//        colorPickerView.setInitialColor(light.get);
+//        colorPickerView.setInitialColor(light.getHue());
+        Log.i("","");
+        int lightcolor = light.getHue();
+//        colorPickerView.setInitialColor(0x7F313C93);
+        int color2 = finalColor;
 
 
         bindComponents();
@@ -93,6 +95,7 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         lightSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                light.setBrightness(progress);
                 api.changeLight(bridge, light, request, progress, light.getHue(), light.getSaturation(), true);
             }
 
@@ -118,6 +121,7 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
             if (actionBar != null) {
                 actionBar.setBackgroundDrawable(new ColorDrawable(color));
             }
+
 
             int[] ints = colorHex(color);
             int r = ints[1];

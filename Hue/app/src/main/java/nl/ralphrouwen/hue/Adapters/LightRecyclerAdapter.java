@@ -98,8 +98,8 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
         viewHolder.lightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                lastBrightness = viewHolder.lightSeekBar.getVerticalScrollbarPosition();
-                api.changeLight(bridge, light, request, lastBrightness, light.getHue(), light.getSaturation(), isChecked);
+//                lastBrightness = viewHolder.lightSeekBar.getVerticalScrollbarPosition();
+                api.changeLight(bridge, light, request, light.getBrightness(), light.getHue(), light.getSaturation(), isChecked);
                 viewHolder.lightSeekBar.setEnabled(isChecked);
                 //notifyDataSetChanged();
 
@@ -109,6 +109,7 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
         viewHolder.lightSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                light.setBrightness(progress);
                 api.changeLight(bridge, light, request, progress, light.getHue(), light.getSaturation(), true);
                 //notifyDataSetChanged();
 
