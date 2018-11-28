@@ -19,6 +19,7 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import nl.ralphrouwen.hue.Helper.LightManager;
 import nl.ralphrouwen.hue.Helper.RequestListener;
 import nl.ralphrouwen.hue.Helper.VolleyHelper;
 import nl.ralphrouwen.hue.Models.Bridge;
@@ -32,7 +33,7 @@ import static nl.ralphrouwen.hue.Activitys.MainActivity.LIGHT_URL;
 
 public class LightDetailedActivity extends AppCompatActivity implements RequestListener {
 
-    public Light light;
+    Light light;
     VolleyHelper api;
 
     Bridge bridge;
@@ -47,7 +48,7 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
 
     ColorPickerView colorPickerView;
     int finalColor;
-
+    int lightID;
     Button testbutton;
 
     @Override
@@ -58,9 +59,10 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         request = this;
 
         Intent intent = getIntent();
-        light = intent.getParcelableExtra(LIGHT_URL);
+        lightID = intent.getIntExtra(LIGHT_URL, 0);
         bridge = intent.getParcelableExtra(BRIDGE_URL);
         api = VolleyHelper.getInstance(getApplicationContext());
+        api.getLight(bridge, this, lightID);
         bindComponents();
 
 //        lightSeekbar.setProgress(light.getBrightness());
@@ -68,14 +70,14 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         // hier de kleur van hue omrekenen naar iets wat de colorpicker snapt!
 //        colorPickerView.setInitialColor(light.getHue());
         Log.i("","");
-        int lightcolor = light.getHue();
+//        int lightcolor = light.getHue();
 //        colorPickerView.setInitialColor(0x7F313C93);
-        int color2 = finalColor;
 
 
-        bindComponents();
-        setTextViews();
+    }
 
+    public void test()
+    {
         if(!lightSwitch.isChecked())
         {
             lightSeekbar.setEnabled(false);
@@ -164,7 +166,16 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         lightSeekbar.setMin(0);
         lightSeekbar.setMax(254);
         lightSeekbar.setProgress(light.getBrightness());
+        System.out.println("Hue: " + light.getHue());
+        float hue = (float)(light.getHue() / (65535/360));
+        float saturation = (float)(light.getSaturation() / 254);
+        float brightness = (float)(light.getBrightness() / 254);
+        float[] a = {hue, brightness, saturation};
+        System.out.println("Hue: " + hue + " brightness: " + brightness + ", saturation: " + saturation);
+        //System.out.println(Color.);
+        colorPickerView.setInitialColor(Color.HSVToColor(a));
     }
+
 
     private int[] colorHex(int color) {
 
@@ -179,7 +190,13 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
 
     @Override
     public void onRequestObjectAvailible(JSONObject response, Response responsetype) {
-
+        switch (responsetype) {
+            case GETLIGHT:
+                light = LightManager.getLight(response, lightID);
+                test();
+                setTextViews();
+                break;
+        }
     }
 
     @Override
@@ -201,8 +218,6 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         light = intent.getParcelableExtra(LIGHT_URL);
         bridge = intent.getParcelableExtra(BRIDGE_URL);
         api = VolleyHelper.getInstance(getApplicationContext());
-
-
-        setTextViews();
+        api.getLight(bridge, request, lightID);
     }
 }

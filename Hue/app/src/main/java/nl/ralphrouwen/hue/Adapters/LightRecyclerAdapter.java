@@ -180,7 +180,8 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
 
                 Intent intent = new Intent(context, LightDetailedActivity.class);
-                intent.putExtra(LIGHT_URL, (Parcelable) light);
+                intent.putExtra(LIGHT_URL, light.getId());
+//                intent.putExtra(LIGHT_URL, (Parcelable) light);
                 intent.putExtra(BRIDGE_URL, (Parcelable) bridge);
 
                 ctx.startActivity(intent);
