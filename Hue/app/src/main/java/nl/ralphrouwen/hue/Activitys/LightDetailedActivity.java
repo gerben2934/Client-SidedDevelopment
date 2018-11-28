@@ -76,6 +76,7 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         bindComponents();
         setTextViews();
 
+
         if(!lightSwitch.isChecked())
         {
             lightSeekbar.setEnabled(false);
@@ -134,14 +135,15 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
             int y = (int)x;
             finalColor = y * (65535/360);
 
-            //System.out.println("Final color: " + finalColor);
-            if(lightSwitch.isChecked()) {
-                api.changeLight(bridge, light, request, light.getBrightness(), finalColor, light.getSaturation(), true);
-            }
-
-            else {
-                //color gets set, but since light is off, we will send status 'false';
-                api.changeLight(bridge, light, request, light.getBrightness(), finalColor, light.getSaturation(), false);
+            if(finalColor != 54600) {
+                //System.out.println("Final color: " + finalColor);
+                if (lightSwitch.isChecked()) {
+                    api.changeLight(bridge, light, request, light.getBrightness(), finalColor, light.getSaturation(), true);
+                    Log.i("ECHTHEELVIES", String.valueOf(finalColor));
+                } else {
+                    //color gets set, but since light is off, we will send status 'false';
+//                api.changeLight(bridge, light, request, light.getBrightness(), finalColor, light.getSaturation(), false);
+                }
             }
         });
     }
@@ -158,6 +160,7 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
     }
 
     private void setTextViews() {
+//        colorPickerView.setInitialColor(16380);
         lightname.setText(light.getName());
         lightSwitch.setChecked(light.isOn());
         lightSeekbar.setThumbOffset(0);
@@ -201,8 +204,6 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         light = intent.getParcelableExtra(LIGHT_URL);
         bridge = intent.getParcelableExtra(BRIDGE_URL);
         api = VolleyHelper.getInstance(getApplicationContext());
-
-
         setTextViews();
     }
 }

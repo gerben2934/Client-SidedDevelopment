@@ -43,6 +43,8 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
     private SwipeRefreshLayout swipeContainer;
     private RequestListener request;
     private FloatingActionButton deleteButton;
+    Switch alllightswitch;
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
         api = VolleyHelper.getInstance(getApplicationContext());
         api.getLights(bridge, this);
         request = this;
+
     }
 
     public void createCardView()
@@ -72,8 +75,8 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        Button button = findViewById(R.id.schedulesButton);
-        Switch alllightswitch = findViewById(R.id.allLightSwitch);
+        button = findViewById(R.id.schedulesButton);
+        alllightswitch = findViewById(R.id.allLightSwitch);
 
         alllightswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -104,11 +107,7 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
             @Override
             public void onRefresh() {
                 api.getLights(bridge, request);
-                mAdapter.clear();
-                // ...the data has come back, add new items to your adapter...
-                mAdapter = new LightRecyclerAdapter(getApplicationContext(), lights, bridge);
                 // Now we call setRefreshing(false) to signal refresh has finished
-                swipeContainer.setRefreshing(false);
             }
         });
     }
@@ -119,6 +118,7 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
             case GETLICHTS:
                 lights = LightManager.sortLights(response);
                 createCardView();
+                swipeContainer.setRefreshing(false);
                 break;
         }
     }
