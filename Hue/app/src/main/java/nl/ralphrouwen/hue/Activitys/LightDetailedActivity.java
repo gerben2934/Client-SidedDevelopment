@@ -19,6 +19,7 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import nl.ralphrouwen.hue.Helper.LightManager;
 import nl.ralphrouwen.hue.Helper.RequestListener;
 import nl.ralphrouwen.hue.Helper.VolleyHelper;
 import nl.ralphrouwen.hue.Models.Bridge;
@@ -142,6 +143,14 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         });
     }
 
+    public static String rgbToString(float r, float g, float b) {
+        String rs = Integer.toHexString((int)(r * 256));
+        String gs = Integer.toHexString((int)(g * 256));
+        String bs = Integer.toHexString((int)(b * 256));
+        Log.i("colors", "R: " + rs + ", G: " + gs + ", B: " + bs);
+        return rs + "-" + gs + "-" + bs;
+    }
+
     private void bindComponents() {
         statusTV = findViewById(R.id.lightDetailedActivity_statusTV);
         brightnessTV = findViewById(R.id.lightDetailedActivity_brightnessTV);
@@ -160,10 +169,17 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         lightSeekbar.setMin(0);
         lightSeekbar.setMax(254);
         lightSeekbar.setProgress(light.getBrightness());
+        System.out.println("Hue: " + light.getHue());
+        float hue = (float)(light.getHue() / (65535/360));
+        float saturation = (float)(light.getSaturation() / 254);
+        float brightness = (float)(light.getBrightness() / 254);
+        float[] a = {hue, brightness, saturation};
+        System.out.println("Hue: " + hue + " brightness: " + brightness + ", saturation: " + saturation);
+        //System.out.println(Color.);
+        colorPickerView.setInitialColor(Color.HSVToColor(a));
     }
 
     private int[] colorHex(int color) {
-
         int a = Color.alpha(color); //niet nodig
         int r = Color.red(color);
         int g = Color.green(color);
@@ -175,7 +191,13 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
 
     @Override
     public void onRequestObjectAvailible(JSONObject response, Response responsetype) {
-
+        switch (responsetype) {
+            case GETLIGHT:
+                System.out.println("OnRequestAvailable!");
+                light = LightManager.getLight(response, light.getId());
+                setTextViews();
+                break;
+        }
     }
 
     @Override
@@ -192,13 +214,12 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
     public void onResume() {
         super.onResume();
         request = this;
+        //System.out.println("On resume!");
 
         Intent intent = getIntent();
-        light = intent.getParcelableExtra(LIGHT_URL);
-        bridge = intent.getParcelableExtra(BRIDGE_URL);
+        //light = intent.getParcelableExtra(LIGHT_URL);
+        //bridge = intent.getParcelableExtra(BRIDGE_URL);
         api = VolleyHelper.getInstance(getApplicationContext());
-
-
-        setTextViews();
+        api.getLight(bridge, this, light.getId());
     }
 }

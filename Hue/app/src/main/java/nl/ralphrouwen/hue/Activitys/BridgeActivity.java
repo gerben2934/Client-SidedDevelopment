@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import nl.ralphrouwen.hue.Adapters.BridgeRecyclerAdapter;
 import nl.ralphrouwen.hue.Adapters.LightRecyclerAdapter;
+import nl.ralphrouwen.hue.Helper.LightController;
 import nl.ralphrouwen.hue.Helper.LightManager;
 import nl.ralphrouwen.hue.Helper.RequestListener;
 import nl.ralphrouwen.hue.Helper.VolleyHelper;
@@ -36,25 +37,26 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
 
     public Bridge bridge;
     VolleyHelper api;
-    ArrayList<Light> lights;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private LightRecyclerAdapter mAdapter;
     private SwipeRefreshLayout swipeContainer;
     private RequestListener request;
     private FloatingActionButton deleteButton;
+    private LightController lightController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bridge);
-
         Intent intent = getIntent();
         bridge = intent.getParcelableExtra(BRIDGE_URL);
 
         api = VolleyHelper.getInstance(getApplicationContext());
         api.getLights(bridge, this);
         request = this;
+        lightController = LightController.getInstance();
+        createCardView();
     }
 
     public void createCardView()
@@ -63,9 +65,8 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
         mRecyclerView.setHasFixedSize(true);
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
 
-
         //specify an adapter
-        mAdapter = new LightRecyclerAdapter(this, lights, bridge);
+        mAdapter = new LightRecyclerAdapter(this, bridge);
         mRecyclerView.setAdapter(mAdapter);
 
         //linear layout
@@ -78,15 +79,10 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
         alllightswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                for (Light light : lights) {
+                lightController.setLights(lightController.getLights());
+                for (Light light : lightController.getLights()) {
                     api.changeLight(bridge, light, request, light.getBrightness(), light.getHue(), light.getSaturation(), isChecked);
                 }
-                api.getLights(bridge, request);
-                mAdapter.clear();
-                // ...the data has come back, add new items to your adapter...
-                mAdapter = new LightRecyclerAdapter(getApplicationContext(), lights, bridge);
-                // Now we call setRefreshing(false) to signal refresh has finished
-                swipeContainer.setRefreshing(false);
             }
         });
 
@@ -95,7 +91,7 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SchedulesActivity.class);
                 intent.putExtra(BRIDGE_URL, (Parcelable) bridge);
-                intent.putParcelableArrayListExtra(LIGHT_URL, lights);
+                intent.putParcelableArrayListExtra(LIGHT_URL, lightController.getLights());
                 getApplicationContext().startActivity(intent);
             }
         });
@@ -104,11 +100,6 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
             @Override
             public void onRefresh() {
                 api.getLights(bridge, request);
-                mAdapter.clear();
-                // ...the data has come back, add new items to your adapter...
-                mAdapter = new LightRecyclerAdapter(getApplicationContext(), lights, bridge);
-                // Now we call setRefreshing(false) to signal refresh has finished
-                swipeContainer.setRefreshing(false);
             }
         });
     }
@@ -117,8 +108,19 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
     public void onRequestObjectAvailible(JSONObject response, Response responsetype) {
         switch (responsetype) {
             case GETLICHTS:
-                lights = LightManager.sortLights(response);
-                createCardView();
+                System.out.println("OnRequestAvailable!");
+                lightController.setLights(LightManager.sortLights(response));
+                //mAdapter.clear();
+                //mAdapter.addAll(lights);
+/*
+                // ...the data has come back, add new items to your adapter...
+                mAdapter = new LightRecyclerAdapter(getApplicationContext(), lights, bridge);
+                mRecyclerView.setAdapter(mAdapter);
+
+                // Now we call setRefreshing(false) to signal refresh has finished
+*/
+                swipeContainer.setRefreshing(false);
+                mAdapter.notifyDataSetChanged();
                 break;
         }
     }
@@ -131,5 +133,19 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
     @Override
     public void onRequestError(Error error) {
 
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        request = this;
+        //System.out.println("On resume!");
+
+        Intent intent = getIntent();
+        //light = intent.getParcelableExtra(LIGHT_URL);
+        //bridge = intent.getParcelableExtra(BRIDGE_URL);
+        api = VolleyHelper.getInstance(getApplicationContext());
+        api.getLights(bridge, this);
     }
 }

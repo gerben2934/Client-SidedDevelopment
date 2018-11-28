@@ -23,6 +23,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+import nl.ralphrouwen.hue.Helper.LightController;
 import nl.ralphrouwen.hue.Helper.RequestListener;
 import nl.ralphrouwen.hue.Helper.VolleyHelper;
 import nl.ralphrouwen.hue.Models.Bridge;
@@ -37,29 +38,23 @@ import static nl.ralphrouwen.hue.Activitys.MainActivity.BRIDGE_URL;
 import static nl.ralphrouwen.hue.Activitys.MainActivity.LIGHT_URL;
 public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdapter.LightViewHolder> implements RequestListener {
 
-    private ArrayList<Light> lights;
     private Context context;
     public VolleyHelper api;
     private Bridge bridge;
     RequestListener request;
-    int lastBrightness;
+    private LightController lightController;
 
-    public LightRecyclerAdapter(Context context, ArrayList<Light> lights, Bridge bridge) {
+
+    public LightRecyclerAdapter(Context context, Bridge bridge) {
         this.context = context;
-        this.lights = lights;
         this.bridge = bridge;
         request = this;
-
-    }
-
-    public void clear() {
-        lights.clear();
-        notifyDataSetChanged();
+        lightController = LightController.getInstance();
     }
 
     // Add a list of items -- change to type used
     public void addAll(ArrayList<Light> list) {
-        lights.addAll(list);
+        lightController.getLights().addAll(list);
         notifyDataSetChanged();
     }
 
@@ -76,15 +71,15 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull final LightViewHolder viewHolder, int position) {
-        final Light light = lights.get(position);
+        final Light light = lightController.getLights().get(position);
         viewHolder.lightName.setText(light.getName());
 
-//        viewHolder.cardView.setCardBackgroundColor(Color.BLUE);
+//      viewHolder.cardView.setCardBackgroundColor(Color.BLUE);
 
         viewHolder.lightSeekBar.setMin(0);
         viewHolder.lightSeekBar.setMax(254);
         viewHolder.lightSeekBar.setThumbOffset(0);
-        viewHolder.lightSeekBar.setProgress(light.brightness);
+        viewHolder.lightSeekBar.setProgress(light.getBrightness());
         viewHolder.lightSwitch.setEnabled(true);
         viewHolder.lightSwitch.setChecked(light.isOn());
 
@@ -98,11 +93,13 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
         viewHolder.lightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                lastBrightness = viewHolder.lightSeekBar.getVerticalScrollbarPosition();
-                api.changeLight(bridge, light, request, lastBrightness, light.getHue(), light.getSaturation(), isChecked);
+                //lastBrightness = viewHolder.lightSeekBar.getVerticalScrollbarPosition();
+                api.changeLight(bridge, light, request, light.getBrightness(), light.getHue(), light.getSaturation(), isChecked);
                 viewHolder.lightSeekBar.setEnabled(isChecked);
-                //notifyDataSetChanged();
-
+                if(isChecked)
+                {
+                    viewHolder.lightSeekBar.setProgress(light.getBrightness());
+                }
             }
         });
 
@@ -111,7 +108,6 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 api.changeLight(bridge, light, request, progress, light.getHue(), light.getSaturation(), true);
                 //notifyDataSetChanged();
-
             }
 
             @Override
@@ -128,7 +124,7 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
     @Override
     public int getItemCount() {
-        return lights.size();
+        return lightController.getLights().size();
     }
 
     @Override
@@ -148,7 +144,6 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
 
     public class LightViewHolder extends RecyclerView.ViewHolder {
-
         TextView lightName;
         SeekBar lightSeekBar;
         Switch lightSwitch;
@@ -165,19 +160,14 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
             //Listener toevoegen;
             itemView.setOnClickListener((View v) -> {
-
-
-                //Dit is nog de oude light?!
-                Light light = lights.get(getAdapterPosition());
+                Light light = lightController.getLights().get(getAdapterPosition());
+                System.out.println("Light info " + light.toString());
                /* api = VolleyHelper.getInstance(getAdapterPosition());
                 api.getLights(bridge, this);
 
                 Light light = api.getLight(bridge, this, getAdapterPosition());
 */
                 //Hier bij het parsen gaat het al fout!
-
-
-
                 Intent intent = new Intent(context, LightDetailedActivity.class);
                 intent.putExtra(LIGHT_URL, (Parcelable) light);
                 intent.putExtra(BRIDGE_URL, (Parcelable) bridge);

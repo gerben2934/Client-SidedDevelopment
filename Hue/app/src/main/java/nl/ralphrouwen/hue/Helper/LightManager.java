@@ -36,6 +36,25 @@ public class LightManager {
         return lights;
     }
 
+    public static Light getLight(JSONObject jsonObject, int id)
+    {
+        Light light = null;
+        try {
+            String name = jsonObject.getString("name");
+            boolean status = jsonObject.getJSONObject("state").getBoolean("on");
+            int brightness = jsonObject.getJSONObject("state").getInt("bri");
+            int hue = jsonObject.getJSONObject("state").getInt("hue");
+            int sat = jsonObject.getJSONObject("state").getInt("sat");
+            String mode = jsonObject.getJSONObject("state").getString("colormode");
+            boolean reachable = jsonObject.getJSONObject("state").getBoolean("reachable");
+            light = new Light(id, name,status,brightness,hue,sat,mode, reachable);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+         return light;
+    }
+
     public static ArrayList<Schedule> sortSchedules(JSONObject jsonObject)
     {
         ArrayList<Schedule> schedules = new ArrayList<>();

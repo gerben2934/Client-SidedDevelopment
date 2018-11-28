@@ -80,11 +80,5 @@ public class BridgeRecyclerAdapter extends RecyclerView.Adapter<BridgeRecyclerAd
                 ctx.startActivity(intent);
             });
         }
-
-/*        public void bindItem(Bridge bridge) {
-            TextView t = view.findViewById(R.id.textViewtest);
-            Log.i("textview", t.toString());
-            t.setText(bridge.getName());
-        }*/
     }
 }

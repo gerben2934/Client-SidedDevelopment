@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements AddBridgeActivity
             db.addBridge(new Bridge(1,"Emulator Ralph Thuis", "http://192.168.178.45", "ba78860f274f0060f319645406c561b"));
             db.addBridge(new Bridge(5, "Ralph thuis hue","http://192.168.178.90", "DmznyFSbvpdIpzCIB0cYAppyi18LJPsOog5A8CHD"));
             db.addBridge(new Bridge(2,"Emulator Ralph school", "http://145.49.45.24", "0296724fbea1bc84173967f322e34b7"));
-            db.addBridge(new Bridge(3, "Emulator Gerben School", "http://145.49.2.189:8000", "7746fba8ac73ca304be1ab7689180c7"));
+            db.addBridge(new Bridge(3, "Emulator Gerben School", "http://145.49.2.189", "c8ccceb2a8224993626a649fef8b048"));
             db.addBridge(new Bridge(4, "Emulator Gerben Thuis", "http://192.168.101.1", "f01a104869921887ac45229fc2040ef"));
             db.addBridge(new Bridge(4,"Emulator Ralph iMac", "http://192.168.178.23", "6446fb88b5a083eb630138080276167"));
         }
@@ -99,10 +99,4 @@ public class MainActivity extends AppCompatActivity implements AddBridgeActivity
         bridges.remove(id);
         mAdapter.notifyDataSetChanged();
     }
-
-/*    @Override
-    public void onResume() {
-        super.onResume();
-        bridges = db.getAllBridges();
-    }*/
 }
