@@ -69,19 +69,6 @@ public class SchedulesActivity extends AppCompatActivity implements RequestListe
         //specify an adapter
         mAdapter = new SchedulesRecylerAdapter(this,schedules);
         mRecyclerView.setAdapter(mAdapter);
-
-//        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                Log.i("Refresh", "refrsh");
-////                api.getLights(bridge, request);
-////                mAdapter.clear();
-////                // ...the data has come back, add new items to your adapter...
-////                mAdapter = new SchedulesRecylerAdapter(getApplicationContext(), schedules, lights, bridge);
-////                // Now we call setRefreshing(false) to signal refresh has finished
-////                swipeContainer.setRefreshing(false);
-//            }
-//        });
     }
 
     @Override

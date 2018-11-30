@@ -59,8 +59,6 @@ public class BridgeRecyclerAdapter extends RecyclerView.Adapter<BridgeRecyclerAd
     }
 
     public class BridgeViewHolder extends RecyclerView.ViewHolder {
-        //public View view;
-        //private Bridge bridge;
         TextView textview;
 
         public BridgeViewHolder(View itemView, final Context ctx)
@@ -80,11 +78,5 @@ public class BridgeRecyclerAdapter extends RecyclerView.Adapter<BridgeRecyclerAd
                 ctx.startActivity(intent);
             });
         }
-
-/*        public void bindItem(Bridge bridge) {
-            TextView t = view.findViewById(R.id.textViewtest);
-            Log.i("textview", t.toString());
-            t.setText(bridge.getName());
-        }*/
     }
 }
