@@ -79,6 +79,15 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
         button = findViewById(R.id.schedulesButton);
         alllightswitch = findViewById(R.id.allLightSwitch);
 
+        for (Light light : lights) {
+            boolean check = light.isOn();
+            if(check == true)
+            {
+                alllightswitch.setChecked(check);
+            }
+            break;
+        }
+
         alllightswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
