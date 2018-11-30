@@ -5,4 +5,8 @@
     <string name="brightness">Helderheid:</string>
     <string name="color">Kleur:</string>
     <string name="title_activity_recycle_view_item">RecycleViewitem</string>
+    <string name="name">Naam:</string>
+    <string name="time">Tijd:</string>
+    <string name="light">Lamp:</string>
+    <string name="schedules">Schemas:</string>
 </resources>

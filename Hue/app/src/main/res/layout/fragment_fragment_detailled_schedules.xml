@@ -13,62 +13,49 @@
         android:id="@+id/textViewname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Naam:"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/textviewborder"
+        android:text="@string/name"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textViewtime"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/schedulesname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/textviewborder"
         android:text="naam"
         android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewname"
         app:layout_constraintStart_toEndOf="@+id/textViewname"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/schedulesdescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="beschrijving hier"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/schedulesLamp" />
+        app:layout_constraintTop_toTopOf="@+id/textViewname"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/textViewtime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:text="Time:"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/textviewborder"
+        android:text="@string/time"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textviewlamp"
         app:layout_constraintTop_toBottomOf="@+id/textViewname" />
 
     <TextView
         android:id="@+id/schedulesTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:background="@drawable/textviewborder"
         android:text="TextView"
         android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textViewtime"
-        app:layout_constraintTop_toBottomOf="@+id/schedulesname" />
+        app:layout_constraintBottom_toBottomOf="@+id/textViewtime"
+        app:layout_constraintStart_toStartOf="@+id/schedulesname"
+        app:layout_constraintTop_toTopOf="@+id/textViewtime"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textviewlamp"
@@ -76,7 +63,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Lamp:"
+        android:background="@drawable/textviewborder"
+        android:text="@string/light"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewtime" />
@@ -85,14 +73,13 @@
         android:id="@+id/schedulesLamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:background="@drawable/textviewborder"
         android:text="TextView"
         android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textviewlamp"
-        app:layout_constraintTop_toBottomOf="@+id/schedulesTime" />
+        app:layout_constraintBottom_toBottomOf="@+id/textviewlamp"
+        app:layout_constraintStart_toStartOf="@+id/schedulesTime"
+        app:layout_constraintTop_toTopOf="@+id/textviewlamp"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </android.support.constraint.ConstraintLayout>

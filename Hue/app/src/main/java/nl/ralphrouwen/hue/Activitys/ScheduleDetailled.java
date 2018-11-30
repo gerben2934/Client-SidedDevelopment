@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,13 +54,13 @@ public class ScheduleDetailled extends DialogFragment {
         title = view.findViewById(R.id.schedulesname);
         lamp = view.findViewById(R.id.schedulesLamp);
         time = view.findViewById(R.id.schedulesTime);
-        description = view.findViewById(R.id.schedulesdescription);
 
         Schedule schedule = getArguments().getParcelable(SCHEDULES);
         title.setText(schedule.getName());
-        lamp.setText(schedule.getLamp());
+        String lampString = schedule.getLamp();
+        lampString = lampString.substring(0, lampString.length() - 7);
+        lamp.setText(lampString);
         time.setText(schedule.getTime());
-        description.setText(schedule.getDescription());
 
         return view;
     }
