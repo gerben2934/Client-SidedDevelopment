@@ -136,17 +136,17 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
             int y = (int)x;
             finalColor = y * (65535/360);
 
-            if(finalColor != 54600) {
+            //if(finalColor != 54600) {
                 //System.out.println("Final color: " + finalColor);
                 if (lightSwitch.isChecked()) {
                     light.setHue(finalColor);
                     api.changeLight(bridge, light, request, light.getBrightness(), finalColor, light.getSaturation(), true);
-                    Log.i("ECHTHEELVIES", String.valueOf(finalColor));
+                    //Log.i("ECHTHEELVIES", String.valueOf(finalColor));
                 } else {
                     //color gets set, but since light is off, we will send status 'false';
 //                api.changeLight(bridge, light, request, light.getBrightness(), finalColor, light.getSaturation(), false);
                 }
-            }
+            //}
         });
     }
 
@@ -162,7 +162,32 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
     }
 
     private void setTextViews() {
-//        colorPickerView.setInitialColor(16380);
+        String s = HSVtoRGB();
+        String[] c = s.split(",");
+        String Rs = c[0];
+        String Gs = c[1];
+        String Bs = c[2];
+        int R = Integer.parseInt(Rs);
+        int G = Integer.parseInt(Gs);
+        int B = Integer.parseInt(Bs);
+
+/*        float hue = (float)(light.getHue() * (360/65535));
+        float brightness = (float)light.getBrightness() / 254;
+        float saturation = (float)light.getSaturation() / 254;
+
+        Log.i("colors", "hue: " + hue + " brightness: " + brightness + " saturation: " + saturation);
+        String s = hsvToRgb(hue, brightness, saturation);
+        Log.i("output colors: ", "Colors " + s);
+
+        String[] c = s.split("-");*/
+
+
+        //Color.rgb(R, G, B);
+
+        int color = Color.rgb(R, G, B);
+        Log.i("FinalColor: ", "finalcolor: " + color);
+
+        colorPickerView.setInitialColor(color);
         lightname.setText(light.getName());
         lightSwitch.setChecked(light.isOn());
         lightSeekbar.setThumbOffset(0);
@@ -208,4 +233,41 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         api = VolleyHelper.getInstance(getApplicationContext());
         setTextViews();
     }
+
+    public static String rgbToString(float r, float g, float b) {
+        String rs = Integer.toHexString((int)(r * 256));
+        String gs = Integer.toHexString((int)(g * 256));
+        String bs = Integer.toHexString((int)(b * 256));
+        return rs + "-" + gs + "-" + bs;
+    }
+
+    public String HSVtoRGB()
+    {
+        int red = 0;
+        int green = 0;
+        int blue = 0;
+
+        int hue = light.getHue();
+        float temp = 360.0f/65535.0f;
+        float finalHue = (float)hue * temp;
+        Log.i("hue: ", "hue: " + light.getHue());
+
+        float brightness = (float)(light.getBrightness()) / 254.0f;
+        float saturation = (float)(light.getSaturation()) / 254.0f;
+
+        float[] para = {finalHue, brightness, saturation};
+// Convert HSB to RGB value
+
+        int rgb = Color.HSVToColor(para);
+
+            red = (rgb>>16)&0xFF;
+            green = (rgb>>8)&0xFF;
+            blue = rgb&0xFF;
+
+            Log.i("HSB", "HSB [" + hue + "," + saturation + "," + brightness + "]");
+            Log.i("Converted to RGB: ", "[" + red + "," + green + "," + blue + "]");
+            return (red + "," + green + "," + blue);
+
+    }
+
 }

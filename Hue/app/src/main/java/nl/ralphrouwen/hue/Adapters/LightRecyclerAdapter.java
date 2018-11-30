@@ -76,7 +76,7 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull final LightViewHolder viewHolder, int position) {
-        final Light light = lights.get(position);
+        Light light = lights.get(position);
         viewHolder.lightName.setText(light.getName());
 
 //        viewHolder.cardView.setCardBackgroundColor(Color.BLUE);
@@ -166,10 +166,8 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
             //Listener toevoegen;
             itemView.setOnClickListener((View v) -> {
-
-
                 //Dit is nog de oude light?!
-                Light light = lights.get(getAdapterPosition());
+                Light light2 = lights.get(getAdapterPosition());
                /* api = VolleyHelper.getInstance(getAdapterPosition());
                 api.getLights(bridge, this);
 
@@ -180,7 +178,7 @@ public class LightRecyclerAdapter extends RecyclerView.Adapter<LightRecyclerAdap
 
 
                 Intent intent = new Intent(context, LightDetailedActivity.class);
-                intent.putExtra(LIGHT_URL, (Parcelable) light);
+                intent.putExtra(LIGHT_URL, (Parcelable) light2);
                 intent.putExtra(BRIDGE_URL, (Parcelable) bridge);
 
                 ctx.startActivity(intent);

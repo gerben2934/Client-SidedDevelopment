@@ -54,11 +54,9 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
 
         intent = getIntent();
         bridge = intent.getParcelableExtra(BRIDGE_URL);
-
         api = VolleyHelper.getInstance(getApplicationContext());
         api.getLights(bridge, this);
         request = this;
-
     }
 
     public void createCardView()
@@ -144,5 +142,12 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
     @Override
     public void onRequestError(Error error) {
 
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        api.getLights(bridge, this);
     }
 }
