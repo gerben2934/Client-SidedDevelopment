@@ -86,6 +86,7 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         lightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                light.setOn(isChecked);
 //                light.setHue(finalColor);
                 api.changeLight(bridge, light, request, light.getBrightness(), finalColor, light.getSaturation(), isChecked);
                 lightSeekbar.setEnabled(isChecked);
@@ -138,6 +139,7 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
             if(finalColor != 54600) {
                 //System.out.println("Final color: " + finalColor);
                 if (lightSwitch.isChecked()) {
+                    light.setHue(finalColor);
                     api.changeLight(bridge, light, request, light.getBrightness(), finalColor, light.getSaturation(), true);
                     Log.i("ECHTHEELVIES", String.valueOf(finalColor));
                 } else {

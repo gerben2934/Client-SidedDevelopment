@@ -57,7 +57,7 @@ public class ScheduleDetailled extends DialogFragment {
 
         Schedule schedule = getArguments().getParcelable(SCHEDULES);
         title.setText(schedule.getName());
-//        lamp.setText(schedule.getLamp());
+        lamp.setText(schedule.getLamp());
         time.setText(schedule.getTime());
         description.setText(schedule.getDescription());
 

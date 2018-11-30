@@ -45,13 +45,14 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
     private FloatingActionButton deleteButton;
     Switch alllightswitch;
     Button button;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bridge);
 
-        Intent intent = getIntent();
+        intent = getIntent();
         bridge = intent.getParcelableExtra(BRIDGE_URL);
 
         api = VolleyHelper.getInstance(getApplicationContext());
@@ -82,14 +83,15 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 for (Light light : lights) {
+                    light.setOn(isChecked);
                     api.changeLight(bridge, light, request, light.getBrightness(), light.getHue(), light.getSaturation(), isChecked);
                 }
-                api.getLights(bridge, request);
-                mAdapter.clear();
-                // ...the data has come back, add new items to your adapter...
-                mAdapter = new LightRecyclerAdapter(getApplicationContext(), lights, bridge);
-                // Now we call setRefreshing(false) to signal refresh has finished
-                swipeContainer.setRefreshing(false);
+//                api.getLights(bridge, request);
+//                mAdapter.clear();
+//                // ...the data has come back, add new items to your adapter...
+//                mAdapter = new LightRecyclerAdapter(getApplicationContext(), lights, bridge);
+//                // Now we call setRefreshing(false) to signal refresh has finished
+//                swipeContainer.setRefreshing(false);
             }
         });
 
@@ -117,6 +119,8 @@ public class BridgeActivity extends AppCompatActivity implements RequestListener
         switch (responsetype) {
             case GETLICHTS:
                 lights = LightManager.sortLights(response);
+                // ...the data has come back, add new items to your adapter...
+//                mAdapter = new LightRecyclerAdapter(getApplicationContext(), lights, bridge);
                 createCardView();
                 swipeContainer.setRefreshing(false);
                 break;
