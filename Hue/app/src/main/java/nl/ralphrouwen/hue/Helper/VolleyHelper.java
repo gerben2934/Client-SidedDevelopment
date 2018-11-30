@@ -39,8 +39,6 @@ public class VolleyHelper {
 
     public void getRequest(String url, final RequestListener listener, final nl.ralphrouwen.hue.Models.Response requestResponse)
     {
-//        RequestQueue requestQueue = Volley.newRequestQueue(context);
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
@@ -115,7 +113,6 @@ public class VolleyHelper {
         }
 
         String url = bridge.getIp() + "/api/" + bridge.getToken() + "/lights/" + light.getId() + "/state";
-
         putArrayRequest(url, listener, nl.ralphrouwen.hue.Models.Response.SETLIGHT,jsonObject);
     }
 }

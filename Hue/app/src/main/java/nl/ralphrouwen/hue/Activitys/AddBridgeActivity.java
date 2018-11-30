@@ -81,13 +81,11 @@ public class AddBridgeActivity extends DialogFragment {
                     Toast.makeText(getActivity(), "Not all fields are filled in correctly!", Toast.LENGTH_LONG).show();
                 }
 
-
                 else {
                     nameinput = name.getText().toString();
                     IPinput = ips;
                     tokeninput = Token.getText().toString();
                     bridgeFragmentListener.sendInput(nameinput, IPinput, tokeninput);
-                    //System.out.println("Nameinput: " + nameinput + " IP INPUT: " + IPinput + " tokenInput: " + tokeninput);
                     dismiss();
                     Toast.makeText(getActivity(), "Added bridge: " + nameinput,
                             Toast.LENGTH_LONG).show();
@@ -114,10 +112,8 @@ public class AddBridgeActivity extends DialogFragment {
         Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
         Matcher matcher = pattern.matcher(ip);
         if (matcher.find()) {
-            //System.out.println("IP: " + ip);
             return matcher.group();
         } else {
-            //System.out.println("FOUT IP");
             return "";
         }
     }

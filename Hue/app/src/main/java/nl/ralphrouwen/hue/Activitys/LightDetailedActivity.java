@@ -48,8 +48,6 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
     ColorPickerView colorPickerView;
     int finalColor;
 
-    Button testbutton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,21 +61,12 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         api = VolleyHelper.getInstance(getApplicationContext());
         bindComponents();
 
-//        lightSeekbar.setProgress(light.getBrightness());
-
-        // hier de kleur van hue omrekenen naar iets wat de colorpicker snapt!
-//        colorPickerView.setInitialColor(light.getHue());
-        Log.i("","");
         int lightcolor = light.getHue();
-//        colorPickerView.setInitialColor(0x7F313C93);
         int color2 = finalColor;
-
-
         bindComponents();
         setTextViews();
 
-        if(!lightSwitch.isChecked())
-        {
+        if (!lightSwitch.isChecked()) {
             lightSeekbar.setEnabled(false);
         }
 
@@ -85,6 +74,7 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         lightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                light.setOn(isChecked);
 //                light.setHue(finalColor);
                 api.changeLight(bridge, light, request, light.getBrightness(), finalColor, light.getSaturation(), isChecked);
                 lightSeekbar.setEnabled(isChecked);
@@ -111,9 +101,6 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         });
 
         colorPickerView.subscribe((color, fromUser) -> {
-
-            //colorPickerView.setInitialColor();
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getWindow().setStatusBarColor(color);
             }
@@ -121,7 +108,6 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
             if (actionBar != null) {
                 actionBar.setBackgroundDrawable(new ColorDrawable(color));
             }
-
 
             int[] ints = colorHex(color);
             int r = ints[1];
@@ -131,17 +117,12 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
             float[] hsb = new float[3];
             Color.RGBToHSV(r, g, b, hsb);
             float x = hsb[0];
-            int y = (int)x;
-            finalColor = y * (65535/360);
+            int y = (int) x;
+            finalColor = y * (65535 / 360);
 
-            //System.out.println("Final color: " + finalColor);
-            if(lightSwitch.isChecked()) {
+            if (lightSwitch.isChecked()) {
+                light.setHue(finalColor);
                 api.changeLight(bridge, light, request, light.getBrightness(), finalColor, light.getSaturation(), true);
-            }
-
-            else {
-                //color gets set, but since light is off, we will send status 'false';
-                api.changeLight(bridge, light, request, light.getBrightness(), finalColor, light.getSaturation(), false);
             }
         });
     }
@@ -158,6 +139,18 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
     }
 
     private void setTextViews() {
+        String s = HSVtoRGB();
+        String[] c = s.split(",");
+        String Rs = c[0];
+        String Gs = c[1];
+        String Bs = c[2];
+        int R = Integer.parseInt(Rs);
+        int G = Integer.parseInt(Gs);
+        int B = Integer.parseInt(Bs);
+        int color = Color.rgb(R, G, B);
+        Log.i("FinalColor: ", "finalcolor: " + color);
+
+        colorPickerView.setInitialColor(color);
         lightname.setText(light.getName());
         lightSwitch.setChecked(light.isOn());
         lightSeekbar.setThumbOffset(0);
@@ -201,8 +194,39 @@ public class LightDetailedActivity extends AppCompatActivity implements RequestL
         light = intent.getParcelableExtra(LIGHT_URL);
         bridge = intent.getParcelableExtra(BRIDGE_URL);
         api = VolleyHelper.getInstance(getApplicationContext());
-
-
         setTextViews();
+    }
+
+    public static String rgbToString(float r, float g, float b) {
+        String rs = Integer.toHexString((int) (r * 256));
+        String gs = Integer.toHexString((int) (g * 256));
+        String bs = Integer.toHexString((int) (b * 256));
+        return rs + "-" + gs + "-" + bs;
+    }
+
+    public String HSVtoRGB() {
+        int red = 0;
+        int green = 0;
+        int blue = 0;
+
+        int hue = light.getHue();
+        float temp = 360.0f / 65535.0f;
+        float finalHue = (float) hue * temp;
+        Log.i("hue: ", "hue: " + light.getHue());
+
+        float brightness = (float) (light.getBrightness()) / 254.0f;
+        float saturation = (float) (light.getSaturation()) / 254.0f;
+
+        float[] para = {finalHue, brightness, saturation};
+
+        int rgb = Color.HSVToColor(para);
+
+        red = (rgb >> 16) & 0xFF;
+        green = (rgb >> 8) & 0xFF;
+        blue = rgb & 0xFF;
+
+            /*Log.i("HSB", "HSB [" + hue + "," + saturation + "," + brightness + "]");
+            Log.i("Converted to RGB: ", "[" + red + "," + green + "," + blue + "]"); */
+        return (red + "," + green + "," + blue);
     }
 }

@@ -58,8 +58,6 @@ public class SchedulesRecylerAdapter extends RecyclerView.Adapter<SchedulesRecyl
 
 
     public class ScheduleViewHolder extends RecyclerView.ViewHolder {
-        //public View view;
-        //private Bridge bridge;
         TextView textview;
 
         public ScheduleViewHolder(View itemView, final Context ctx)

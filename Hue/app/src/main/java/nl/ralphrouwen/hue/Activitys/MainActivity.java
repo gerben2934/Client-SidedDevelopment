@@ -44,12 +44,14 @@ public class MainActivity extends AppCompatActivity implements AddBridgeActivity
         {
             db.addBridge(new Bridge(1,"Emulator Ralph Thuis", "http://192.168.178.45", "ba78860f274f0060f319645406c561b"));
             db.addBridge(new Bridge(5, "Ralph thuis hue","http://192.168.178.90", "DmznyFSbvpdIpzCIB0cYAppyi18LJPsOog5A8CHD"));
-            db.addBridge(new Bridge(2,"Emulator Ralph school", "http://145.49.45.24", "f4f3ae588acb2be8b9697cf48f99b21"));
-            db.addBridge(new Bridge(3, "Emulator Gerben School", "http://145.49.2.189:8000", "7746fba8ac73ca304be1ab7689180c7"));
+            db.addBridge(new Bridge(2,"Emulator Ralph school", "http://145.49.45.24", "7558b7480ec7e2ae30414167ab77924"));
+            db.addBridge(new Bridge(3, "Emulator Gerben School", "http://145.49.2.189", "c0b7c1cc810240712ab0aa2ee0fb444"));
             db.addBridge(new Bridge(4, "Emulator Gerben Thuis", "http://192.168.101.1", "f01a104869921887ac45229fc2040ef"));
-            db.addBridge(new Bridge(4,"Emulator Ralph iMac", "http://192.168.178.23", "6446fb88b5a083eb630138080276167"));
+            db.addBridge(new Bridge(6,"Emulator Ralph iMac", "http://192.168.178.23", "6446fb88b5a083eb630138080276167"));
+            db.addBridge(new Bridge(7,"Emulator Ralph iMac", "http://192.168.178.23", "6446fb88b5a083eb630138080276167"));
+            db.addBridge(new Bridge(8, "Test school:", "http://145.48.205.33", "iYrmsQq1wu5FxF9CPqpJCnm1GpPVylKBWDUsNDhB"));
+
         }
-        db.addBridge(new Bridge(4,"Emulator Ralph iMac", "http://192.168.178.23", "6446fb88b5a083eb630138080276167"));
 
         bridges = db.getAllBridges();
 
@@ -63,21 +65,13 @@ public class MainActivity extends AppCompatActivity implements AddBridgeActivity
         //specify an adapter
         mAdapter = new BridgeRecyclerAdapter(this, bridges);
         mRecyclerView.setAdapter(mAdapter);
-
-        //mAdapter.setOnItemClickListener(MainActivity.this);
-
         addBridgeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction ft = manager.beginTransaction();
                 ft.addToBackStack(null);
-
-//                DialogFragment fragment = AddBridgeActivity.newInstance();
-//                fragment.show(ft,"dialog");
-
                 AddBridgeActivity fragment2 = new AddBridgeActivity();
-
                 android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 fragment2.show(ft,"joejoe");
             }
@@ -99,10 +93,4 @@ public class MainActivity extends AppCompatActivity implements AddBridgeActivity
         bridges.remove(id);
         mAdapter.notifyDataSetChanged();
     }
-
-/*    @Override
-    public void onResume() {
-        super.onResume();
-        bridges = db.getAllBridges();
-    }*/
 }
