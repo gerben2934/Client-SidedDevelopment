@@ -10,5 +10,4 @@ public interface RequestListener {
 
     public void onRequestArrayAvailible(JSONArray response, Response responseType);
 */
-
 }

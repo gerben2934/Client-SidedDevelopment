@@ -74,12 +74,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public void addAll(ArrayList<Parked> list) {
         parkingHistory.addAll(list);
-        notifyDataSetChanged();
     }
 
     public void clear() {
         parkingHistory.clear();
-        notifyDataSetChanged();
     }
 
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
