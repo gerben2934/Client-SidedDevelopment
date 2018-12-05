@@ -1,6 +1,8 @@
 package nl.ralphrouwen.locationawareapp.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,9 +12,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import nl.ralphrouwen.locationawareapp.DetailedParked_Activity;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
 import nl.ralphrouwen.locationawareapp.Helper.RequestListener;
+
+import static nl.ralphrouwen.locationawareapp.Activitys.MainActivity.PARKED_URL;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
 
@@ -53,7 +58,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView streetName;
         TextView time;
 
-
         public RecyclerViewHolder(@NonNull View itemView, final Context ctx) {
             super(itemView);
             context = ctx;
@@ -61,12 +65,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             streetName = itemView.findViewById(R.id.parkeditem_streetName);
             time = itemView.findViewById(R.id.parkeditem_startTimeParked);
 
-/*            itemView.setOnClickListener((View v) -> {
+            itemView.setOnClickListener((View v) -> {
                 Parked parked = parkingHistory.get(getAdapterPosition());
-                Intent intent = new Intent(context, ParkedDetailedActivity.class);
+                Intent intent = new Intent(context, DetailedParked_Activity.class);
                 intent.putExtra(PARKED_URL, (Parcelable) parked);
-            });*/
+            });
         }
     }
-
 }

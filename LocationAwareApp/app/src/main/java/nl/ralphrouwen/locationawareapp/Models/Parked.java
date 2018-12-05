@@ -2,27 +2,24 @@ package nl.ralphrouwen.locationawareapp.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.text.DateFormat;
+import org.joda.time.DateTime;
 
 public class Parked implements Parcelable {
 
     private int id;
     private float longitude;
     private float latitude;
-    private DateFormat startTime;
-    private DateFormat endTime;
-    private int minutesParked;
+    private DateTime startTime;
+    private DateTime endTime;
     private boolean valid;
     private String streetName;
 
-    public Parked(int id, float longitude, float latitude, DateFormat startTime, DateFormat endTime, int minutesParked, boolean valid, String streetName) {
+    public Parked(int id, float longitude, float latitude, DateTime startTime, DateTime endTime, boolean valid, String streetName) {
         this.id = id;
         this.longitude = longitude;
         this.latitude = latitude;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.minutesParked = minutesParked;
         this.valid = valid;
         this.streetName = streetName;
     }
@@ -31,7 +28,6 @@ public class Parked implements Parcelable {
         id = in.readInt();
         longitude = in.readFloat();
         latitude = in.readFloat();
-        minutesParked = in.readInt();
         valid = in.readByte() != 0;
         streetName = in.readString();
     }
@@ -58,7 +54,6 @@ public class Parked implements Parcelable {
         parcel.writeInt(id);
         parcel.writeFloat(longitude);
         parcel.writeFloat(latitude);
-        parcel.writeInt(minutesParked);
         parcel.writeByte((byte) (valid ? 1 : 0));
         parcel.writeString(streetName);
     }
@@ -78,16 +73,12 @@ public class Parked implements Parcelable {
         return latitude;
     }
 
-    public DateFormat getStartTime() {
+    public DateTime getStartTime() {
         return startTime;
     }
 
-    public DateFormat getEndTime() {
+    public DateTime getEndTime() {
         return endTime;
-    }
-
-    public int getMinutesParked() {
-        return minutesParked;
     }
 
     public boolean isValid() {
@@ -117,16 +108,12 @@ public class Parked implements Parcelable {
         this.latitude = latitude;
     }
 
-    public void setStartTime(DateFormat startTime) {
+    public void setStartTime(DateTime startTime) {
         this.startTime = startTime;
     }
 
-    public void setEndTime(DateFormat endTime) {
+    public void setEndTime(DateTime endTime) {
         this.endTime = endTime;
-    }
-
-    public void setMinutesParked(int minutesParked) {
-        this.minutesParked = minutesParked;
     }
 
     public void setValid(boolean valid) {
