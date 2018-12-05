@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -27,24 +28,31 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.time.LocalDateTime;
+
 import nl.ralphrouwen.locationawareapp.Activitys.MainActivity;
 import nl.ralphrouwen.locationawareapp.Activitys.MapsActivity;
+import nl.ralphrouwen.locationawareapp.Helper.GPSManager;
 import nl.ralphrouwen.locationawareapp.R;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-
     private OnFragmentInteractionListener mListener;
 
-
+    Location lastLocation;
     LocationManager locationManager;
     LocationListener locationListener;
     private static final int MY_LOCATION_PERMISSION = 99;
+    private static final int MIN_TIME = 1000 * 60; //1 minute
+    private static final int MIN_DISTANCE = 10; //meters
     Context context;
 
     public MapFragment() {
+        GPSManager manager = new GPSManager(context);
+        manager.getLatitude();
+        manager.getLongitude();
     }
 
 
@@ -108,15 +116,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setRotateGesturesEnabled(false);
-        mMap.getUiSettings().setScrollGesturesEnabled(true);
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setTiltGesturesEnabled(false);
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new LocationListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onLocationChanged(Location location) {
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+
+                locationManager.requestLocationUpdates(
+                        locationManager.NETWORK_PROVIDER,
+                        MIN_TIME,
+                        50,
+                        locationListener
+                );
 ////                Toast.makeText(MapsActivity.this, location.toString(), Toast.LENGTH_SHORT).show();
-                Log.i("LOCATIONDEBUG", location.toString());
+                Log.i("LOCATIONDEBUG", "Time: " + LocalDateTime.now() + "|" + location.toString());
                 mMap.clear();
                 LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Location"));
@@ -130,12 +156,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onProviderEnabled(String provider) {
-
+                Log.d("Provider", "LocationListener: OnProviderEnabled()");
             }
 
             @Override
             public void onProviderDisabled(String provider) {
-
+                Log.d("Provider", "LocationListener: OnProviderDisabled()");
             }
         };
 
