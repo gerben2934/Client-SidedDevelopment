@@ -1,4 +1,4 @@
-package nl.ralphrouwen.locationawareapp;
+package nl.ralphrouwen.locationawareapp.Models;
 
 import java.util.List;
 
