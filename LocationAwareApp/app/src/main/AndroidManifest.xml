@@ -21,6 +21,7 @@
         <activity android:name=".Activitys.MapsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -38,7 +39,8 @@
 
         <activity
             android:name=".Activitys.MainActivity"
-            android:label="Maps activity"></activity>
+            android:label="Maps activity" />
+        <activity android:name=".DetailedParked_Activity"></activity>
     </application>
 
 </manifest>

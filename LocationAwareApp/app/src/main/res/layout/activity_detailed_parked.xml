@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetailedParked_Activity">
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/parkedDetailed_map"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="273dp" />
+
+    <TextView
+        android:id="@+id/parkedDetailed_streetName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
+        android:text="Streetname: blablabla"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+    <TextView
+        android:id="@+id/parkedDetailed_startTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="StartTime: (hh:mm)"
+        app:layout_constraintStart_toStartOf="@+id/parkedDetailed_date"
+        app:layout_constraintTop_toBottomOf="@+id/parkedDetailed_date" />
+
+    <TextView
+        android:id="@+id/parkedDetailed_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Date: dd:mm:yyyy"
+        app:layout_constraintStart_toStartOf="@+id/parkedDetailed_streetName"
+        app:layout_constraintTop_toBottomOf="@+id/parkedDetailed_streetName" />
+
+    <TextView
+        android:id="@+id/parkedDetailed_endTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="EndTime : (hh:mm)"
+        app:layout_constraintBottom_toBottomOf="@+id/parkedDetailed_startTime"
+        app:layout_constraintStart_toStartOf="@+id/parkedDetailed_deltaTime"
+        app:layout_constraintTop_toTopOf="@+id/parkedDetailed_startTime" />
+
+    <TextView
+        android:id="@+id/parkedDetailed_deltaTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DeltaTime: (hh:mm)"
+        app:layout_constraintBottom_toBottomOf="@+id/parkedDetailed_date"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/parkedDetailed_date"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="192dp"
+        android:layout_marginEnd="192dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_begin="192dp"
+        app:layout_constraintStart_toStartOf="parent" />
+</android.support.constraint.ConstraintLayout>
