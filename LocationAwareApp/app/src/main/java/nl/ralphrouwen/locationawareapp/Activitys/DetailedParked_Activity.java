@@ -1,4 +1,4 @@
-package nl.ralphrouwen.locationawareapp;
+package nl.ralphrouwen.locationawareapp.Activitys;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +10,7 @@ import com.google.android.gms.maps.MapView;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
+import nl.ralphrouwen.locationawareapp.R;
 
 import static nl.ralphrouwen.locationawareapp.Activitys.MainActivity.PARKED_URL;
 
@@ -81,8 +82,7 @@ public class DetailedParked_Activity extends AppCompatActivity {
     public String dateFormatter()
     {
         DateTime dateDateTime = parked.getStartTime();
-        String dateString = "";
-        dateString += (dateDateTime.getDayOfMonth() + dateDateTime.getMonthOfYear() + dateDateTime.getYear());
+        String dateString = dateDateTime.toString("dd/MMM/yyyy");
         return dateString;
     }
 

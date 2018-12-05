@@ -11,16 +11,25 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:text="StreetName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/parkeditem_startTimeParked"
+        android:id="@+id/parkeditem_dateParked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:text="Dateparked"
         app:layout_constraintStart_toStartOf="@+id/parkeditem_streetName"
         app:layout_constraintTop_toBottomOf="@+id/parkeditem_streetName" />
+
+    <TextView
+        android:id="@+id/parkeditem_timeParked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TimeParked"
+        app:layout_constraintStart_toStartOf="@+id/parkeditem_dateParked"
+        app:layout_constraintTop_toBottomOf="@+id/parkeditem_dateParked" />
 </android.support.constraint.ConstraintLayout>
