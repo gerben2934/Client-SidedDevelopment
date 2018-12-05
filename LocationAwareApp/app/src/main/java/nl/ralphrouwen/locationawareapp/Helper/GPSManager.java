@@ -32,8 +32,11 @@ public class GPSManager extends Service implements LocationListener {
     private double latitude;
     private double longitude;
 
-    private static final long MIN_DISTANCE_FOR_UPDATE = 10; //in meters
-    private static final long MIN_TIME_FOR_UPDATE = 1000 * 60; // in miliseconds
+//    private static final long MIN_DISTANCE_FOR_UPDATE = 10; //in meters
+//    private static final long MIN_TIME_FOR_UPDATE = 1000 * 60; // in miliseconds
+
+    private static final long MIN_DISTANCE_FOR_UPDATE = 0; //in meters
+    private static final long MIN_TIME_FOR_UPDATE = 0; // in miliseconds
 
     private LocationManager locationManager;
 

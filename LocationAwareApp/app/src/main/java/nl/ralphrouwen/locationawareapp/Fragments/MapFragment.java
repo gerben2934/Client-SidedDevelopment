@@ -44,15 +44,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     Location lastLocation;
     LocationManager locationManager;
     LocationListener locationListener;
+    GPSManager gpsManager;
     private static final int MY_LOCATION_PERMISSION = 99;
     private static final int MIN_TIME = 1000 * 60; //1 minute
     private static final int MIN_DISTANCE = 10; //meters
     Context context;
 
     public MapFragment() {
-        GPSManager manager = new GPSManager(context);
-        manager.getLatitude();
-        manager.getLongitude();
     }
 
 
@@ -77,6 +75,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapfragment);
         mapFragment.getMapAsync(this);
+
+        gpsManager = new GPSManager(context);
+        Log.i("gpsmanagersnapterniksvan", String.valueOf(gpsManager.canGetLocation()));
 
         return view;
     }
@@ -110,86 +111,88 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17.0f));
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setRotateGesturesEnabled(false);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setTiltGesturesEnabled(false);
 
-        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onLocationChanged(Location location) {
-                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
+        LatLng mylocation = new LatLng(gpsManager.getLatitude(), gpsManager.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(mylocation).title("Your Location!"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 17.0f));
 
-                locationManager.requestLocationUpdates(
-                        locationManager.NETWORK_PROVIDER,
-                        MIN_TIME,
-                        50,
-                        locationListener
-                );
-////                Toast.makeText(MapsActivity.this, location.toString(), Toast.LENGTH_SHORT).show();
-                Log.i("LOCATIONDEBUG", "Time: " + LocalDateTime.now() + "|" + location.toString());
-                mMap.clear();
-                LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Location"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
-            }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-                Log.d("Provider", "LocationListener: OnProviderEnabled()");
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-                Log.d("Provider", "LocationListener: OnProviderDisabled()");
-            }
-        };
-
-        if (ContextCompat.checkSelfPermission(context,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
-        } else {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
+//        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+//        locationListener = new LocationListener() {
+//            @RequiresApi(api = Build.VERSION_CODES.O)
+//            @Override
+//            public void onLocationChanged(Location location) {
+//                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                    // TODO: Consider calling
+//                    //    ActivityCompat#requestPermissions
+//                    // here to request the missing permissions, and then overriding
+//                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                    //                                          int[] grantResults)
+//                    // to handle the case where the user grants the permission. See the documentation
+//                    // for ActivityCompat#requestPermissions for more details.
+//                    return;
+//                }
+//
+//                locationManager.requestLocationUpdates(
+//                        locationManager.NETWORK_PROVIDER,
+//                        MIN_TIME,
+//                        50,
+//                        locationListener
+//                );
+//////                Toast.makeText(MapsActivity.this, location.toString(), Toast.LENGTH_SHORT).show();
+//                Log.i("LOCATIONDEBUG", "Time: " + LocalDateTime.now() + "|" + location.toString());
 //                mMap.clear();
-//                LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+//                LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
 //                mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Location"));
 //                mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
-        }
+//            }
+//
+//            @Override
+//            public void onStatusChanged(String provider, int status, Bundle extras) {
+//
+//            }
+//
+//            @Override
+//            public void onProviderEnabled(String provider) {
+//                Log.d("Provider", "LocationListener: OnProviderEnabled()");
+//            }
+//
+//            @Override
+//            public void onProviderDisabled(String provider) {
+//                Log.d("Provider", "LocationListener: OnProviderDisabled()");
+//            }
+//        };
+//
+//        if (ContextCompat.checkSelfPermission(context,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+//        } else {
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+//            Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//
+////                mMap.clear();
+////                LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+////                mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Location"));
+////                mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
+//        }
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
-                Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            }
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//
+////        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+////            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+////                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+////                Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+////            }
+////        }
+//    }
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

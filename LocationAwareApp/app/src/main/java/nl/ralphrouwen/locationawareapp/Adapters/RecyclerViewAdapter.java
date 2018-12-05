@@ -28,6 +28,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context context;
     RequestListener request;
 
+    public RecyclerViewAdapter(Context context, ArrayList<Parked> parkeds)
+    {
+        this.context = context;
+        this.parkingHistory = parkeds;
+    }
+
     @NonNull
     @Override
     public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

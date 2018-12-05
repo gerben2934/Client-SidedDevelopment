@@ -10,6 +10,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,14 +21,22 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
+import nl.ralphrouwen.locationawareapp.Adapters.RecyclerViewAdapter;
 import nl.ralphrouwen.locationawareapp.Fragments.MapFragment;
+import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
 
 public class MainActivity extends AppCompatActivity implements MapFragment.OnFragmentInteractionListener {
 
     public static final String PARKED_URL = "parkedURL";
+    ArrayList<Parked> parkeds = new ArrayList<Parked>();
     ImageButton parkbutton;
     boolean parkButtonPressed;
+    private RecyclerView mRecyclerView;
+    private RecyclerViewAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +46,19 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 
         parkbutton = findViewById(R.id.parkbutton);
 
+        mRecyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+
+        //linear layout
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        //specify an adapter
+        mAdapter = new RecyclerViewAdapter(this, parkeds);
+        mRecyclerView.setAdapter(mAdapter);
 
 /*        FragmentActivity MapFragment = new FragmentActivity();
         MapFragment.findViewById(R.id.)*/
-
     }
 
     public void parkButtonPressed(View view)
