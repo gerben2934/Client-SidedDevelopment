@@ -112,8 +112,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setRotateGesturesEnabled(false);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
@@ -121,6 +119,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         LatLng mylocation = new LatLng(gpsManager.getLatitude(), gpsManager.getLongitude());
         mMap.addMarker(new MarkerOptions().position(mylocation).title("Your Location!"));
+        Log.d("New location!", "Location: LONG: " + mylocation.longitude + " LAT: " + mylocation.latitude);
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 17.0f));
 
 
