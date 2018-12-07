@@ -78,6 +78,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         gpsManager = new GPSManager(context);
         Log.i("gpsmanagersnapterniksvan", String.valueOf(gpsManager.canGetLocation()));
+        Log.i("gpsmanagersnapterniksvan", String.valueOf(gpsManager.getLatitude()));
+        Log.i("gpsmanagersnapterniksvan", String.valueOf(gpsManager.getLongitude()));
 
         return view;
     }
@@ -182,17 +184,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//
-////        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-////            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-////                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
-////                Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-////            }
-////        }
-//    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+                Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+        }
+    }
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

@@ -16,8 +16,12 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+
+import nl.ralphrouwen.locationawareapp.Activitys.MainActivity;
 
 public class GPSManager extends Service implements LocationListener {
 
@@ -58,16 +62,26 @@ public class GPSManager extends Service implements LocationListener {
             isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
             if (!isGPSEnabled && !isNetworkEnabled) {
+                Log.i("ISENABLED1", String.valueOf(isGPSEnabled) + isNetworkEnabled);
+                Log.i("ISENABLED1", String.valueOf(getLongitude()));
+
                 // no network provider is enabled
                 this.canGetLocation = false;
             } else {
                 this.canGetLocation = true;
+                Log.i("ISENABLED2", String.valueOf(isGPSEnabled) + isNetworkEnabled);
+                Log.i("ISENABLED2", String.valueOf(getLongitude()));
+
                 if (isNetworkEnabled) {
                     if (ActivityCompat.checkSelfPermission((Activity)context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions((Activity)context, new String[]{
                                 android.Manifest.permission.ACCESS_FINE_LOCATION
                         }, 10);
+                    Log.i("ISENABLED3", String.valueOf(isGPSEnabled) + isNetworkEnabled);
+                    Log.i("ISENABLED3", String.valueOf(getLongitude()));
                     }
+
+                    Log.i("ISENABLED5", String.valueOf(isGPSEnabled) + isNetworkEnabled);
                     locationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
                             MIN_TIME_FOR_UPDATE,
@@ -116,9 +130,11 @@ public class GPSManager extends Service implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         Log.d("Location", "Location changed!");
-        Log.d("New location!", "Location: LONG: " + location.getLongitude() + " LAT: " + location.getLatitude());
+        if (location != null) {
+            latitude = location.getLatitude();
+            longitude  = location.getLongitude();
 
-
+        }
     }
 
     @Override
@@ -190,6 +206,5 @@ public class GPSManager extends Service implements LocationListener {
         // Showing Alert Message
         alertDialog.show();
     }
-
 }
 
