@@ -3,6 +3,7 @@ package nl.ralphrouwen.locationawareapp.Helper;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
@@ -36,7 +37,7 @@ public class GPSManager extends Service implements LocationListener {
 //    private static final long MIN_TIME_FOR_UPDATE = 1000 * 60; // in miliseconds
 
     private static final long MIN_DISTANCE_FOR_UPDATE = 0; //in meters
-    private static final long MIN_TIME_FOR_UPDATE = 0; // in miliseconds
+    private static final long MIN_TIME_FOR_UPDATE = 1000; // in miliseconds
 
     private LocationManager locationManager;
 
@@ -62,15 +63,10 @@ public class GPSManager extends Service implements LocationListener {
             } else {
                 this.canGetLocation = true;
                 if (isNetworkEnabled) {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return null;
+                    if (ActivityCompat.checkSelfPermission((Activity)context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions((Activity)context, new String[]{
+                                android.Manifest.permission.ACCESS_FINE_LOCATION
+                        }, 10);
                     }
                     locationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
@@ -120,6 +116,9 @@ public class GPSManager extends Service implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         Log.d("Location", "Location changed!");
+        Log.d("New location!", "Location: LONG: " + location.getLongitude() + " LAT: " + location.getLatitude());
+
+
     }
 
     @Override
