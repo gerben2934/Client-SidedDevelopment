@@ -117,8 +117,7 @@ public class GPSManager extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
         Log.d("Location", "Location changed!");
         Log.d("New location!", "Location: LONG: " + location.getLongitude() + " LAT: " + location.getLatitude());
-
-
+        
     }
 
     @Override
