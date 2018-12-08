@@ -1,6 +1,7 @@
 package nl.ralphrouwen.locationawareapp.Fragments;
 
 import android.Manifest;
+import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -41,20 +42,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
     private OnFragmentInteractionListener mListener;
 
-    Location lastLocation;
-    LocationManager locationManager;
-    LocationListener locationListener;
-    GPSManager gpsManager;
-    private static final int MY_LOCATION_PERMISSION = 99;
-    private static final int MIN_TIME = 1000 * 60; //1 minute
-    private static final int MIN_DISTANCE = 10; //meters
-    Context context;
+    private GPSManager gpsManager;
+    private Context context;
+    private LatLng location;
+    private Application application;
 
     public MapFragment() {
     }
 
-
-    public static MapFragment newInstance(String param1, String param2) {
+    public static MapFragment newInstance() {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -76,11 +72,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapfragment);
         mapFragment.getMapAsync(this);
 
-        gpsManager = new GPSManager(context);
-        Log.i("gpsmanagersnapterniksvan", String.valueOf(gpsManager.canGetLocation()));
-        Log.i("gpsmanagersnapterniksvan", String.valueOf(gpsManager.getLatitude()));
-        Log.i("gpsmanagersnapterniksvan", String.valueOf(gpsManager.getLongitude()));
 
+/*        gpsManager = GPSManager.getInstance(getActivity(application));
+
+        //snap er geen kut van
+
+
+        //VV dit zou goed moeten zijn hieronder
+        GPSManager.getInstance(application);
+        gpsManager.startCollecting();
+        location = gpsManager.getLastKnownLocation();
+        Log.i("MapFragment: ", String.valueOf(location));
+        Log.i("MapFragment: ", "Latitude: " + String.valueOf(location.latitude));
+        Log.i("MapFragment: ", "Longitude: " + String.valueOf(location.longitude));*/
         return view;
     }
 
@@ -112,16 +116,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setRotateGesturesEnabled(false);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setTiltGesturesEnabled(false);
 
-        LatLng mylocation = new LatLng(gpsManager.getLatitude(), gpsManager.getLongitude());
+        /*LatLng mylocation = gpsManager.getLastKnownLocation();
         mMap.addMarker(new MarkerOptions().position(mylocation).title("Your Location!"));
-        Log.d("New location!", "Location: LONG: " + mylocation.longitude + " LAT: " + mylocation.latitude);
+        Log.d("New location MAPFRAGMENT!", "Location: LONG: " + mylocation.longitude + " LAT: " + mylocation.latitude);
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 17.0f));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 17.0f));*/
+
+
+
 
 
 //        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -181,19 +199,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 ////                mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Location"));
 ////                mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
 //        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
-                Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            }
-        }
     }
 
     public interface OnFragmentInteractionListener {

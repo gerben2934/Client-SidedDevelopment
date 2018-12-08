@@ -1,7 +1,74 @@
 package nl.ralphrouwen.locationawareapp.Helper;
 
+import android.app.Application;
+import android.location.Location;
+import android.util.Log;
 
-import android.Manifest;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
+
+
+public class GPSManager {
+
+    private static volatile GPSManager instance;
+    private Application application;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private LatLng lastKnownLocation;
+
+    private GPSManager(Application application) {
+        this.application = application;
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(application);
+    }
+
+    public static GPSManager getInstance(Application application) {
+        if (instance == null) {
+            instance = new GPSManager(application);
+        }
+        return instance;
+    }
+
+    public LatLng getLastKnownLocation() {
+        try {
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if (location != null) {
+                        lastKnownLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    }
+                }
+            });
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            Log.d("GPSManager: ", "Location ERROR!");
+            return null;
+        }
+        return lastKnownLocation;
+    }
+
+    public void startCollecting() {
+        getLastKnownLocation();
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    if (lastKnownLocation != null)
+                        Log.i("GPSMANAGER --> StartCollecting() ", "lat: " + lastKnownLocation.latitude + " long:" + lastKnownLocation.longitude);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        thread.start();
+    }
+}
+
+
+/*import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -21,6 +88,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import nl.ralphrouwen.locationawareapp.Activitys.MainActivity;
 
 public class GPSManager extends Service implements LocationListener {
@@ -33,6 +105,7 @@ public class GPSManager extends Service implements LocationListener {
 
     private boolean canGetLocation = false;
 
+    private Marker locationMarker;
     private Location location;
     private double latitude;
     private double longitude;
@@ -44,16 +117,45 @@ public class GPSManager extends Service implements LocationListener {
     private static final long MIN_TIME_FOR_UPDATE = 1000; // in miliseconds
 
     private LocationManager locationManager;
+    private LocationListener listener;
 
     public GPSManager(Context contextm) {
         this.context = contextm;
         getLocation();
     }
 
-    @SuppressLint("ServiceCast")
     private Location getLocation() {
         try {
             locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+            listener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    Log.d("LOCATIONLISTENER", "Location changed!");
+                    latitude = location.getLatitude();
+                    longitude  = location.getLongitude();
+                    LatLng coordinate = new LatLng(latitude, longitude);
+                    //locationManager =
+                    //moveMap();
+                    Log.d("New location1234:", "Latitude: " + latitude + " Longitude: " + longitude);
+
+                }
+
+                @Override
+                public void onStatusChanged(String s, int i, Bundle bundle) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String s) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String s) {
+
+                }
+            };
+
 
             //Getting GPS status:
             isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -127,13 +229,29 @@ public class GPSManager extends Service implements LocationListener {
         return null;
     }
 
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
     @Override
     public void onLocationChanged(Location location) {
         Log.d("Location", "Location changed!");
         if (location != null) {
+
             latitude = location.getLatitude();
             longitude  = location.getLongitude();
-
+            LatLng coordinate = new LatLng(latitude, longitude);
+            //locationManager =
+            moveMap();
+            Log.d("New location:", "Latitude: " + latitude + " Longitude: " + longitude);
         }
     }
 
@@ -156,8 +274,6 @@ public class GPSManager extends Service implements LocationListener {
         if (location != null) {
             latitude = location.getLatitude();
         }
-
-        // return latitude
         return latitude;
     }
 
@@ -165,10 +281,29 @@ public class GPSManager extends Service implements LocationListener {
         if (location != null) {
             longitude = location.getLongitude();
         }
-
-        // return longitude
         return longitude;
     }
+
+    private void moveMap() {
+        *//**
+         * Creating the latlng object to store lat, long coordinates
+         * adding marker to map
+         * move the camera with animation
+         *//*
+        LatLng latLng = new LatLng(latitude, longitude);
+
+*//*
+        mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .draggable(true)
+                .title("Marker in India"));
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+*//*
+    }
+
 
     public boolean canGetLocation() {
         return this.canGetLocation;
@@ -179,13 +314,10 @@ public class GPSManager extends Service implements LocationListener {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         // Setting Dialog Title
         alertDialog.setTitle("GPS settings");
-
         // Setting Dialog Message
         alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
-
         // Setting Icon to Dialog
         //alertDialog.setIcon(R.drawable.delete);
-
         // On pressing Settings button
         alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -206,5 +338,5 @@ public class GPSManager extends Service implements LocationListener {
         // Showing Alert Message
         alertDialog.show();
     }
-}
+}*/
 
