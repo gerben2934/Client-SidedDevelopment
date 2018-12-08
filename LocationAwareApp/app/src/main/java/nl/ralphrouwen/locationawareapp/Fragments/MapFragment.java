@@ -72,19 +72,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapfragment);
         mapFragment.getMapAsync(this);
 
-
-/*        gpsManager = GPSManager.getInstance(getActivity(application));
-
+        gpsManager = GPSManager.getInstance(getActivity().getApplication());
         //snap er geen kut van
-
-
         //VV dit zou goed moeten zijn hieronder
-        GPSManager.getInstance(application);
+        //GPSManager.getInstance(application);
         gpsManager.startCollecting();
         location = gpsManager.getLastKnownLocation();
         Log.i("MapFragment: ", String.valueOf(location));
         Log.i("MapFragment: ", "Latitude: " + String.valueOf(location.latitude));
-        Log.i("MapFragment: ", "Longitude: " + String.valueOf(location.longitude));*/
+        Log.i("MapFragment: ", "Longitude: " + String.valueOf(location.longitude));
         return view;
     }
 
