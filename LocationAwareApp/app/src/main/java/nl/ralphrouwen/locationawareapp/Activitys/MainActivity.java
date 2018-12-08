@@ -21,14 +21,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 
 import nl.ralphrouwen.locationawareapp.Adapters.RecyclerViewAdapter;
+import nl.ralphrouwen.locationawareapp.Fragments.HistoryFragment;
 import nl.ralphrouwen.locationawareapp.Fragments.MapFragment;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
 
-public class MainActivity extends AppCompatActivity implements MapFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements MapFragment.OnFragmentInteractionListener, HistoryFragment.OnFragmentInteractionListener {
 
     public static final String PARKED_URL = "parkedURL";
     ArrayList<Parked> parkeds = new ArrayList<Parked>();
@@ -43,19 +46,21 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         parkButtonPressed = false;
+        //generateParkeds();
+        Log.d("length:", "count() " + parkeds.size());
 
         parkbutton = findViewById(R.id.parkbutton);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
-        mRecyclerView.setHasFixedSize(true);
+/*        mRecyclerView = (RecyclerView) findViewById(R.id.);
+        mRecyclerView.setHasFixedSize(true);*/
 
         //linear layout
         mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        //mRecyclerView.setLayoutManager(mLayoutManager);
 
         //specify an adapter
-        mAdapter = new RecyclerViewAdapter(this, parkeds);
-        mRecyclerView.setAdapter(mAdapter);
+       /* mAdapter = new RecyclerViewAdapter(this, parkeds);
+        mRecyclerView.setAdapter(mAdapter);*/
 
 /*        FragmentActivity MapFragment = new FragmentActivity();
         MapFragment.findViewById(R.id.)*/
@@ -78,4 +83,6 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+
 }
