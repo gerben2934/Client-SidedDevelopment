@@ -35,8 +35,11 @@ public class GPSManager {
                 @Override
                 public void onSuccess(Location location) {
                     if (location != null) {
+                        Log.i("TEST", "Komt hier");
                         lastKnownLocation = new LatLng(location.getLatitude(), location.getLongitude());
                     }
+                    //Log.i("TEST", "NULL!!");
+
                 }
             });
         } catch (SecurityException e) {
@@ -48,15 +51,19 @@ public class GPSManager {
     }
 
     public void startCollecting() {
-        getLastKnownLocation();
         Thread thread = new Thread() {
             @Override
             public void run() {
                 while (true) {
+                    getLastKnownLocation();
+                    if(lastKnownLocation == null){
+                        Log.i("LATLNG", "NULL");
+                    }
                     if (lastKnownLocation != null)
-                        Log.i("GPSMANAGER --> StartCollecting() ", "lat: " + lastKnownLocation.latitude + " long:" + lastKnownLocation.longitude);
+                        Log.i("LATLNG LOCATION", "lat: " + lastKnownLocation.latitude + " long:" + lastKnownLocation.longitude);
                     try {
-                        Thread.sleep(1000);
+                        //Thread.sleep(100); //for simulation
+                        Thread.sleep(1000); //for testing IRL
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

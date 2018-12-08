@@ -22,11 +22,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.time.LocalDateTime;
@@ -37,10 +40,11 @@ import nl.ralphrouwen.locationawareapp.Helper.GPSManager;
 import nl.ralphrouwen.locationawareapp.R;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, LocationSource.OnLocationChangedListener, LocationSource {
 
     private GoogleMap mMap;
     private OnFragmentInteractionListener mListener;
+    private OnLocationChangedListener locationChangedListener;
 
     private GPSManager gpsManager;
     private Context context;
@@ -73,14 +77,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
 
         gpsManager = GPSManager.getInstance(getActivity().getApplication());
-        //snap er geen kut van
-        //VV dit zou goed moeten zijn hieronder
-        //GPSManager.getInstance(application);
         gpsManager.startCollecting();
-        location = gpsManager.getLastKnownLocation();
-        Log.i("MapFragment: ", String.valueOf(location));
-        Log.i("MapFragment: ", "Latitude: " + String.valueOf(location.latitude));
-        Log.i("MapFragment: ", "Longitude: " + String.valueOf(location.longitude));
+        if (location != null) {
+            Log.i("MapFragment: ", String.valueOf(location));
+            Log.i("MapFragment: ", "Latitude: " + String.valueOf(location.latitude));
+            Log.i("MapFragment: ", "Longitude: " + String.valueOf(location.longitude));
+        }
+
         return view;
     }
 
@@ -122,20 +125,51 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+        mMap.setLocationSource(this);
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setRotateGesturesEnabled(false);
-        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.getUiSettings().setRotateGesturesEnabled(true);
+        mMap.getUiSettings().setScrollGesturesEnabled(true);
         mMap.getUiSettings().setTiltGesturesEnabled(false);
 
-        /*LatLng mylocation = gpsManager.getLastKnownLocation();
-        mMap.addMarker(new MarkerOptions().position(mylocation).title("Your Location!"));
-        Log.d("New location MAPFRAGMENT!", "Location: LONG: " + mylocation.longitude + " LAT: " + mylocation.latitude);
+        if (gpsManager.getLastKnownLocation() != null) {
+            LatLng mylocation = gpsManager.getLastKnownLocation();
+            mMap.addMarker(new MarkerOptions().position(mylocation).title("Your Location!"));
+            Log.d("New location MAPFRAGMENT!", "Location: LONG: " + mylocation.longitude + " LAT: " + mylocation.latitude);
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 17.0f));*/
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 17.0f));
+        }
+    }
 
 
+    @Override
+    public void onLocationChanged(Location location) {
+        if (locationChangedListener != null) {
+            locationChangedListener.onLocationChanged(location);
+        }
 
+        Log.i("Location changed", "onLocationChanged()");
+        LatLng a = gpsManager.getLastKnownLocation();
+        mMap.addMarker(new MarkerOptions().position(a).title("Updated location!"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(a, 17.0f));
+    }
+
+    @Override
+    public void activate(OnLocationChangedListener onLocationChangedListener) {
+        locationChangedListener = onLocationChangedListener;
+    }
+
+    @Override
+    public void deactivate() {
+        locationChangedListener = null;
+    }
+
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+}
 
 
 //        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -195,10 +229,3 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 ////                mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Location"));
 ////                mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
 //        }
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-}
