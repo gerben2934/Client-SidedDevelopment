@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import nl.ralphrouwen.locationawareapp.Activitys.MainActivity;
 import nl.ralphrouwen.locationawareapp.Helper.GPSTracker;
 import nl.ralphrouwen.locationawareapp.Helper.LocationListener;
 import nl.ralphrouwen.locationawareapp.R;
@@ -28,7 +30,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
     private OnFragmentInteractionListener mListener;
     private Context context;
     GPSTracker gpsTracker;
-
+    Location lastlocation;
+    boolean startup = true;
 
     public MapFragment() {
     }
@@ -92,18 +95,54 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
         mMap.getUiSettings().setRotateGesturesEnabled(true);
         mMap.getUiSettings().setScrollGesturesEnabled(true);
         mMap.getUiSettings().setTiltGesturesEnabled(false);
-
     }
+
 
     @Override
     public void onLocationListener(Location location) {
-        if(mMap != null)
+        if(location != null && lastlocation != null && mMap != null)
         {
-            mMap.clear();
-            LatLng mylocation = new LatLng(location.getLatitude(), location.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(mylocation));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 14.0f));
+            if(startup)
+            {
+                updateLocation(location);
+                startup = false;
+            }
+            
+            if(distance(location.getLatitude(), location.getLongitude(), lastlocation.getLatitude(), lastlocation.getLongitude()) >= 0.07)
+            {
+                updateLocation(location);
+            }
         }
+
+        lastlocation = location;
+    }
+
+    public void updateLocation(Location location)
+    {
+        mMap.clear();
+        LatLng mylocation = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(mylocation).title("Your Location!"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 14.0f));
+    }
+
+    private double distance(double lat1, double lng1, double lat2, double lng2) {
+
+        double earthRadius = 3958.75; // in miles, change to 6371 for kilometer output
+
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+
+        double sindLat = Math.sin(dLat / 2);
+        double sindLng = Math.sin(dLng / 2);
+
+        double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+                * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        double dist = earthRadius * c;
+
+        return dist; // output distance, in MILES
     }
 
 
