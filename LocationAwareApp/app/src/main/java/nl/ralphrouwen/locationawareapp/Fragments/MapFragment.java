@@ -1,53 +1,43 @@
 package nl.ralphrouwen.locationawareapp.Fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.CameraUpdate;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.time.LocalDateTime;
-
-import nl.ralphrouwen.locationawareapp.Activitys.MainActivity;
-import nl.ralphrouwen.locationawareapp.Activitys.MapsActivity;
-import nl.ralphrouwen.locationawareapp.Helper.GPSManager;
+import nl.ralphrouwen.locationawareapp.Helper.GPSTracker;
+import nl.ralphrouwen.locationawareapp.Helper.LocationListener;
+import nl.ralphrouwen.locationawareapp.Helper.MyLocationService;
 import nl.ralphrouwen.locationawareapp.R;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, LocationSource.OnLocationChangedListener, LocationSource {
+public class MapFragment extends Fragment implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap mMap;
     private OnFragmentInteractionListener mListener;
-    private OnLocationChangedListener locationChangedListener;
-
-    private GPSManager gpsManager;
+    Activity mactivity;
     private Context context;
+    GPSTracker gpsTracker;
+
+    private MyLocationService service;
     private LatLng location;
     private Application application;
 
@@ -76,14 +66,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapfragment);
         mapFragment.getMapAsync(this);
 
-        gpsManager = GPSManager.getInstance(getActivity().getApplication());
-        gpsManager.startCollecting();
-        if (location != null) {
-            Log.i("MapFragment: ", String.valueOf(location));
-            Log.i("MapFragment: ", "Latitude: " + String.valueOf(location.latitude));
-            Log.i("MapFragment: ", "Longitude: " + String.valueOf(location.longitude));
-        }
-
         return view;
     }
 
@@ -96,8 +78,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
 
     @Override
     public void onAttach(Context context1) {
-        super.onAttach(context);
+        super.onAttach(context1);
         context = context1;
+        mactivity = getActivity();
+        Application application = mactivity.getApplication();
+        service.getInstance(application);
+        gpsTracker = new GPSTracker(context, this::onLocationListener);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -125,45 +111,69 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        mMap.setLocationSource(this);
-        mMap.setMyLocationEnabled(true);
+//        mMap.setLocationSource(this);
+//        mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setRotateGesturesEnabled(true);
         mMap.getUiSettings().setScrollGesturesEnabled(true);
         mMap.getUiSettings().setTiltGesturesEnabled(false);
 
-        if (gpsManager.getLastKnownLocation() != null) {
-            LatLng mylocation = gpsManager.getLastKnownLocation();
-            mMap.addMarker(new MarkerOptions().position(mylocation).title("Your Location!"));
-            Log.d("New location MAPFRAGMENT!", "Location: LONG: " + mylocation.longitude + " LAT: " + mylocation.latitude);
+        Location location = gpsTracker.getLocation();
+        Double latitiude = gpsTracker.getLatitude();
+        LatLng mylocation = new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(mylocation));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(mylocation));
+//        service.getLastKnownLocation();
+//        LatLng location = service.getLocation();
+//        if(location != null)
+//        {
+//            mMap.addMarker(new MarkerOptions().position(location).title("My location"));
+//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 17.0f));
+//        }
+    }
 
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 17.0f));
+    public void updateLocation(Location location)
+    {
+        Double longitude = location.getLongitude();
+        Double latitiude = location.getLatitude();
+
+        LatLng mylocation = new LatLng(latitiude, longitude);
+        mMap.addMarker(new MarkerOptions().position(mylocation));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(mylocation));
+    }
+
+//
+//
+//    @Override
+//    public void onLocationChanged(Location location) {
+//        if (locationChangedListener != null) {
+//            locationChangedListener.onLocationChanged(location);
+//        }
+//
+//        Log.i("Location changed", "onLocationChanged()");
+//    }
+//
+//    @Override
+//    public void activate(OnLocationChangedListener onLocationChangedListener) {
+//        locationChangedListener = onLocationChangedListener;
+//    }
+//
+//    @Override
+//    public void deactivate() {
+//        locationChangedListener = null;
+//    }
+
+    @Override
+    public void onLocationListener(Location location) {
+//        updateLocation(location);
+        Log.i("location changed!", String.valueOf(location));
+        if(mMap != null)
+        {
+            mMap.clear();
+                    LatLng mylocation = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(mylocation));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 14.0f));
         }
-
-        gpsManager.getAddress(context, 4.5788755f,  51.54810330000001f);
-    }
-
-
-    @Override
-    public void onLocationChanged(Location location) {
-        if (locationChangedListener != null) {
-            locationChangedListener.onLocationChanged(location);
-        }
-
-        Log.i("Location changed", "onLocationChanged()");
-        LatLng a = gpsManager.getLastKnownLocation();
-        mMap.addMarker(new MarkerOptions().position(a).title("Updated location!"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(a, 17.0f));
-    }
-
-    @Override
-    public void activate(OnLocationChangedListener onLocationChangedListener) {
-        locationChangedListener = onLocationChangedListener;
-    }
-
-    @Override
-    public void deactivate() {
-        locationChangedListener = null;
     }
 
 
