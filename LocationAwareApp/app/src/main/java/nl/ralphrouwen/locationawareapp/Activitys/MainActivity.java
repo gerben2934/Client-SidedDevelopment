@@ -1,6 +1,8 @@
 package nl.ralphrouwen.locationawareapp.Activitys;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -72,6 +74,32 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         {
             parkbutton.setImageResource(R.drawable.parkbutton3);
             parkButtonPressed = true;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle("Set your car location");
+            builder.setMessage("Are you sure you wanna set your car location to your current location?");
+
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int which) {
+                    // Do nothing but close the dialog
+                    Log.i("Dialog: ", "Clicked YES, closing dialog!");
+                    dialog.dismiss();
+                }
+            });
+
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.i("Dialog: ", "Clicked NO, closing dialog!");
+                    // Do nothing
+                    dialog.dismiss();
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
         }else{
             parkbutton.setImageResource(R.drawable.parkbutton5);
             parkButtonPressed = false;
