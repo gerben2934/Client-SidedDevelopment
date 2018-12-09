@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import nl.ralphrouwen.locationawareapp.Activitys.DetailedParked_Activity;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
-import nl.ralphrouwen.locationawareapp.Helper.RequestListener;
 
 import static nl.ralphrouwen.locationawareapp.Activitys.MainActivity.PARKED_URL;
 
@@ -26,7 +25,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private ArrayList<Parked> parkingHistory;
     private Context context;
-    RequestListener request;
 
     public RecyclerViewAdapter(Context context, ArrayList<Parked> parkeds)
     {
