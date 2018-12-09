@@ -139,6 +139,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
 
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 17.0f));
         }
+
+        gpsManager.getAddress(context, 4.5788755f,  51.54810330000001f);
     }
 
 

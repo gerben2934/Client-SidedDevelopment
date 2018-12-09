@@ -1,6 +1,9 @@
 package nl.ralphrouwen.locationawareapp.Helper;
 
 import android.app.Application;
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.util.Log;
 
@@ -9,6 +12,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 
 public class GPSManager {
 
@@ -16,6 +24,7 @@ public class GPSManager {
     private Application application;
     private FusedLocationProviderClient mFusedLocationClient;
     private LatLng lastKnownLocation;
+    private Geocoder geocoder;
 
     private GPSManager(Application application) {
         this.application = application;
@@ -71,6 +80,58 @@ public class GPSManager {
             }
         };
         thread.start();
+    }
+
+/*    public void getAddress() //LatLng lastKnownLocation)
+    {
+        java.util.List<Address> addresses;
+        geocoder = new Geocoder((Context)application,Locale.getDefault());
+
+        lastKnownLocation = new LatLng(4.5788755f,  51.54810330000001f);
+        try {
+            addresses = geocoder.getFromLocation(lastKnownLocation.latitude, lastKnownLocation.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+        String city = addresses.get(0).getLocality();
+        String state = addresses.get(0).getAdminArea();
+        String country = addresses.get(0).getCountryName();
+        String postalCode = addresses.get(0).getPostalCode();
+        String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+
+        Log.i("Last adres:", "Info:" + addresses.toString());
+    }*/
+
+    public static String getAddress(Context context, double LATITUDE, double LONGITUDE) {
+        String fullAdd = "";
+        //Set Address
+        try {
+            Geocoder geocoder = new Geocoder(context);
+            //new Geocoder(context, Locale.getDefault());
+            List<android.location.Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 5);
+            if(geocoder.isPresent()) {
+                if (addresses != null && addresses.size() > 0) {
+                    fullAdd = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                    String city = addresses.get(0).getLocality();
+                    String state = addresses.get(0).getAdminArea();
+                    String country = addresses.get(0).getCountryName();
+                    String postalCode = addresses.get(0).getPostalCode();
+                    String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+
+                    Log.d("GetAdress()", "getAddress:  address" + fullAdd);
+                    Log.d("GetAdress()", "getAddress:  city" + city);
+                    Log.d("GetAdress()", "getAddress:  state" + state);
+                    Log.d("GetAdress()", "getAddress:  postalCode" + postalCode);
+                    Log.d("GetAdress()", "getAddress:  knownName" + knownName);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fullAdd;
     }
 }
 
