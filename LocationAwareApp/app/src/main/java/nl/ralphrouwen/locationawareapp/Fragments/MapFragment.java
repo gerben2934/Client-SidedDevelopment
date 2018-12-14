@@ -72,7 +72,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
     public void onAttach(Context context1) {
         super.onAttach(context1);
         context = context1;
-        gpsTracker = new GPSTracker(context, this::onLocationListener);
+        gpsTracker = GPSTracker.getInstance(context1);
+        gpsTracker.getLocation(this::onLocationListener);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {

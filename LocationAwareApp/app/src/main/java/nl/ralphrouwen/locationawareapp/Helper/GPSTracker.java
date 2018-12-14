@@ -46,13 +46,22 @@ public class GPSTracker extends Service implements LocationListener {
     protected LocationManager locationManager;
 
     nl.ralphrouwen.locationawareapp.Helper.LocationListener listener;
-    public GPSTracker(Context context, nl.ralphrouwen.locationawareapp.Helper.LocationListener listener) {
+
+    private static GPSTracker instance;
+
+    private GPSTracker(Context context) {
         this.mContext = context;
-        this.listener = listener;
-        getLocation();
     }
 
-    public Location getLocation() {
+    public static GPSTracker getInstance(Context context)
+    {
+        if(instance == null)
+            instance = new GPSTracker(context);
+        return instance;
+    }
+
+    public Location getLocation(nl.ralphrouwen.locationawareapp.Helper.LocationListener listener) {
+        this.listener = listener;
 
         if (Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&

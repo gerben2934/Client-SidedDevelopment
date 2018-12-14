@@ -36,10 +36,11 @@ import java.util.ArrayList;
 import nl.ralphrouwen.locationawareapp.Adapters.RecyclerViewAdapter;
 import nl.ralphrouwen.locationawareapp.Fragments.HistoryFragment;
 import nl.ralphrouwen.locationawareapp.Fragments.MapFragment;
+import nl.ralphrouwen.locationawareapp.Helper.GPSTracker;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
 
-public class MainActivity extends AppCompatActivity implements MapFragment.OnFragmentInteractionListener, HistoryFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements MapFragment.OnFragmentInteractionListener, HistoryFragment.OnFragmentInteractionListener, nl.ralphrouwen.locationawareapp.Helper.LocationListener {
 
     public static final String PARKED_URL = "parkedURL";
     private static final int MY_PERMISSION_LOCATION = 99;
@@ -52,16 +53,19 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     private static final int REQUEST = 112;
     Context mContext;
 
-    LocationManager locationManager;
-    LocationListener locationListener;
+    GPSTracker gpsTracker;
+    Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = getBaseContext();
+        gpsTracker = GPSTracker.getInstance(this);
+        gpsTracker.getLocation(this);
 
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+
+//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
 
 
         parkButtonPressed = false;
@@ -85,31 +89,31 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         MapFragment.findViewById(R.id.)*/
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode,
+//                                           String permissions[], int[] grantResults) {
+//        switch (requestCode) {
+//            case 1: {
+//
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.length > 0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                    // permission was granted, yay! Do the
+//                    // contacts-related task you need to do.
+//                } else {
+//
+//                    // permission denied, boo! Disable the
+//                    // functionality that depends on this permission.
+//                    Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+//                }
+//                return;
+//            }
+//
+//            // other 'case' lines to check for other
+//            // permissions this app might request
+//        }
+//    }
 
 
     public void parkButtonPressed(View view)
@@ -118,32 +122,33 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         {
             parkbutton.setImageResource(R.drawable.parkbutton3);
             parkButtonPressed = true;
-//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//
-//            builder.setTitle("Set your car location");
-//            builder.setMessage("Are you sure you wanna set your car location to your current location?");
-//
-//            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-//
-//                public void onClick(DialogInterface dialog, int which) {
-//                    // Do nothing but close the dialog
-//                    Log.i("Dialog: ", "Clicked YES, closing dialog!");
-//                    dialog.dismiss();
-//                }
-//            });
-//
-//            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-//
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    Log.i("Dialog: ", "Clicked NO, closing dialog!");
-//                    // Do nothing
-//                    dialog.dismiss();
-//                }
-//            });
-//
-//            AlertDialog alert = builder.create();
-//            alert.show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle("Set your car location");
+            builder.setMessage("Are you sure you wanna set your car location to your current location?");
+
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int which) {
+                    // Do nothing but close the dialog
+
+                    Log.i("Dialog: ", "Clicked YES, closing dialog!" + location.toString());
+                    dialog.dismiss();
+                }
+            });
+
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.i("Dialog: ", "Clicked NO, closing dialog!");
+                    // Do nothing
+                    dialog.dismiss();
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
         }else{
             parkbutton.setImageResource(R.drawable.parkbutton5);
             parkButtonPressed = false;
@@ -157,4 +162,8 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     }
 
 
+    @Override
+    public void onLocationListener(Location location) {
+        this.location = location;
+    }
 }
