@@ -1,11 +1,15 @@
 package nl.ralphrouwen.locationawareapp.Fragments;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,12 +18,18 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,7 +41,7 @@ import nl.ralphrouwen.locationawareapp.Helper.LocationListener;
 import nl.ralphrouwen.locationawareapp.R;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, LocationListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private OnFragmentInteractionListener mListener;
@@ -40,6 +50,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
     Location lastlocation;
     Geocoder geocoder;
     boolean startup = true;
+
+    Location lastKownLocation;
+
+    private FusedLocationProviderClient mFusedLocationClient;
+    LocationRequest mlocationRequest;
+    LocationCallback mLocationCallback;
+    Location currentLocation;
+
 
     public MapFragment() {
     }
@@ -54,8 +72,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+//        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            return;
+//        }
+////        mFusedLocationClient.getLastLocation()
+////                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+////                    @Override
+////                    public void onSuccess(Location location) {
+////                        // Got last known location. In some rare situations this can be null.
+////                        if (location != null) {
+////                            lastKownLocation = location;
+////
+////                        }
+////                    }
+////                });
     }
 
     @Override
@@ -81,7 +113,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
     public void onAttach(Context context1) {
         super.onAttach(context1);
         context = context1;
-        gpsTracker = new GPSTracker(context, this::onLocationListener);
+//        gpsTracker = new GPSTracker(context, this::onLocationListener);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -104,11 +136,50 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
         mMap.getUiSettings().setRotateGesturesEnabled(true);
         mMap.getUiSettings().setScrollGesturesEnabled(true);
         mMap.getUiSettings().setTiltGesturesEnabled(false);
+
+        mlocationRequest = new LocationRequest();
+        mlocationRequest.setInterval(1);
+        mlocationRequest.setFastestInterval(1);
+        mlocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                currentLocation = locationResult.getLastLocation();
+                startLocation(locationResult.getLastLocation());
+            }
+        };
+
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mFusedLocationClient.requestLocationUpdates(mlocationRequest, mLocationCallback, Looper.myLooper());
     }
 
 
-    @Override
-    public void onLocationListener(Location location) {
+
+//    @Override
+//    public void onLocationListener(Location location) {
+//        if(location != null && lastlocation != null && mMap != null)
+//        {
+//            if(startup)
+//            {
+//                updateLocation(location);
+//                startup = false;
+//            }
+//
+//            if(distance(location.getLatitude(), location.getLongitude(), lastlocation.getLatitude(), lastlocation.getLongitude()) >= 0.07)
+//            {
+//                updateLocation(location);
+//            }
+//        }
+//
+//        lastlocation = location;
+//    }
+
+    public void startLocation(Location location)
+    {
         if(location != null && lastlocation != null && mMap != null)
         {
             if(startup)
@@ -116,7 +187,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
                 updateLocation(location);
                 startup = false;
             }
-            
+
             if(distance(location.getLatitude(), location.getLongitude(), lastlocation.getLatitude(), lastlocation.getLongitude()) >= 0.07)
             {
                 updateLocation(location);
