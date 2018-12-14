@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -31,7 +33,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.joda.time.DateTime;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import nl.ralphrouwen.locationawareapp.Adapters.RecyclerViewAdapter;
 import nl.ralphrouwen.locationawareapp.Fragments.HistoryFragment;
@@ -50,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     private RecyclerViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private static final int REQUEST = 112;
+    private Geocoder geocoder;
     Context mContext;
 
     LocationManager locationManager;
@@ -61,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         setContentView(R.layout.activity_main);
         mContext = getBaseContext();
 
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
 
         parkButtonPressed = false;
@@ -75,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 
         //linear layout
         mLayoutManager = new LinearLayoutManager(this);
+        geocoder = new Geocoder(mContext, Locale.getDefault());
         //mRecyclerView.setLayoutManager(mLayoutManager);
 
         //specify an adapter
@@ -111,13 +118,35 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         }
     }
 
+    public void getAddress() {
+        List<Address> addressList;
 
-    public void parkButtonPressed(View view)
-    {
-        if(!parkButtonPressed)
-        {
+        LatLng location = new LatLng(51.54808, 4.57885);
+        LatLng location2 = new LatLng(51.86096769, 4.6721458);
+
+        try {
+            addressList = geocoder.getFromLocation(location2.latitude, location2.longitude, 2);
+            if(addressList != null && addressList.size() != 0) {
+                String addressStr = addressList.get(0).getAddressLine(0);
+                Log.i("TEST", "AddressStreet: " + addressStr);
+            }
+            else
+            {
+                Log.i("NULL or count() = 0", "");
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void parkButtonPressed(View view) {
+        if (!parkButtonPressed) {
             parkbutton.setImageResource(R.drawable.parkbutton3);
             parkButtonPressed = true;
+            getAddress();
 //            AlertDialog.Builder builder = new AlertDialog.Builder(this);
 //
 //            builder.setTitle("Set your car location");
@@ -144,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 //
 //            AlertDialog alert = builder.create();
 //            alert.show();
-        }else{
+        } else {
             parkbutton.setImageResource(R.drawable.parkbutton5);
             parkButtonPressed = false;
         }
