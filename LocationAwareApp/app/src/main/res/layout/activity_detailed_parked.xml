@@ -41,7 +41,7 @@
         android:layout_marginTop="8dp"
         android:text="StartTime: (hh:mm)"
         app:layout_constraintStart_toStartOf="@+id/parkedDetailed_date"
-        app:layout_constraintTop_toBottomOf="@+id/parkedDetailed_date" />
+        app:layout_constraintTop_toBottomOf="@+id/parkedDetailed_deltaTime" />
 
     <TextView
         android:id="@+id/parkedDetailed_date"
@@ -56,20 +56,19 @@
         android:id="@+id/parkedDetailed_endTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="EndTime : (hh:mm)"
-        app:layout_constraintBottom_toBottomOf="@+id/parkedDetailed_startTime"
-        app:layout_constraintStart_toStartOf="@+id/parkedDetailed_deltaTime"
-        app:layout_constraintTop_toTopOf="@+id/parkedDetailed_startTime" />
+        app:layout_constraintStart_toStartOf="@+id/parkedDetailed_date"
+        app:layout_constraintTop_toBottomOf="@+id/parkedDetailed_startTime" />
 
     <TextView
         android:id="@+id/parkedDetailed_deltaTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="DeltaTime: (hh:mm)"
-        app:layout_constraintBottom_toBottomOf="@+id/parkedDetailed_date"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/parkedDetailed_date"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="@+id/parkedDetailed_streetName"
+        app:layout_constraintTop_toBottomOf="@+id/parkedDetailed_date" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"

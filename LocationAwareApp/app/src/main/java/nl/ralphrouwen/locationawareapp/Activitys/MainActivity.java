@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import nl.ralphrouwen.locationawareapp.Adapters.RecyclerViewAdapter;
+import nl.ralphrouwen.locationawareapp.Adapters.ParkedAdapter;
 import nl.ralphrouwen.locationawareapp.Fragments.HistoryFragment;
 import nl.ralphrouwen.locationawareapp.Fragments.MapFragment;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     ImageButton parkbutton;
     boolean parkButtonPressed;
     private RecyclerView mRecyclerView;
-    private RecyclerViewAdapter mAdapter;
+    private ParkedAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private static final int REQUEST = 112;
     private Geocoder geocoder;
@@ -68,28 +68,14 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         mContext = getBaseContext();
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-
-
         parkButtonPressed = false;
         //generateParkeds();
         Log.d("length:", "count() " + parkeds.size());
 
         parkbutton = findViewById(R.id.parkbutton);
 
-/*        mRecyclerView = (RecyclerView) findViewById(R.id.);
-        mRecyclerView.setHasFixedSize(true);*/
-
-        //linear layout
         mLayoutManager = new LinearLayoutManager(this);
         geocoder = new Geocoder(mContext, Locale.getDefault());
-        //mRecyclerView.setLayoutManager(mLayoutManager);
-
-        //specify an adapter
-       /* mAdapter = new RecyclerViewAdapter(this, parkeds);
-        mRecyclerView.setAdapter(mAdapter);*/
-
-/*        FragmentActivity MapFragment = new FragmentActivity();
-        MapFragment.findViewById(R.id.)*/
     }
 
     @Override
@@ -146,33 +132,35 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         if (!parkButtonPressed) {
             parkbutton.setImageResource(R.drawable.parkbutton3);
             parkButtonPressed = true;
-            getAddress();
-//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//
-//            builder.setTitle("Set your car location");
-//            builder.setMessage("Are you sure you wanna set your car location to your current location?");
-//
-//            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-//
-//                public void onClick(DialogInterface dialog, int which) {
-//                    // Do nothing but close the dialog
-//                    Log.i("Dialog: ", "Clicked YES, closing dialog!");
-//                    dialog.dismiss();
-//                }
-//            });
-//
-//            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-//
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    Log.i("Dialog: ", "Clicked NO, closing dialog!");
-//                    // Do nothing
-//                    dialog.dismiss();
-//                }
-//            });
-//
-//            AlertDialog alert = builder.create();
-//            alert.show();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle("Set your car location");
+            builder.setMessage("Are you sure you wanna set your car location to your current location?");
+
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int which) {
+                    // Do nothing but close the dialog
+                    Log.i("Dialog: ", "Clicked YES, closing dialog!");
+                    //get current location;
+                    getAddress(); //put location in getAddress();
+                    dialog.dismiss();
+                }
+            });
+
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.i("Dialog: ", "Clicked NO, closing dialog!");
+                    // Do nothing
+                    dialog.dismiss();
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
         } else {
             parkbutton.setImageResource(R.drawable.parkbutton5);
             parkButtonPressed = false;

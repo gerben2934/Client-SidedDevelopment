@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,8 @@ import android.widget.TextView;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 import java.util.ArrayList;
 
@@ -21,53 +25,38 @@ import nl.ralphrouwen.locationawareapp.R;
 
 import static nl.ralphrouwen.locationawareapp.Activitys.MainActivity.PARKED_URL;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
+public class ParkedAdapter extends RecyclerView.Adapter<ParkedAdapter.ParkedViewHolder> {
 
     private ArrayList<Parked> parkingHistory;
-    private Context context;
+    private static Context context;
+    private LayoutInflater mInflater;
 
-    public RecyclerViewAdapter(Context context, ArrayList<Parked> parkeds)
+    public ParkedAdapter(Context context, ArrayList<Parked> parkeds)
     {
         this.context = context;
         this.parkingHistory = parkeds;
+        this.mInflater = LayoutInflater.from(context);
     }
 
     @NonNull
     @Override
-    public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.recyclerview_parkeditem, parent, false);
-
-        return new RecyclerViewHolder(view, context);
+    public ParkedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //View view = mInflater.from(parent.getContext()).inflate(R.layout.recyclerview_parkeditem, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_parkeditem, parent, false);
+        return new ParkedViewHolder(itemView, context);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHolder recyclerViewHolder, int position) {
+    public void onBindViewHolder(@NonNull ParkedViewHolder recyclerViewHolder, int position) {
         Parked parked = parkingHistory.get(position);
-        recyclerViewHolder.streetName.setText(parked.getStreetName());
+        recyclerViewHolder.streetName.setText(context.getResources().getString(R.string.street) + " " + parked.getStreetName());
 
         //Format date in dd:month:yyyy
         DateTime date = parked.getStartTime();
         String dateString = date.toString("dd/MMM/yyyy");
-        recyclerViewHolder.date.setText(R.string.date + " " + dateString);
+        recyclerViewHolder.date.setText(context.getResources().getString(R.string.date) + " " + " " + dateString);
 
-        //Format parking length in dd:hh:mm
-        DateTime start = parked.getStartTime();
-        DateTime end = parked.getEndTime();
-        Period timeSpan = new Period(start, end);
-        String elapsed = "";
-        if (timeSpan.getDays() > 0) {
-            elapsed += R.string.days + " " + timeSpan.getDays();
-        }
-        if (timeSpan.getHours() > 0) {
-            elapsed += timeSpan.getHours();
-        }
-        if (timeSpan.getMinutes() > 0) {
-            elapsed += ":" + timeSpan.getMinutes();
-        } else {
-            elapsed = "ERROR parsing time!";
-        }
-        elapsed = R.string.timeParked + ": " + elapsed;
+        String elapsed = context.getResources().getString(R.string.timeParked) + parked.getParkedTime(context);;
         recyclerViewHolder.timeParked.setText(elapsed);
     }
 
@@ -84,13 +73,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         parkingHistory.clear();
     }
 
-    public class RecyclerViewHolder extends RecyclerView.ViewHolder {
+    public class ParkedViewHolder extends RecyclerView.ViewHolder {
 
         TextView streetName;
         TextView date;
         TextView timeParked;
 
-        public RecyclerViewHolder(@NonNull View itemView, final Context ctx) {
+        public ParkedViewHolder(@NonNull View itemView, Context ctx) {
             super(itemView);
             context = ctx;
 
@@ -99,9 +88,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             timeParked = itemView.findViewById(R.id.parkeditem_timeParked);
 
             itemView.setOnClickListener((View v) -> {
+                Log.i("CLICKED: ", "ID" + parkingHistory.get(getAdapterPosition()).getId() + ".");
                 Parked parked = parkingHistory.get(getAdapterPosition());
                 Intent intent = new Intent(context, DetailedParked_Activity.class);
                 intent.putExtra(PARKED_URL, (Parcelable) parked);
+                context.getApplicationContext().startActivity(intent);
             });
         }
     }

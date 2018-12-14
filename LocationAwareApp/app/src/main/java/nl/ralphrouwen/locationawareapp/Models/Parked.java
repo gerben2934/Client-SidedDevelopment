@@ -1,8 +1,14 @@
 package nl.ralphrouwen.locationawareapp.Models;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
+
+import nl.ralphrouwen.locationawareapp.R;
 
 public class Parked implements Parcelable {
 
@@ -11,6 +17,7 @@ public class Parked implements Parcelable {
     private float latitude;
     private DateTime startTime;
     private DateTime endTime;
+    private Period parkedTime;
     private boolean valid;
     private String streetName;
 
@@ -30,6 +37,8 @@ public class Parked implements Parcelable {
         latitude = in.readFloat();
         valid = in.readByte() != 0;
         streetName = in.readString();
+        startTime = DateTime.parse(in.readString());
+        endTime = DateTime.parse(in.readString());
     }
 
     public static final Creator<Parked> CREATOR = new Creator<Parked>() {
@@ -44,18 +53,25 @@ public class Parked implements Parcelable {
         }
     };
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+    public String getParkedTime(Context context)
+    {
+        //Format parking length in dd:hh:mm
+        DateTime start = this.getStartTime();
+        DateTime end = this.getEndTime();
+        Period timeSpan = new Period(start, end);
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
-        parcel.writeFloat(longitude);
-        parcel.writeFloat(latitude);
-        parcel.writeByte((byte) (valid ? 1 : 0));
-        parcel.writeString(streetName);
+        PeriodFormatter formatter = new PeriodFormatterBuilder()
+                .appendYears().appendPrefix(context.getResources().getString(R.string.year) + " ")
+                .appendMonths().appendPrefix(", " + context.getResources().getString(R.string.month) + " ")
+                .appendWeeks().appendPrefix(", " + context.getResources().getString(R.string.week) + " ")
+                .appendDays().appendPrefix(", " + context.getResources().getString(R.string.days) + " ")
+                .appendHours().appendPrefix(", " + context.getResources().getString(R.string.hours) + " ")
+                .appendMinutes().appendPrefix(", " + context.getResources().getString(R.string.minutes))
+                .printZeroNever()
+                .toFormatter();
+
+        String elapsed = formatter.print(timeSpan);
+        return elapsed;
     }
 
     //---------------
@@ -122,5 +138,21 @@ public class Parked implements Parcelable {
 
     public void setStreetName(String streetName) {
         this.streetName = streetName;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeFloat(longitude);
+        parcel.writeFloat(latitude);
+        parcel.writeByte((byte) (valid ? 1 : 0));
+        parcel.writeString(streetName);
+        parcel.writeString(startTime.toString());
+        parcel.writeString(endTime.toString());
     }
 }

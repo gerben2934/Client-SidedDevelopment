@@ -1,8 +1,10 @@
 package nl.ralphrouwen.locationawareapp.Activitys;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.MapView;
@@ -17,6 +19,7 @@ import static nl.ralphrouwen.locationawareapp.Activitys.MainActivity.PARKED_URL;
 public class DetailedParked_Activity extends AppCompatActivity {
 
     public Parked parked;
+    private Context context;
 
     MapView mapView;
     TextView streetName;
@@ -30,18 +33,24 @@ public class DetailedParked_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getApplicationContext();
         setContentView(R.layout.activity_detailed_parked);
 
         Intent intent = getIntent();
         parked = intent.getParcelableExtra(PARKED_URL);
         BindComponents();
         SetTextViews();
+
+        //map toevoegen
+        //pointer toevoegen op map van parked.getlocation();
+        //map verbieden van alles behalve in en uitzoomen!
     }
 
     public void BindComponents()
     {
         mapView = findViewById(R.id.parkedDetailed_map);
         streetName = findViewById(R.id.parkedDetailed_streetName);
+        date = findViewById(R.id.parkedDetailed_date);
         startTime = findViewById(R.id.parkedDetailed_startTime);
         endTime = findViewById(R.id.parkedDetailed_endTime);
         deltaTime = findViewById(R.id.parkedDetailed_deltaTime);
@@ -52,38 +61,16 @@ public class DetailedParked_Activity extends AppCompatActivity {
         date.setText(dateFormatter());
         startTime.setText(timeFormatter(true));
         endTime.setText(timeFormatter(false));
-        deltaTime.setText(calculateTimeSpan());
-    }
-
-    public String calculateTimeSpan()
-    {
-        DateTime start = parked.getStartTime();
-        DateTime end = parked.getEndTime();
-        Period timeSpan = new Period(start, end);
-        String elapsed = "";
-        if (timeSpan.getDays() > 0) {
-            elapsed += R.string.days + " " + timeSpan.getDays();
-        }
-        if (timeSpan.getHours() > 0)
-        {
-            elapsed += timeSpan.getHours();
-        }
-        if (timeSpan.getMinutes() > 0)
-        {
-            elapsed += ":" + timeSpan.getMinutes();
-        }
-        else {
-            elapsed = "Auto geparkeerd";
-        }
-        elapsed = R.string.timeParked + ": " + elapsed;
-        return elapsed;
+        String elapsed = context.getResources().getString(R.string.timeParked) + parked.getParkedTime(context);;
+        deltaTime.setText(elapsed);
     }
 
     public String dateFormatter()
     {
+        String date = "";
         DateTime dateDateTime = parked.getStartTime();
-        String dateString = dateDateTime.toString("dd/MMM/yyyy");
-        return dateString;
+        date += context.getResources().getString(R.string.date) + dateDateTime.toString(" dd/MMM/yyyy");
+        return date;
     }
 
     public String timeFormatter(boolean isStart)
@@ -92,12 +79,13 @@ public class DetailedParked_Activity extends AppCompatActivity {
 
         if(isStart) {
             DateTime dateDateTime1 = parked.getStartTime();
-            time += R.string.start_time + " " + dateDateTime1.toString("mm/HH");
+            Log.i("Datetime: ", " Datetime: " + parked.getStartTime());
+            time += context.getResources().getString(R.string.begin) + " " + dateDateTime1.toString("dd/MMM, HH:mm");
         }
         else
         {
             DateTime dateDateTime2 = parked.getEndTime();
-            time += R.string.end_time + " " + dateDateTime2.toString("mm/HH");
+            time += context.getResources().getString(R.string.end) + " " + dateDateTime2.toString("dd/MMM, HH:mm");
         }
         return time;
     }
