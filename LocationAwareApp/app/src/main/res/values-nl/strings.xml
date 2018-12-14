@@ -11,4 +11,10 @@
     <string name="hours">Uren:</string>
     <string name="minutes">Minuten:</string>
     <string name="timeParked">Parkeertijd:</string>
+    <string name="street">Straat:</string>
+    <string name="year">Jaren:</string>
+    <string name="month">Maanden:</string>
+    <string name="week">Weken:</string>
+    <string name="end">Eind:</string>
+    <string name="begin">Begin:</string>
 </resources>

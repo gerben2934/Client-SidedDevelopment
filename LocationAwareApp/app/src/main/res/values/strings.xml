@@ -13,4 +13,10 @@
     <string name="hours">Hours:</string>
     <string name="minutes">Minutes:</string>
     <string name="timeParked">Parked time:</string>
+    <string name="street">Street:</string>
+    <string name="year">Years:</string>
+    <string name="month">Months:</string>
+    <string name="week">Weeks:</string>
+    <string name="begin">Begin:</string>
+    <string name="end">End:</string>
 </resources>
