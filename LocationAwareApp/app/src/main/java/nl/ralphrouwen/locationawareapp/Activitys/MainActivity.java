@@ -8,22 +8,18 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -47,6 +43,7 @@ import nl.ralphrouwen.locationawareapp.R;
 public class MainActivity extends AppCompatActivity implements MapFragment.OnFragmentInteractionListener, HistoryFragment.OnFragmentInteractionListener {
 
     public static final String PARKED_URL = "parkedURL";
+    public static final String PARKEDLIST_URL = "parkedListURL";
     private static final int MY_PERMISSION_LOCATION = 99;
     ArrayList<Parked> parkeds = new ArrayList<Parked>();
     ImageButton parkbutton;
@@ -56,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     private RecyclerView.LayoutManager mLayoutManager;
     private static final int REQUEST = 112;
     private Geocoder geocoder;
-    Context mContext;
+    private Context mContext;
 
     LocationManager locationManager;
     LocationListener locationListener;
@@ -172,6 +169,4 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     public void onFragmentInteraction(Uri uri) {
 
     }
-
-
 }

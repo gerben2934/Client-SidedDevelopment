@@ -40,6 +40,7 @@ public class HistoryFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static HistoryFragment newInstance() {
         HistoryFragment fragment = new HistoryFragment();
+        Bundle args = new Bundle();
         return fragment;
     }
 
@@ -113,10 +114,12 @@ public class HistoryFragment extends Fragment {
     public void generateParkeds()
     {
         parkeds = new ArrayList<>();
-        parkeds.add(new Parked(1, 4.7927f, 51.5857f, new DateTime(2018, 10, 22, 0, 0),
-                new DateTime(2018, 10, 23, 5, 10), false, "Lijsterbesstraat 15"));
-        parkeds.add(new Parked(2, 4.6721458f, 51.86096769f, new DateTime(2018, 11, 10, 0, 12),
-                new DateTime(2018, 11, 10, 10, 12), false, "Straat 2"));
+        parkeds.add(new Parked(1, 4.5788538f,  51.5480428f, new DateTime(2018, 10, 22, 0, 0),
+                new DateTime(2018, 10, 27, 5, 10), false, "Gerbens huis"));
+        parkeds.add(new Parked(2, 4.7927f, 51.5857f, new DateTime(2018, 10, 22, 0, 0),
+                new DateTime(2018, 10, 23, 5, 10), false, "Gerbens school"));
+        parkeds.add(new Parked(3, 4.6721458f, 51.86096769f, new DateTime(2018, 11, 10, 0, 12),
+                new DateTime(2018, 11, 10, 10, 12), false, "Ralphs adres"));
     }
 
     public ArrayList<Parked> getParkeds() {

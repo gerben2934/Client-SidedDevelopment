@@ -2,32 +2,34 @@ package nl.ralphrouwen.locationawareapp.Activitys;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
-
-import com.google.android.gms.maps.MapView;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+
+import nl.ralphrouwen.locationawareapp.Fragments.DetailedParkedMapFragment;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
 
 import static nl.ralphrouwen.locationawareapp.Activitys.MainActivity.PARKED_URL;
 
-public class DetailedParked_Activity extends AppCompatActivity {
+public class DetailedParked_Activity extends AppCompatActivity implements nl.ralphrouwen.locationawareapp.Fragments.MapFragment.OnFragmentInteractionListener {
 
     public Parked parked;
     private Context context;
 
-    MapView mapView;
     TextView streetName;
     TextView date; //dd:mm:yyyy (01-01-2018
     TextView startTime; //startTime (hh:mm)
     TextView endTime; //endTime (hh:mm)
     TextView deltaTime;  // (end - start) (deltaTime (hh:mm);
     Period timeParked;
+    View detailedMapFragment;
     //TextView timesParked; (sort on streetName?)
 
     @Override
@@ -40,15 +42,24 @@ public class DetailedParked_Activity extends AppCompatActivity {
         parked = intent.getParcelableExtra(PARKED_URL);
         BindComponents();
         SetTextViews();
-
+        buildMapFragment();
         //map toevoegen
         //pointer toevoegen op map van parked.getlocation();
         //map verbieden van alles behalve in en uitzoomen!
     }
 
+    private void buildMapFragment()
+    {
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        //DetailedMapFragmentOLD detailedMapFragmentt = DetailedMapFragmentOLD.newInstance(parked);
+        //fragmentManager.beginTransaction().replace(R.id.detailedMapFragment, detailedMapFragmentt);
+        DetailedParkedMapFragment ff = DetailedParkedMapFragment.newInstance(parked);
+        fragmentManager.beginTransaction().replace(R.id.mapdetailed_fragment, ff).commit();
+    }
+
     public void BindComponents()
     {
-        mapView = findViewById(R.id.parkedDetailed_map);
+        //detailedMapFragment = findViewById(R.id.mapdetailed_fragment);
         streetName = findViewById(R.id.parkedDetailed_streetName);
         date = findViewById(R.id.parkedDetailed_date);
         startTime = findViewById(R.id.parkedDetailed_startTime);
@@ -57,6 +68,7 @@ public class DetailedParked_Activity extends AppCompatActivity {
     }
 
     public void SetTextViews() {
+        //detailedMapFragment.inflate
         streetName.setText(parked.getStreetName());
         date.setText(dateFormatter());
         startTime.setText(timeFormatter(true));
@@ -88,5 +100,10 @@ public class DetailedParked_Activity extends AppCompatActivity {
             time += context.getResources().getString(R.string.end) + " " + dateDateTime2.toString("dd/MMM, HH:mm");
         }
         return time;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
