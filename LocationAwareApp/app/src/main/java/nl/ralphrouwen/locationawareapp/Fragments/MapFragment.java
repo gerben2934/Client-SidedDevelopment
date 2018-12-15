@@ -138,45 +138,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.getUiSettings().setTiltGesturesEnabled(false);
 
         mlocationRequest = new LocationRequest();
-        mlocationRequest.setInterval(1);
-        mlocationRequest.setFastestInterval(1);
-        mlocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mlocationRequest.setInterval(2000);
+        mlocationRequest.setFastestInterval(2000);
+        mlocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        mLocationCallback = new LocationCallback() {
+
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mFusedLocationClient.requestLocationUpdates(mlocationRequest, new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 currentLocation = locationResult.getLastLocation();
                 startLocation(locationResult.getLastLocation());
+                Log.e("LOG!!!!!", String.valueOf(currentLocation));
             }
-        };
-
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        mFusedLocationClient.requestLocationUpdates(mlocationRequest, mLocationCallback, Looper.myLooper());
+        }, Looper.myLooper());
     }
 
-
-
-//    @Override
-//    public void onLocationListener(Location location) {
-//        if(location != null && lastlocation != null && mMap != null)
-//        {
-//            if(startup)
-//            {
-//                updateLocation(location);
-//                startup = false;
-//            }
-//
-//            if(distance(location.getLatitude(), location.getLongitude(), lastlocation.getLatitude(), lastlocation.getLongitude()) >= 0.07)
-//            {
-//                updateLocation(location);
-//            }
-//        }
-//
-//        lastlocation = location;
-//    }
 
     public void startLocation(Location location)
     {
