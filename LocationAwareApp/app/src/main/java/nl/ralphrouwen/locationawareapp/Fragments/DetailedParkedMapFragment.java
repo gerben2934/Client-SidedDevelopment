@@ -1,6 +1,7 @@
 package nl.ralphrouwen.locationawareapp.Fragments;
 
 import android.content.Context;
+import android.location.Location;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -19,12 +20,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import nl.ralphrouwen.locationawareapp.Activitys.MainActivity;
+import nl.ralphrouwen.locationawareapp.Helper.LocationListener;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
 import static nl.ralphrouwen.locationawareapp.Activitys.MainActivity.PARKED_URL;
 
 
-public class DetailedParkedMapFragment extends Fragment implements OnMapReadyCallback {
+public class DetailedParkedMapFragment extends Fragment implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap mGoogleMap;
     private MapView mMapView;
@@ -101,8 +104,15 @@ public class DetailedParkedMapFragment extends Fragment implements OnMapReadyCal
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         LatLng carLocation = new LatLng(parked.getLatitude(), parked.getLongitude());
 
-        googleMap.addMarker(new MarkerOptions().position(carLocation).title("Your current location").snippet("Your car is here!"));
+        String address = MainActivity.getAddress(carLocation);
+        googleMap.addMarker(new MarkerOptions().position(carLocation).title(context.getResources().getString(R.string.carLocation)).snippet(context.getResources().getString(R.string.address) + " " + address));
         CameraPosition osso = CameraPosition.builder().target(carLocation).zoom(14).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(osso));
+
+    }
+
+    @Override
+    public void onLocationListener(Location location) {
+
     }
 }

@@ -17,4 +17,6 @@
     <string name="week">Weken:</string>
     <string name="end">Eind:</string>
     <string name="begin">Begin:</string>
+    <string name="address">Adres:</string>
+    <string name="carLocation">Parkeer locatie:</string>
 </resources>

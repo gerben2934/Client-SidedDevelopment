@@ -41,7 +41,6 @@ public class ParkedAdapter extends RecyclerView.Adapter<ParkedAdapter.ParkedView
     @NonNull
     @Override
     public ParkedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //View view = mInflater.from(parent.getContext()).inflate(R.layout.recyclerview_parkeditem, parent, false);
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_parkeditem, parent, false);
         return new ParkedViewHolder(itemView, context);
     }

@@ -19,4 +19,6 @@
     <string name="week">Weeks:</string>
     <string name="begin">Begin:</string>
     <string name="end">End:</string>
+    <string name="address">Address:</string>
+    <string name="carLocation">Parking location:</string>
 </resources>

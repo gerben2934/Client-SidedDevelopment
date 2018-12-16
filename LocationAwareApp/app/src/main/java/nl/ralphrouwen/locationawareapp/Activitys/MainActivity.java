@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 import nl.ralphrouwen.locationawareapp.Adapters.ParkedAdapter;
+import nl.ralphrouwen.locationawareapp.Fragments.DetailedParkedMapFragment;
 import nl.ralphrouwen.locationawareapp.Fragments.HistoryFragment;
 import nl.ralphrouwen.locationawareapp.Fragments.MapFragment;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
@@ -42,21 +43,22 @@ import nl.ralphrouwen.locationawareapp.R;
 
 public class MainActivity extends AppCompatActivity implements MapFragment.OnFragmentInteractionListener, HistoryFragment.OnFragmentInteractionListener {
 
-    public static final String PARKED_URL = "parkedURL";
     public static final String PARKEDLIST_URL = "parkedListURL";
     private static final int MY_PERMISSION_LOCATION = 99;
-    ArrayList<Parked> parkeds = new ArrayList<Parked>();
-    ImageButton parkbutton;
+
+    public static final String PARKED_URL = "parkedURL";
+    private ArrayList<Parked> parkeds;
+    private Parked currentParked;
+
+    private ImageButton parkbutton;
     boolean parkButtonPressed;
+
     private RecyclerView mRecyclerView;
     private ParkedAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private static final int REQUEST = 112;
-    private Geocoder geocoder;
+    private static Geocoder geocoder;
     private Context mContext;
-
-    LocationManager locationManager;
-    LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,8 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         parkButtonPressed = false;
-        //generateParkeds();
+        generateParkeds();
+        buildHistoryFragment();
         Log.d("length:", "count() " + parkeds.size());
 
         parkbutton = findViewById(R.id.parkbutton);
@@ -101,27 +104,29 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         }
     }
 
-    public void getAddress() {
+    public static String
+    getAddress(LatLng location) {
         List<Address> addressList;
 
-        LatLng location = new LatLng(51.54808, 4.57885);
-        LatLng location2 = new LatLng(51.86096769, 4.6721458);
+        //tests value's
+        //LatLng location = new LatLng(51.54808, 4.57885);
+        //LatLng location2 = new LatLng(51.86096769, 4.6721458);
+        String addressStr = "";
 
         try {
-            addressList = geocoder.getFromLocation(location2.latitude, location2.longitude, 2);
+            addressList = geocoder.getFromLocation(location.latitude, location.longitude, 2);
             if(addressList != null && addressList.size() != 0) {
-                String addressStr = addressList.get(0).getAddressLine(0);
-                Log.i("TEST", "AddressStreet: " + addressStr);
-            }
+                addressStr = addressList.get(0).getThoroughfare() + " ";
+                addressStr += addressList.get(0).getSubThoroughfare() + ", ";
+                addressStr += addressList.get(0).getLocality(); }
             else
             {
                 Log.i("NULL or count() = 0", "");
             }
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return addressStr;
     }
 
 
@@ -129,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         if (!parkButtonPressed) {
             parkbutton.setImageResource(R.drawable.parkbutton3);
             parkButtonPressed = true;
-
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setTitle("Set your car location");
@@ -140,8 +144,11 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 public void onClick(DialogInterface dialog, int which) {
                     // Do nothing but close the dialog
                     Log.i("Dialog: ", "Clicked YES, closing dialog!");
+                    int UniqueID = parkeds.size() + 1;
+                    LatLng currentLocation = new LatLng(00.00, 00.00);
+                    currentParked = new Parked(UniqueID, (float)currentLocation.longitude, (float)currentLocation.latitude, new DateTime(),null, true, getAddress(currentLocation));
                     //get current location;
-                    getAddress(); //put location in getAddress();
+                    //getAddress(); //put location in getAddress();
                     dialog.dismiss();
                 }
             });
@@ -168,5 +175,23 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    public void generateParkeds()
+    {
+        parkeds = new ArrayList<>();
+        parkeds.add(new Parked(1, 4.5788538f,  51.5480428f, new DateTime(2018, 10, 22, 0, 0),
+                new DateTime(2018, 10, 27, 5, 10), false, "Gerbens huis"));
+        parkeds.add(new Parked(2, 4.7927f, 51.5857f, new DateTime(2018, 10, 22, 0, 0),
+                new DateTime(2018, 10, 23, 5, 10), false, "Gerbens school"));
+        parkeds.add(new Parked(3, 4.6721458f, 51.86096769f, new DateTime(2018, 11, 10, 0, 12),
+                new DateTime(2018, 11, 10, 10, 12), false, "Ralphs adres"));
+    }
+
+    private void buildHistoryFragment()
+    {
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        HistoryFragment hf = HistoryFragment.newInstance(parkeds);
+        fragmentManager.beginTransaction().replace(R.id.fragment_history, hf).commit();
     }
 }

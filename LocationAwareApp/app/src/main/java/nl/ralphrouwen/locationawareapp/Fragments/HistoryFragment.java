@@ -1,26 +1,17 @@
 package nl.ralphrouwen.locationawareapp.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import nl.ralphrouwen.locationawareapp.Activitys.MainActivity;
 import nl.ralphrouwen.locationawareapp.Adapters.ParkedAdapter;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
@@ -28,7 +19,7 @@ import nl.ralphrouwen.locationawareapp.R;
 public class HistoryFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    private ArrayList<Parked> parkeds;
+    private static ArrayList<Parked> parkeds = new ArrayList<>();
     private ParkedAdapter mAdapter;
     private OnFragmentInteractionListener mListener;
     private Context mcontext;
@@ -37,19 +28,15 @@ public class HistoryFragment extends Fragment {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
-    public static HistoryFragment newInstance() {
+    public static HistoryFragment newInstance(ArrayList<Parked> list) {
         HistoryFragment fragment = new HistoryFragment();
-        Bundle args = new Bundle();
+        parkeds = list;
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
-        generateParkeds();
     }
 
     @Override
@@ -65,13 +52,15 @@ public class HistoryFragment extends Fragment {
         {
             mAdapter = new ParkedAdapter(mcontext, parkeds);
             mRecyclerView.setAdapter(mAdapter);
-
         }
         return view;
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+    }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -111,18 +100,7 @@ public class HistoryFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public void generateParkeds()
-    {
-        parkeds = new ArrayList<>();
-        parkeds.add(new Parked(1, 4.5788538f,  51.5480428f, new DateTime(2018, 10, 22, 0, 0),
-                new DateTime(2018, 10, 27, 5, 10), false, "Gerbens huis"));
-        parkeds.add(new Parked(2, 4.7927f, 51.5857f, new DateTime(2018, 10, 22, 0, 0),
-                new DateTime(2018, 10, 23, 5, 10), false, "Gerbens school"));
-        parkeds.add(new Parked(3, 4.6721458f, 51.86096769f, new DateTime(2018, 11, 10, 0, 12),
-                new DateTime(2018, 11, 10, 10, 12), false, "Ralphs adres"));
-    }
-
-    public ArrayList<Parked> getParkeds() {
+    public static ArrayList<Parked> getParkeds() {
         return parkeds;
     }
 }

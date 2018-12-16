@@ -43,16 +43,11 @@ public class DetailedParked_Activity extends AppCompatActivity implements nl.ral
         BindComponents();
         SetTextViews();
         buildMapFragment();
-        //map toevoegen
-        //pointer toevoegen op map van parked.getlocation();
-        //map verbieden van alles behalve in en uitzoomen!
     }
 
     private void buildMapFragment()
     {
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-        //DetailedMapFragmentOLD detailedMapFragmentt = DetailedMapFragmentOLD.newInstance(parked);
-        //fragmentManager.beginTransaction().replace(R.id.detailedMapFragment, detailedMapFragmentt);
         DetailedParkedMapFragment ff = DetailedParkedMapFragment.newInstance(parked);
         fragmentManager.beginTransaction().replace(R.id.mapdetailed_fragment, ff).commit();
     }
