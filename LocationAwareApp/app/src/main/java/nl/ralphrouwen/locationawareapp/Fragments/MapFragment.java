@@ -27,7 +27,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -42,17 +44,20 @@ import nl.ralphrouwen.locationawareapp.R;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
+    private static GoogleMap mMap;
+    private static Context context;
+    private static LatLng myLocation;
+
     private OnFragmentInteractionListener mListener;
-    private Context context;
-    GPSTracker gpsTracker;
-    Location lastlocation;
-    Geocoder geocoder;
+    private GPSTracker gpsTracker;
+    private Location lastlocation;
+    private Geocoder geocoder;
     boolean startup = true;
     private FusedLocationProviderClient mFusedLocationClient;
-    LocationRequest mlocationRequest;
-    LocationCallback mLocationCallback;
-    Location currentLocation;
+    private LocationRequest mlocationRequest;
+    private LocationCallback mLocationCallback;
+    private Location currentLocation;
+    private static Marker parkedMarker;
 
     public MapFragment() {
     }
@@ -162,10 +167,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public void updateLocation(Location location)
     {
-        mMap.clear();
-        LatLng mylocation = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(mylocation).title("Your Location!"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 14.0f));
+        if(!startup)
+        {
+            LatLng parkedLocation = parkedMarker.getPosition();
+            mMap.clear();
+            setParkedMarker(parkedLocation);
+        }
+        myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(myLocation).title("Your Location!"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14.0f));
     }
 
     private double distance(double lat1, double lng1, double lat2, double lng2) {
@@ -192,5 +202,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public static LatLng getMyLocation() {
+        return myLocation;
+    }
+
+    public static void setParkedMarker(LatLng location)
+    {
+        String address = MainActivity.getAddress(location);
+        parkedMarker = mMap.addMarker(new MarkerOptions().position(location).title(context.getResources().getString(R.string.carLocation)).snippet(context.getResources().getString(R.string.address) + " " + address));
+        CameraPosition parkedmarker = CameraPosition.builder().target(location).zoom(14).build();
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(parkedmarker));
+    }
+
+    public static void removeParkedMarker() {
+        parkedMarker.remove();
     }
 }

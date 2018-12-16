@@ -132,28 +132,27 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 
     public void parkButtonPressed(View view) {
         if (!parkButtonPressed) {
-            parkbutton.setImageResource(R.drawable.parkbutton3);
-            parkButtonPressed = true;
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            builder.setTitle("Set your car location");
-            builder.setMessage("Are you sure you wanna set your car location to your current location?");
-
-            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            AlertDialog.Builder setLocationBuilder = new AlertDialog.Builder(this);
+            setLocationBuilder.setTitle("Set your car location");
+            setLocationBuilder.setMessage("Are you sure you wanna set your car location to your current location?");
+            setLocationBuilder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
                 public void onClick(DialogInterface dialog, int which) {
                     // Do nothing but close the dialog
                     Log.i("Dialog: ", "Clicked YES, closing dialog!");
+                    parkbutton.setImageResource(R.drawable.parkbutton3);
+                    parkButtonPressed = true;
                     int UniqueID = parkeds.size() + 1;
-                    LatLng currentLocation = new LatLng(00.00, 00.00);
+                    LatLng currentLocation = MapFragment.getMyLocation();
+                    MapFragment.setParkedMarker(currentLocation);
                     currentParked = new Parked(UniqueID, (float)currentLocation.longitude, (float)currentLocation.latitude, new DateTime(),null, true, getAddress(currentLocation));
-                    //get current location;
-                    //getAddress(); //put location in getAddress();
+                    parkeds.add(currentParked);
+                    Log.i("CurrentParked object: ", currentParked + ".");
                     dialog.dismiss();
                 }
             });
 
-            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            setLocationBuilder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -163,13 +162,41 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 }
             });
 
-            AlertDialog alert = builder.create();
-            alert.show();
+            AlertDialog alertSet = setLocationBuilder.create();
+            alertSet.show();
+
+
         } else {
-            parkbutton.setImageResource(R.drawable.parkbutton5);
-            parkButtonPressed = false;
+            AlertDialog.Builder removeLocationBuilder = new AlertDialog.Builder(this);
+            removeLocationBuilder.setTitle("Remove your car location");
+            removeLocationBuilder.setMessage("Are you sure you wanna remove your car location from the map?\r\n" +
+            "(Warning! This can not be this can not be undone!)");
+            removeLocationBuilder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int which) {
+                    parkbutton.setImageResource(R.drawable.parkbutton5);
+                    parkButtonPressed = false;
+                    // Do nothing but close the dialog
+                    Log.i("Dialog: ", "Clicked YES, closing dialog!");
+                    parkeds.remove(parkeds.size() -1);
+                    MapFragment.removeParkedMarker();
+                    //remove last parked object from list
+                    dialog.dismiss();
+                }
+            });
+
+            removeLocationBuilder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.i("Dialog: ", "Clicked NO, closing dialog!");
+                    // Do nothing
+                    dialog.dismiss();
+                }
+            });
+
+            AlertDialog alertSet = removeLocationBuilder.create();
+            alertSet.show();
         }
-        Log.i("HALLO", "puttonpressed");
     }
 
     @Override
