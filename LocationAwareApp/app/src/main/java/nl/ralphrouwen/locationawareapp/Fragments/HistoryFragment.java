@@ -18,9 +18,9 @@ import nl.ralphrouwen.locationawareapp.R;
 
 public class HistoryFragment extends Fragment {
 
-    private RecyclerView mRecyclerView;
-    private static ArrayList<Parked> parkeds = new ArrayList<>();
-    private ParkedAdapter mAdapter;
+    private static RecyclerView mRecyclerView;
+    private static ArrayList<Parked> parkeds;
+    private static ParkedAdapter mAdapter;
     private OnFragmentInteractionListener mListener;
     private Context mcontext;
 
@@ -102,5 +102,19 @@ public class HistoryFragment extends Fragment {
 
     public static ArrayList<Parked> getParkeds() {
         return parkeds;
+    }
+
+    public static void updateRecyclerView(Parked parked, boolean addToView) {
+        if(addToView)
+        {
+            parkeds.add(0, parked);
+            mAdapter.notifyItemInserted(0);
+            mRecyclerView.scrollToPosition(0);
+        }
+        else {
+            parkeds.remove(parked);
+            mAdapter.notifyItemRemoved(0);
+        }
+
     }
 }

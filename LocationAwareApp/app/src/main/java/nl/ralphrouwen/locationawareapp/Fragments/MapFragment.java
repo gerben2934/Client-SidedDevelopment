@@ -3,6 +3,8 @@ package nl.ralphrouwen.locationawareapp.Fragments;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -12,9 +14,12 @@ import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -49,7 +54,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static LatLng myLocation;
 
     private OnFragmentInteractionListener mListener;
-    private GPSTracker gpsTracker;
     private Location lastlocation;
     private Geocoder geocoder;
     boolean startup = true;
@@ -57,7 +61,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private LocationRequest mlocationRequest;
     private LocationCallback mLocationCallback;
     private Location currentLocation;
+
     private static Marker parkedMarker;
+    private static String parkedInfo;
 
     public MapFragment() {
     }
@@ -122,7 +128,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.getUiSettings().setRotateGesturesEnabled(true);
         mMap.getUiSettings().setScrollGesturesEnabled(true);
         mMap.getUiSettings().setTiltGesturesEnabled(false);
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
 
+            @Override
+            public View getInfoContents(Marker marker) {
+                LinearLayout info = new LinearLayout(context);
+                info.setOrientation(LinearLayout.VERTICAL);
+
+                TextView title = new TextView(context);
+                title.setTextColor(Color.BLACK);
+                title.setGravity(Gravity.CENTER);
+                title.setTypeface(null, Typeface.BOLD);
+                title.setText(marker.getTitle());
+
+                TextView snippet = new TextView(context);
+                snippet.setTextColor(Color.GRAY);
+                snippet.setText(marker.getSnippet());
+
+                info.addView(title);
+                info.addView(snippet);
+
+                return info;
+            }
+        });
         setupLocation();
     }
 
@@ -142,7 +174,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 super.onLocationResult(locationResult);
                 currentLocation = locationResult.getLastLocation();
                 startLocation(locationResult.getLastLocation());
-                Log.e("LOG!!!!!", String.valueOf(currentLocation));
+                //Log.e("LOG!!!!!", String.valueOf(currentLocation));
             }
         }, Looper.myLooper());
     }
@@ -171,7 +203,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         {
             LatLng parkedLocation = parkedMarker.getPosition();
             mMap.clear();
-            setParkedMarker(parkedLocation);
+            setParkedMarker(parkedLocation, parkedInfo);
         }
         myLocation = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(myLocation).title("Your Location!"));
@@ -208,10 +240,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return myLocation;
     }
 
-    public static void setParkedMarker(LatLng location)
+    public static void setParkedMarker(LatLng location, String info)
     {
+        parkedInfo = info;
         String address = MainActivity.getAddress(location);
-        parkedMarker = mMap.addMarker(new MarkerOptions().position(location).title(context.getResources().getString(R.string.carLocation)).snippet(context.getResources().getString(R.string.address) + " " + address));
+        parkedMarker = mMap.addMarker(new MarkerOptions().position(location).title(context.getResources().getString(R.string.carLocation)).snippet(info));
         CameraPosition parkedmarker = CameraPosition.builder().target(location).zoom(14).build();
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(parkedmarker));
     }

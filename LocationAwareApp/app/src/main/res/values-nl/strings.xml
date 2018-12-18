@@ -19,4 +19,5 @@
     <string name="begin">Begin:</string>
     <string name="address">Adres:</string>
     <string name="carLocation">Parkeer locatie:</string>
+    <string name="payedTill">U heeft betaald tot:</string>
 </resources>

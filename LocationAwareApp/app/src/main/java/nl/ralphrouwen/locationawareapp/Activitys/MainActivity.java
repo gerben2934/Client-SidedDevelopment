@@ -18,9 +18,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,6 +31,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,6 +42,7 @@ import nl.ralphrouwen.locationawareapp.Adapters.ParkedAdapter;
 import nl.ralphrouwen.locationawareapp.Fragments.DetailedParkedMapFragment;
 import nl.ralphrouwen.locationawareapp.Fragments.HistoryFragment;
 import nl.ralphrouwen.locationawareapp.Fragments.MapFragment;
+import nl.ralphrouwen.locationawareapp.Helper.InputFilterMinMax;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
 
@@ -53,8 +58,13 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     private ImageButton parkbutton;
     boolean parkButtonPressed;
 
-    private RecyclerView mRecyclerView;
-    private ParkedAdapter mAdapter;
+    private EditText editDays;
+    private EditText editHours;
+    private EditText editMinutes;
+    private TextView textDays;
+    private TextView textHours;
+    private TextView textMinutes;
+
     private RecyclerView.LayoutManager mLayoutManager;
     private static final int REQUEST = 112;
     private static Geocoder geocoder;
@@ -70,10 +80,9 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         parkButtonPressed = false;
         generateParkeds();
         buildHistoryFragment();
+        bindComponents();
+        fillComponents();
         Log.d("length:", "count() " + parkeds.size());
-
-        parkbutton = findViewById(R.id.parkbutton);
-
         mLayoutManager = new LinearLayoutManager(this);
         geocoder = new Geocoder(mContext, Locale.getDefault());
     }
@@ -107,10 +116,6 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     public static String
     getAddress(LatLng location) {
         List<Address> addressList;
-
-        //tests value's
-        //LatLng location = new LatLng(51.54808, 4.57885);
-        //LatLng location2 = new LatLng(51.86096769, 4.6721458);
         String addressStr = "";
 
         try {
@@ -144,10 +149,24 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     parkButtonPressed = true;
                     int UniqueID = parkeds.size() + 1;
                     LatLng currentLocation = MapFragment.getMyLocation();
-                    MapFragment.setParkedMarker(currentLocation);
-                    currentParked = new Parked(UniqueID, (float)currentLocation.longitude, (float)currentLocation.latitude, new DateTime(),null, true, getAddress(currentLocation));
-                    parkeds.add(currentParked);
-                    Log.i("CurrentParked object: ", currentParked + ".");
+                    ArrayList<Integer> values = getValues();
+
+                    DateTime begin = DateTime.now();
+                    DateTime end = begin.plusDays(values.get(0));
+                    end = end.plusHours(values.get(1));
+                    end = end.plusMinutes(values.get(2));
+
+                    currentParked = new Parked(UniqueID, (float)currentLocation.longitude, (float)currentLocation.latitude, begin, end, true, getAddress(currentLocation));
+                    parkeds.add(0, currentParked);
+                    editDays.setText("");
+                    editHours.setText("");
+                    editMinutes.setText("");
+
+                    String info = getResources().getString(R.string.address) + " " + getAddress(currentLocation)
+                            + "\r\n" + getResources().getString(R.string.payedTill) + currentParked.getEndTime().toString("hh:mm, MMM d yyyy");
+                    MapFragment.setParkedMarker(currentLocation, info);
+
+                    HistoryFragment.updateRecyclerView(currentParked, true);
                     dialog.dismiss();
                 }
             });
@@ -178,7 +197,8 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     parkButtonPressed = false;
                     // Do nothing but close the dialog
                     Log.i("Dialog: ", "Clicked YES, closing dialog!");
-                    parkeds.remove(parkeds.size() -1);
+                    parkeds.remove(0);
+                    HistoryFragment.updateRecyclerView(parkeds.get(0), false);
                     MapFragment.removeParkedMarker();
                     //remove last parked object from list
                     dialog.dismiss();
@@ -204,6 +224,35 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 
     }
 
+    public void bindComponents() {
+        parkbutton = findViewById(R.id.parkbutton);
+        editDays = findViewById(R.id.editText_days);
+        editHours = findViewById(R.id.editText_hours);
+        editMinutes = findViewById(R.id.editText_minutes);
+        textDays = findViewById(R.id.textView_days);
+        textHours = findViewById(R.id.textView_hours);
+        textMinutes = findViewById(R.id.textView_minutes);
+    }
+
+    public void fillComponents() {
+        textDays.setText(getResources().getString(R.string.days));
+        textHours.setText(getResources().getString(R.string.hours));
+        textMinutes.setText(getResources().getString(R.string.minutes));
+        editDays.setFilters(new InputFilter[]{new InputFilterMinMax(0, 7), new InputFilter.LengthFilter(1)});
+        editHours.setFilters(new InputFilter[]{new InputFilterMinMax(0, 23), new InputFilter.LengthFilter(2)});
+        editMinutes.setFilters(new InputFilter[]{new InputFilterMinMax(0, 59), new InputFilter.LengthFilter(2)});
+    }
+
+    public ArrayList<Integer> getValues()
+    {
+        ArrayList<Integer> values = new ArrayList<>();
+
+        values.add(getInt(editDays.getText().toString(), 0));
+        values.add(getInt(editHours.getText().toString(), 0));
+        values.add(getInt(editMinutes.getText().toString(), 0));
+        return values;
+    }
+
     public void generateParkeds()
     {
         parkeds = new ArrayList<>();
@@ -220,5 +269,19 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         HistoryFragment hf = HistoryFragment.newInstance(parkeds);
         fragmentManager.beginTransaction().replace(R.id.fragment_history, hf).commit();
+    }
+
+    public int getInt(String edtValue, int defaultValue) {
+        int value = defaultValue;
+
+        if (edtValue != null) {
+            try {
+                value = Integer.parseInt(edtValue);
+            } catch (NumberFormatException e) {
+                value = defaultValue;
+            }
+        }
+
+        return value;
     }
 }
