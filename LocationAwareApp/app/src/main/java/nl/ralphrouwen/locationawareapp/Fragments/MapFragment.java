@@ -174,7 +174,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 super.onLocationResult(locationResult);
                 currentLocation = locationResult.getLastLocation();
                 startLocation(locationResult.getLastLocation());
-                //Log.e("LOG!!!!!", String.valueOf(currentLocation));
+                updateLocation(currentLocation);
+                Log.e("LOG!!!!!", String.valueOf(currentLocation));
             }
         }, Looper.myLooper());
     }
@@ -205,6 +206,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mMap.clear();
             setParkedMarker(parkedLocation, parkedInfo);
         }
+        mMap.clear();
         myLocation = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(myLocation).title("Your Location!"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14.0f));
