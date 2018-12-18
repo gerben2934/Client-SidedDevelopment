@@ -296,34 +296,36 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 
     public void generateParkeds()
     {
-//        parkeds = new ArrayList<>();
-//
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        String uid = user.getUid();
-//        DatabaseReference reference = FirebaseDatabase
-//                .getInstance()
-//                .getReference(Constants.FIREBASE_CHILD_PARKS)
-//                .child(uid)
-//                .child("parks");
-//
-//        reference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                int i = 0;
-//                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren())
-//                {
-//                    i++;
-//                    Log.e("snapshotdata", String.valueOf(dataSnapshot1.getValue()));
-//                    Parked parked = dataSnapshot1.getValue(Parked.class);
-////                    Parked parked = new Parked(dataSnapshot1.getValue());
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
+
+        //login:
+        // sign in with email:
+        // rasrouwe@avans.nl
+        // ralph123
+        
+        parkeds = new ArrayList<>();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+        DatabaseReference reference = FirebaseDatabase
+                .getInstance()
+                .getReference(Constants.FIREBASE_CHILD_PARKS)
+                .child(uid)
+                .child("parks");
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren())
+                {
+                    Log.e("snapshotdata", String.valueOf(dataSnapshot1.getValue()));
+                    Parked parked = dataSnapshot1.getValue(Parked.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 //        Parked car = new Parked(1, 4.5788538f,  51.5480428f, new DateTime(2018, 10, 22, 0, 0),
 //                new DateTime(2018, 10, 27, 5, 10), false, "Gerbens huis");
