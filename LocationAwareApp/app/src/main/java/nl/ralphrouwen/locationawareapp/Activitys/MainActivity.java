@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -23,14 +24,25 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,13 +50,14 @@ import nl.ralphrouwen.locationawareapp.Adapters.ParkedAdapter;
 import nl.ralphrouwen.locationawareapp.Fragments.DetailedParkedMapFragment;
 import nl.ralphrouwen.locationawareapp.Fragments.HistoryFragment;
 import nl.ralphrouwen.locationawareapp.Fragments.MapFragment;
+import nl.ralphrouwen.locationawareapp.Helper.Constants;
+import nl.ralphrouwen.locationawareapp.Models.Car;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
 
 public class MainActivity extends AppCompatActivity implements MapFragment.OnFragmentInteractionListener, HistoryFragment.OnFragmentInteractionListener {
 
     public static final String PARKEDLIST_URL = "parkedListURL";
-    private static final int MY_PERMISSION_LOCATION = 99;
 
     public static final String PARKED_URL = "parkedURL";
     private ArrayList<Parked> parkeds;
@@ -53,10 +66,9 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     private ImageButton parkbutton;
     boolean parkButtonPressed;
 
-    private RecyclerView mRecyclerView;
-    private ParkedAdapter mAdapter;
+    private static final int RC_SIGN_IN = 123;
+
     private RecyclerView.LayoutManager mLayoutManager;
-    private static final int REQUEST = 112;
     private static Geocoder geocoder;
     private Context mContext;
 
@@ -64,16 +76,11 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        createSignInIntent();
         mContext = getBaseContext();
-
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         parkButtonPressed = false;
-        generateParkeds();
-        buildHistoryFragment();
-        Log.d("length:", "count() " + parkeds.size());
-
         parkbutton = findViewById(R.id.parkbutton);
-
         mLayoutManager = new LinearLayoutManager(this);
         geocoder = new Geocoder(mContext, Locale.getDefault());
     }
@@ -83,24 +90,50 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 1: {
-
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
                 } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                     Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }
                 return;
             }
+        }
+    }
 
-            // other 'case' lines to check for other
-            // permissions this app might request
+    private void createSignInIntent()
+    {
+        List<AuthUI.IdpConfig> providers = Arrays.asList(
+                new AuthUI.IdpConfig.EmailBuilder().build(),
+                new AuthUI.IdpConfig.GoogleBuilder().build()
+
+        );
+
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        .setLogo(R.drawable.parkbutton3)
+                        .build(),
+                RC_SIGN_IN);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+
+            if (resultCode == RESULT_OK) {
+                //Succesvol ingelogd
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                generateParkeds();
+//                FirebaseMessaging.getInstance().setAutoInitEnabled(true);
+//                GetMessages(user.getDisplayName());
+//                other_user.setText(user.getDisplayName());
+            } else {
+                //Inloggen is mislukt
+            }
         }
     }
 
@@ -206,13 +239,59 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 
     public void generateParkeds()
     {
-        parkeds = new ArrayList<>();
-        parkeds.add(new Parked(1, 4.5788538f,  51.5480428f, new DateTime(2018, 10, 22, 0, 0),
-                new DateTime(2018, 10, 27, 5, 10), false, "Gerbens huis"));
-        parkeds.add(new Parked(2, 4.7927f, 51.5857f, new DateTime(2018, 10, 22, 0, 0),
-                new DateTime(2018, 10, 23, 5, 10), false, "Gerbens school"));
-        parkeds.add(new Parked(3, 4.6721458f, 51.86096769f, new DateTime(2018, 11, 10, 0, 12),
-                new DateTime(2018, 11, 10, 10, 12), false, "Ralphs adres"));
+//        parkeds = new ArrayList<>();
+//
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        String uid = user.getUid();
+//        DatabaseReference reference = FirebaseDatabase
+//                .getInstance()
+//                .getReference(Constants.FIREBASE_CHILD_PARKS)
+//                .child(uid)
+//                .child("parks");
+//
+//        reference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                int i = 0;
+//                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren())
+//                {
+//                    i++;
+//                    Log.e("snapshotdata", String.valueOf(dataSnapshot1.getValue()));
+//                    Parked parked = dataSnapshot1.getValue(Parked.class);
+////                    Parked parked = new Parked(dataSnapshot1.getValue());
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
+//        Parked car = new Parked(1, 4.5788538f,  51.5480428f, new DateTime(2018, 10, 22, 0, 0),
+//                new DateTime(2018, 10, 27, 5, 10), false, "Gerbens huis");
+//
+//        parkeds.add(car);
+//        parkeds.add(new Parked(2, 4.7927f, 51.5857f, new DateTime(2018, 10, 22, 0, 0),
+//                new DateTime(2018, 10, 23, 5, 10), false, "Gerbens school"));
+//        parkeds.add(new Parked(3, 4.6721458f, 51.86096769f, new DateTime(2018, 11, 10, 0, 12),
+//                new DateTime(2018, 11, 10, 10, 12), false, "Ralphs adres"));
+//
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        String uid = user.getUid();
+//        Log.e("userLogin!", uid);
+//        DatabaseReference restaurantRef = FirebaseDatabase
+//                .getInstance()
+//                .getReference(Constants.FIREBASE_CHILD_PARKS)
+//                .child(uid);
+//
+//        for (Parked parked : parkeds) {
+//            restaurantRef.child("parks").child(String.valueOf(parked.getId())).setValue(parked);
+//        }
+
+
+
+        buildHistoryFragment();
     }
 
     private void buildHistoryFragment()

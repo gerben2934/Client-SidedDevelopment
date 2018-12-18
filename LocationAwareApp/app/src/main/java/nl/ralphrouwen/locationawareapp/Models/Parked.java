@@ -20,6 +20,7 @@ public class Parked implements Parcelable {
     private Period parkedTime;
     private boolean valid;
     private String streetName;
+    private String pushId;
 
     public Parked(int id, float longitude, float latitude, DateTime startTime, DateTime endTime, boolean valid, String streetName) {
         this.id = id;
@@ -29,6 +30,9 @@ public class Parked implements Parcelable {
         this.endTime = endTime;
         this.valid = valid;
         this.streetName = streetName;
+    }
+
+    public Parked() {
     }
 
     protected Parked(Parcel in) {
@@ -138,6 +142,14 @@ public class Parked implements Parcelable {
 
     public void setStreetName(String streetName) {
         this.streetName = streetName;
+    }
+
+    public String getPushId() {
+        return pushId;
+    }
+
+    public void setPushId(String pushId) {
+        this.pushId = pushId;
     }
 
     @Override
