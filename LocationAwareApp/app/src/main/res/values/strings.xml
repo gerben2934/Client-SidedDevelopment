@@ -22,4 +22,10 @@
     <string name="address">Address:</string>
     <string name="carLocation">Parking location:</string>
     <string name="payedTill">You have payed till:</string>
+    <string name="setCarLocationTitle">Set your car location</string>
+    <string name="setCarLocationText">Are you sure you want to set your car location to your current location?</string>
+    <string name="removeCarLocationTitle">Remove your car location</string>
+    <string name="removeCarLocationText">Are you sure you want to remove your car location from the map? Warning! This can not be undone!</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
 </resources>

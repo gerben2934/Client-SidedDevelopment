@@ -13,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -155,8 +156,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         }
     }
 
-    public static String
-    getAddress(LatLng location) {
+    public static String getAddress(LatLng location) {
         List<Address> addressList;
         String addressStr = "";
 
@@ -180,9 +180,9 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     public void parkButtonPressed(View view) {
         if (!parkButtonPressed) {
             AlertDialog.Builder setLocationBuilder = new AlertDialog.Builder(this);
-            setLocationBuilder.setTitle("Set your car location");
-            setLocationBuilder.setMessage("Are you sure you wanna set your car location to your current location?");
-            setLocationBuilder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            setLocationBuilder.setTitle(getApplication().getString(R.string.setCarLocationTitle));
+            setLocationBuilder.setMessage(getApplication().getString(R.string.setCarLocationText));
+            setLocationBuilder.setPositiveButton(getApplication().getString(R.string.yes), new DialogInterface.OnClickListener() {
 
                 public void onClick(DialogInterface dialog, int which) {
                     // Do nothing but close the dialog
@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 }
             });
 
-            setLocationBuilder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            setLocationBuilder.setNegativeButton(getApplication().getString(R.string.no), new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -229,10 +229,9 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 
         } else {
             AlertDialog.Builder removeLocationBuilder = new AlertDialog.Builder(this);
-            removeLocationBuilder.setTitle("Remove your car location");
-            removeLocationBuilder.setMessage("Are you sure you wanna remove your car location from the map?\r\n" +
-            "(Warning! This can not be this can not be undone!)");
-            removeLocationBuilder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            removeLocationBuilder.setTitle(getApplication().getString(R.string.removeCarLocationTitle));
+            removeLocationBuilder.setMessage(getApplication().getString(R.string.removeCarLocationText));
+            removeLocationBuilder.setPositiveButton(getApplication().getString(R.string.yes), new DialogInterface.OnClickListener() {
 
                 public void onClick(DialogInterface dialog, int which) {
                     parkbutton.setImageResource(R.drawable.parkbutton5);
@@ -247,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 }
             });
 
-            removeLocationBuilder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            removeLocationBuilder.setNegativeButton(getApplication().getString(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Log.i("Dialog: ", "Clicked NO, closing dialog!");
@@ -369,8 +368,6 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 //            restaurantRef.child("parks").child(String.valueOf(parked.getId())).setValue(parked);
 //        }
 
-
-
         buildHistoryFragment();
     }
 
@@ -393,5 +390,12 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         }
 
         return value;
+    }
+
+    public void onBackPressed() {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
     }
 }

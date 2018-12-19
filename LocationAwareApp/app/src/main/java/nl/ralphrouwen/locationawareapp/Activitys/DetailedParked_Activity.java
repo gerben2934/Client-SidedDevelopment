@@ -64,11 +64,11 @@ public class DetailedParked_Activity extends AppCompatActivity implements nl.ral
 
     public void SetTextViews() {
         //detailedMapFragment.inflate
-        streetName.setText(parked.getStreetName());
+        streetName.setText(context.getResources().getString(R.string.street_name) + " " + parked.getStreetName());
         date.setText(dateFormatter());
         startTime.setText(timeFormatter(true));
         endTime.setText(timeFormatter(false));
-        String elapsed = context.getResources().getString(R.string.timeParked) + parked.getParkedTime(context);;
+        String elapsed = context.getResources().getString(R.string.timeParked) + parked.getParkedTime(context);
         deltaTime.setText(elapsed);
     }
 
