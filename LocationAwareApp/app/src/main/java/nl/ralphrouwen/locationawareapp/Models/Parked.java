@@ -90,12 +90,12 @@ public class Parked implements Parcelable {
         Period timeSpan = new Period(start, end);
 
         PeriodFormatter formatter = new PeriodFormatterBuilder()
-                .appendYears().appendSuffix(context.getResources().getString(R.string.year) + ", ")
-                .appendMonths().appendSuffix(context.getResources().getString(R.string.month) + ", ")
-                .appendWeeks().appendSuffix(context.getResources().getString(R.string.week) + ", ")
-                .appendDays().appendSuffix(context.getResources().getString(R.string.days) + ", ")
-                .appendHours().appendSuffix(context.getResources().getString(R.string.hours) + ", ")
-                .appendMinutes().appendSuffix(context.getResources().getString(R.string.minutes))
+                .appendYears().appendSuffix(" " + context.getResources().getString(R.string.year) + ", ")
+                .appendMonths().appendSuffix(" " + context.getResources().getString(R.string.month) + ", ")
+                .appendWeeks().appendSuffix(" " + context.getResources().getString(R.string.week) + ", ")
+                .appendDays().appendSuffix(" " + context.getResources().getString(R.string.days) + ", ")
+                .appendHours().appendSuffix(" " + context.getResources().getString(R.string.hours) + ", ")
+                .appendMinutes().appendSuffix(" " + context.getResources().getString(R.string.minutes))
                 .printZeroNever()
                 .toFormatter();
 

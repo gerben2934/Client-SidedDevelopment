@@ -378,8 +378,6 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 //        for (Parked parked : parkeds) {
 //            restaurantRef.child("parks").child(String.valueOf(parked.getId())).setValue(parked);
 //        }
-
-
     }
 
     private void buildHistoryFragment()
