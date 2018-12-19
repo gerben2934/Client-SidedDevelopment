@@ -204,15 +204,17 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     editHours.setText("");
                     editMinutes.setText("");
 
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    String uid = user.getUid();
-                    Log.e("userLogin!", uid);
-                    DatabaseReference restaurantRef = FirebaseDatabase
-                            .getInstance()
-                            .getReference(Constants.FIREBASE_CHILD_PARKS)
-                            .child(uid);
-                    Parked firebaseParked = new Parked(UniqueID, (float)currentLocation.longitude,(float) currentLocation.latitude, begin.getMillis(), end.getMillis(), false, getAddress(currentLocation));
-                    restaurantRef.child("parks").child(String.valueOf(firebaseParked.getId())).setValue(firebaseParked);
+                    Log.e("arraylistsize", String.valueOf(UniqueID));
+
+//                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//                    String uid = user.getUid();
+//                    Log.e("userLogin!", uid);
+//                    DatabaseReference restaurantRef = FirebaseDatabase
+//                            .getInstance()
+//                            .getReference(Constants.FIREBASE_CHILD_PARKS)
+//                            .child(uid);
+//                    Parked firebaseParked = new Parked(UniqueID, (float)currentLocation.longitude,(float) currentLocation.latitude, begin.getMillis(), end.getMillis(), false, getAddress(currentLocation));
+//                    restaurantRef.child("parks").child(String.valueOf(firebaseParked.getId())).setValue(firebaseParked);
 
                     String info = getResources().getString(R.string.address) + " " + getAddress(currentLocation)
                             + "\r\n" + getResources().getString(R.string.payedTill) + currentParked.getEndTime().toString("hh:mm, MMM d yyyy");

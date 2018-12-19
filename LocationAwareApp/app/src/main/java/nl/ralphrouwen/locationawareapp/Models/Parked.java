@@ -22,7 +22,6 @@ public class Parked implements Parcelable {
     private Period parkedTime;
     private boolean valid;
     private String streetName;
-    private String pushId;
     private long starttimelong;
     private long endtimelong;
 
@@ -57,7 +56,7 @@ public class Parked implements Parcelable {
 
     public void convertEndTime()
     {
-        this.startTime = new DateTime(endtimelong);
+        this.endTime = new DateTime(endtimelong);
     }
 
 
@@ -171,14 +170,6 @@ public class Parked implements Parcelable {
         this.streetName = streetName;
     }
 
-    public String getPushId() {
-        return pushId;
-    }
-
-    public void setPushId(String pushId) {
-        this.pushId = pushId;
-    }
-
     public long getStarttimelong() {
         return starttimelong;
     }
@@ -206,7 +197,6 @@ public class Parked implements Parcelable {
                 ", parkedTime=" + parkedTime +
                 ", valid=" + valid +
                 ", streetName='" + streetName + '\'' +
-                ", pushId='" + pushId + '\'' +
                 ", starttimelong=" + starttimelong +
                 ", endtimelong=" + endtimelong +
                 '}';
