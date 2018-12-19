@@ -20,4 +20,10 @@
     <string name="address">Adres:</string>
     <string name="carLocation">Parkeer locatie:</string>
     <string name="payedTill">U heeft betaald tot:</string>
+    <string name="setCarLocationTitle">Locatie van je auto instellen</string>
+    <string name="setCarLocationText">Weet je zeker dat je de locatie van je auto wilt instellen op je huidige locatie?</string>
+    <string name="removeCarLocationTitle">Locatie van je auto verwijderen</string>
+    <string name="removeCarLocationText">Weet je zeker dat je de locatie van je auto van de kaart wilt verwijderen? Waarschuwing! Dit kan niet ongedaan gemaakt worden!</string>
+    <string name="yes">JA</string>
+    <string name="no">NEE</string>
 </resources>
