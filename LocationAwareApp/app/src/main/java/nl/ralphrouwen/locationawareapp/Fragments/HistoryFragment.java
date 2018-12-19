@@ -104,16 +104,18 @@ public class HistoryFragment extends Fragment {
         return parkeds;
     }
 
-    public void refreshRecylcerView()
+    public static void refreshRecylcerView()
     {
+        parkeds.clear();
         mAdapter.notifyDataSetChanged();
     }
 
     public static void updateRecyclerView(Parked parked, boolean addToView) {
         if(addToView)
         {
-            parkeds.add(0, parked);
-            mAdapter.notifyItemInserted(0);
+//            parkeds.add(0, parked);
+//            mAdapter.notifyItemInserted(0);
+            mAdapter.notifyDataSetChanged();
             mRecyclerView.scrollToPosition(0);
         }
         else {

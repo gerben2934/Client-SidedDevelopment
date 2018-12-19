@@ -206,21 +206,21 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 
                     Log.e("arraylistsize", String.valueOf(UniqueID));
 
-//                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//                    String uid = user.getUid();
-//                    Log.e("userLogin!", uid);
-//                    DatabaseReference restaurantRef = FirebaseDatabase
-//                            .getInstance()
-//                            .getReference(Constants.FIREBASE_CHILD_PARKS)
-//                            .child(uid);
-//                    Parked firebaseParked = new Parked(UniqueID, (float)currentLocation.longitude,(float) currentLocation.latitude, begin.getMillis(), end.getMillis(), false, getAddress(currentLocation));
-//                    restaurantRef.child("parks").child(String.valueOf(firebaseParked.getId())).setValue(firebaseParked);
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    String uid = user.getUid();
+                    Log.e("userLogin!", uid);
+                    DatabaseReference restaurantRef = FirebaseDatabase
+                            .getInstance()
+                            .getReference(Constants.FIREBASE_CHILD_PARKS)
+                            .child(uid);
+                    Parked firebaseParked = new Parked(UniqueID, (float)currentLocation.longitude,(float) currentLocation.latitude, begin.getMillis(), end.getMillis(), false, getAddress(currentLocation));
+                    restaurantRef.child("parks").child(String.valueOf(firebaseParked.getId())).setValue(firebaseParked);
 
                     String info = getResources().getString(R.string.address) + " " + getAddress(currentLocation)
                             + "\r\n" + getResources().getString(R.string.payedTill) + currentParked.getEndTime().toString("hh:mm, MMM d yyyy");
                     MapFragment.setParkedMarker(currentLocation, info);
 
-                    HistoryFragment.updateRecyclerView(currentParked, true);
+//                    HistoryFragment.updateRecyclerView(currentParked, true);
                     dialog.dismiss();
                 }
             });
@@ -250,8 +250,8 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     parkButtonPressed = false;
                     // Do nothing but close the dialog
                     Log.i("Dialog: ", "Clicked YES, closing dialog!");
-                    parkeds.remove(0);
-                    HistoryFragment.updateRecyclerView(parkeds.get(0), false);
+//                    parkeds.remove(0);
+//                    HistoryFragment.updateRecyclerView(parkeds.get(0), false);
                     MapFragment.removeParkedMarker();
                     //remove last parked object from list
                     dialog.dismiss();
@@ -313,8 +313,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         // sign in with email:
         // rasrouwe@avans.nl
         // ralph123
-        
-        parkeds = new ArrayList<>();
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
         DatabaseReference reference = FirebaseDatabase
@@ -326,6 +325,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                HistoryFragment.refreshRecylcerView();
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren())
                 {
                     Parked parked = dataSnapshot1.getValue(Parked.class);
