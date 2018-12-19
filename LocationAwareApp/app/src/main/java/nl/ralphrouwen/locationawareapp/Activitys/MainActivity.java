@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         mContext = getBaseContext();
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         parkButtonPressed = false;
-        generateParkeds();
         bindComponents();
         fillComponents();
         parkbutton = findViewById(R.id.parkbutton);
@@ -309,7 +308,8 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 .getInstance()
                 .getReference(Constants.FIREBASE_CHILD_PARKS)
                 .child(uid)
-                .child("parks");
+                .child("parks")
+                .child("1");
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -318,7 +318,10 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 {
                     int i = 1;
                     //            restaurantRef.child("parks").child(String.valueOf(parked.getId())).setValue(parked);
-
+                    Map<String, Object> map = (Map<String, Object>) dataSnapshot1.child("1").getValue();
+//                    String a = (String) (map.get("id"));
+                    Log.e("mapppppp", String.valueOf(map));
+//                    Log.e("mapppppp", a);
                     Log.e("specialsnapshotdata", String.valueOf(dataSnapshot.child(String.valueOf(i)).child("endTime")));
                     i++;
 //                    String parked = dataSnapshot1.getValue(String.class);
@@ -328,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("mapppp", String.valueOf(databaseError));
 
             }
         });
