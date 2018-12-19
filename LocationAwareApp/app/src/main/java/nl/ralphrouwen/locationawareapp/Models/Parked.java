@@ -8,6 +8,8 @@ import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
+import java.util.Date;
+
 import nl.ralphrouwen.locationawareapp.R;
 
 public class Parked implements Parcelable {
@@ -21,6 +23,19 @@ public class Parked implements Parcelable {
     private boolean valid;
     private String streetName;
     private String pushId;
+    private long starttimelong;
+    private long endtimelong;
+
+
+    public Parked(int id, float longitude, float latitude, long startTime, long endTime, boolean valid, String streetName) {
+        this.id = id;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.starttimelong = startTime;
+        this.endtimelong = endTime;
+        this.valid = valid;
+        this.streetName = streetName;
+    }
 
     public Parked(int id, float longitude, float latitude, DateTime startTime, DateTime endTime, boolean valid, String streetName) {
         this.id = id;
@@ -150,6 +165,22 @@ public class Parked implements Parcelable {
 
     public void setPushId(String pushId) {
         this.pushId = pushId;
+    }
+
+    public long getStarttimelong() {
+        return starttimelong;
+    }
+
+    public void setStarttimelong(long starttimelong) {
+        this.starttimelong = starttimelong;
+    }
+
+    public long getEndtimelong() {
+        return endtimelong;
+    }
+
+    public void setEndtimelong(long endtimelong) {
+        this.endtimelong = endtimelong;
     }
 
     @Override
