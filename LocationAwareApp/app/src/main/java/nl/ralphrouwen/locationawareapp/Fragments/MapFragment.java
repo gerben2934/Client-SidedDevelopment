@@ -173,7 +173,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 currentLocation = locationResult.getLastLocation();
-                startLocation(locationResult.getLastLocation());
+//                startLocation(locationResult.getLastLocation());
                 updateLocation(currentLocation);
                 Log.e("LOG!!!!!", String.valueOf(currentLocation));
             }

@@ -43,12 +43,14 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import nl.ralphrouwen.locationawareapp.Adapters.ParkedAdapter;
 import nl.ralphrouwen.locationawareapp.Fragments.DetailedParkedMapFragment;
@@ -93,10 +95,8 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         parkButtonPressed = false;
         generateParkeds();
-        buildHistoryFragment();
         bindComponents();
         fillComponents();
-        Log.d("length:", "count() " + parkeds.size());
         parkbutton = findViewById(R.id.parkbutton);
         mLayoutManager = new LinearLayoutManager(this);
         geocoder = new Geocoder(mContext, Locale.getDefault());
@@ -316,8 +316,13 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren())
                 {
-                    Log.e("snapshotdata", String.valueOf(dataSnapshot1.getValue()));
-                    Parked parked = dataSnapshot1.getValue(Parked.class);
+                    int i = 1;
+                    //            restaurantRef.child("parks").child(String.valueOf(parked.getId())).setValue(parked);
+
+                    Log.e("specialsnapshotdata", String.valueOf(dataSnapshot.child(String.valueOf(i)).child("endTime")));
+                    i++;
+//                    String parked = dataSnapshot1.getValue(String.class);
+//                    Log.e("datasnapshot", String.valueOf(parked));
                 }
             }
 
@@ -326,6 +331,17 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 
             }
         });
+
+//        DateTime dateTime = new DateTime(2000,01,11,23,10);
+//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        String uid = user.getUid();
+//        Log.e("userLogin!", uid);
+//        DatabaseReference restaurantRef = FirebaseDatabase
+//                .getInstance()
+//                .getReference(Constants.FIREBASE_CHILD_PARKS)
+//                .child(uid);
+//
+//        restaurantRef.child("park").setValue(dateTime);
 
 //        Parked car = new Parked(1, 4.5788538f,  51.5480428f, new DateTime(2018, 10, 22, 0, 0),
 //                new DateTime(2018, 10, 27, 5, 10), false, "Gerbens huis");
