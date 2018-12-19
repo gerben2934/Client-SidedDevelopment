@@ -50,6 +50,17 @@ public class Parked implements Parcelable {
     public Parked() {
     }
 
+    public void convertStartTime()
+    {
+        this.startTime = new DateTime(starttimelong);
+    }
+
+    public void convertEndTime()
+    {
+        this.startTime = new DateTime(endtimelong);
+    }
+
+
     protected Parked(Parcel in) {
         id = in.readInt();
         longitude = in.readFloat();
@@ -151,6 +162,7 @@ public class Parked implements Parcelable {
         this.endTime = endTime;
     }
 
+
     public void setValid(boolean valid) {
         this.valid = valid;
     }
@@ -181,6 +193,23 @@ public class Parked implements Parcelable {
 
     public void setEndtimelong(long endtimelong) {
         this.endtimelong = endtimelong;
+    }
+
+    @Override
+    public String toString() {
+        return "Parked{" +
+                "id=" + id +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", parkedTime=" + parkedTime +
+                ", valid=" + valid +
+                ", streetName='" + streetName + '\'' +
+                ", pushId='" + pushId + '\'' +
+                ", starttimelong=" + starttimelong +
+                ", endtimelong=" + endtimelong +
+                '}';
     }
 
     @Override

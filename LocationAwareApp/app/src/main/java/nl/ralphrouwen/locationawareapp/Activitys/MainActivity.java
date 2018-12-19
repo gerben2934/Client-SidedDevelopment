@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     public static final String PARKEDLIST_URL = "parkedListURL";
 
     public static final String PARKED_URL = "parkedURL";
-    private ArrayList<Parked> parkeds;
+    private ArrayList<Parked> parkeds = new ArrayList<>();
     private Parked currentParked;
 
     private ImageButton parkbutton;
@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        buildHistoryFragment();
         createSignInIntent();
         mContext = getBaseContext();
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -202,6 +203,16 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     editDays.setText("");
                     editHours.setText("");
                     editMinutes.setText("");
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    String uid = user.getUid();
+                    Log.e("userLogin!", uid);
+                    DatabaseReference restaurantRef = FirebaseDatabase
+                            .getInstance()
+                            .getReference(Constants.FIREBASE_CHILD_PARKS)
+                            .child(uid);
+                    Parked firebaseParked = new Parked(UniqueID, (float)currentLocation.longitude,(float) currentLocation.latitude, begin.getMillis(), end.getMillis(), false, getAddress(currentLocation));
+                    restaurantRef.child("parks").child(String.valueOf(firebaseParked.getId())).setValue(firebaseParked);
 
                     String info = getResources().getString(R.string.address) + " " + getAddress(currentLocation)
                             + "\r\n" + getResources().getString(R.string.payedTill) + currentParked.getEndTime().toString("hh:mm, MMM d yyyy");
@@ -317,8 +328,11 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren())
                 {
                     Parked parked = dataSnapshot1.getValue(Parked.class);
-                    Log.e("datasnapshot", String.valueOf(parked));
-                    Log.e("datasnapshott", String.valueOf(dataSnapshot1));
+                    parked.convertEndTime();
+                    parked.convertStartTime();
+                    parkeds.add(parked);
+                    HistoryFragment.updateRecyclerView(parked, true);
+                    Log.e("datasnapshot", parked.toString());
                 }
             }
 
@@ -326,9 +340,10 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("mapppp", String.valueOf(databaseError));
-
             }
         });
+
+
 
 //        DateTime dateTime = new DateTime(2000,01,11,23,10);
 //                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -364,7 +379,6 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 //        }
 
 
-        buildHistoryFragment();
     }
 
     private void buildHistoryFragment()

@@ -104,6 +104,11 @@ public class HistoryFragment extends Fragment {
         return parkeds;
     }
 
+    public void refreshRecylcerView()
+    {
+        mAdapter.notifyDataSetChanged();
+    }
+
     public static void updateRecyclerView(Parked parked, boolean addToView) {
         if(addToView)
         {
