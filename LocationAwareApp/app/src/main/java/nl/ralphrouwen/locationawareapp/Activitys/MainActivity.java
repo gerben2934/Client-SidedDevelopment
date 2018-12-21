@@ -147,10 +147,8 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 //Succesvol ingelogd
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 generateParkeds();
-//                FirebaseMessaging.getInstance().setAutoInitEnabled(true);
-//                GetMessages(user.getDisplayName());
-//                other_user.setText(user.getDisplayName());
             } else {
+                createSignInIntent();
                 //Inloggen is mislukt
             }
         }
@@ -331,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     Parked parked = dataSnapshot1.getValue(Parked.class);
                     parked.convertEndTime();
                     parked.convertStartTime();
-                    parkeds.add(parked);
+//                    parkeds.add(parked);
                     HistoryFragment.updateRecyclerView(parked, true);
                     Log.e("datasnapshot", parked.toString());
                 }
@@ -343,41 +341,6 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 Log.e("mapppp", String.valueOf(databaseError));
             }
         });
-
-
-
-//        DateTime dateTime = new DateTime(2000,01,11,23,10);
-//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        String uid = user.getUid();
-//        Log.e("userLogin!", uid);
-//        DatabaseReference restaurantRef = FirebaseDatabase
-//                .getInstance()
-//                .getReference(Constants.FIREBASE_CHILD_PARKS)
-//                .child(uid);
-//
-//        restaurantRef.child("park").setValue(dateTime);
-
-//        DateTime dateTime =   new DateTime(2018, 10, 27, 5, 10);
-//        Parked car = new Parked(1, 4.5788538f,  51.5480428f,dateTime.getMillis(),
-//               dateTime.getMillis(), false, "Gerbens huis");
-//        parkeds.add(car);
-
-//        parkeds.add(new Parked(2, 4.7927f, 51.5857f, new DateTime(2018, 10, 22, 0, 0),
-//                new DateTime(2018, 10, 23, 5, 10), false, "Gerbens school"));
-//        parkeds.add(new Parked(3, 4.6721458f, 51.86096769f, new DateTime(2018, 11, 10, 0, 12),
-//                new DateTime(2018, 11, 10, 10, 12), false, "Ralphs adres"));
-////
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        String uid = user.getUid();
-//        Log.e("userLogin!", uid);
-//        DatabaseReference restaurantRef = FirebaseDatabase
-//                .getInstance()
-//                .getReference(Constants.FIREBASE_CHILD_PARKS)
-//                .child(uid);
-//
-//        for (Parked parked : parkeds) {
-//            restaurantRef.child("parks").child(String.valueOf(parked.getId())).setValue(parked);
-//        }
     }
 
     private void buildHistoryFragment()
@@ -401,6 +364,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         return value;
     }
 
+    @Override
     public void onBackPressed() {
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);
