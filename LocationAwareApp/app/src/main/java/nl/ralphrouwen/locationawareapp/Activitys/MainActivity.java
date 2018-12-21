@@ -28,6 +28,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -60,9 +61,15 @@ import nl.ralphrouwen.locationawareapp.Fragments.HistoryFragment;
 import nl.ralphrouwen.locationawareapp.Fragments.MapFragment;
 import nl.ralphrouwen.locationawareapp.Helper.InputFilterMinMax;
 import nl.ralphrouwen.locationawareapp.Helper.Constants;
+import nl.ralphrouwen.locationawareapp.Helper.MovieCastDirectionsProvider;
+import nl.ralphrouwen.locationawareapp.Helper.RestProvider;
+import nl.ralphrouwen.locationawareapp.Helper.interfaces.DirectionsProvider;
+import nl.ralphrouwen.locationawareapp.Helper.listeners.DirectionsProviderListener;
+import nl.ralphrouwen.locationawareapp.Helper.listeners.RestProviderListener;
 import nl.ralphrouwen.locationawareapp.Models.Car;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
+import nl.ralphrouwen.locationawareapp.business.listeners.DirectionsListener;
 
 public class MainActivity extends AppCompatActivity implements MapFragment.OnFragmentInteractionListener, HistoryFragment.OnFragmentInteractionListener {
 
@@ -87,6 +94,9 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     private RecyclerView.LayoutManager mLayoutManager;
     private static Geocoder geocoder;
     private Context mContext;
+
+    DirectionsProvider directionsProvider;
+    RestProvider restProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -21,7 +21,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import nl.ralphrouwen.locationawareapp.Activitys.MainActivity;
-import nl.ralphrouwen.locationawareapp.Helper.LocationListener;
+import nl.ralphrouwen.locationawareapp.Helper.listeners.LocationListener;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
 import static nl.ralphrouwen.locationawareapp.Activitys.MainActivity.PARKED_URL;
