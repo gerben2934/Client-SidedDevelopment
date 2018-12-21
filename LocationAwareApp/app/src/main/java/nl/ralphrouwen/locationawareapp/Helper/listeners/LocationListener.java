@@ -1,4 +1,4 @@
-package nl.ralphrouwen.locationawareapp.Helper;
+package nl.ralphrouwen.locationawareapp.Helper.listeners;
 
 import android.location.Location;
 

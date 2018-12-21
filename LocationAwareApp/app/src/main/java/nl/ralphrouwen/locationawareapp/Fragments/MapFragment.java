@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
@@ -20,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -34,20 +32,25 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import nl.ralphrouwen.locationawareapp.Activitys.AppContext;
 import nl.ralphrouwen.locationawareapp.Activitys.MainActivity;
 import nl.ralphrouwen.locationawareapp.Helper.GPSTracker;
 import nl.ralphrouwen.locationawareapp.Helper.LocationListener;
 import nl.ralphrouwen.locationawareapp.LocationPermissionRequest;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
+import nl.ralphrouwen.locationawareapp.business.listeners.DirectionsListener;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -68,6 +71,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static ArrayList<Marker> markers;
     private static Marker parkedMarker;
     private static String parkedInfo;
+
+    private Polyline polyline;
+
 
     public MapFragment() {
     }
@@ -127,6 +133,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        getRoute();
         if (LocationPermissionRequest.requestPermission(this))
         {
             try {
@@ -299,5 +306,38 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public static void removeParkedMarker() {
         parkedMarker.remove();
+    }
+
+    public void drawPolyLineOnMap(List<LatLng> list) {
+        PolylineOptions polyOptions = new PolylineOptions();
+        polyOptions.color(Color.BLUE);
+        polyOptions.width(5);
+        polyOptions.addAll(list);
+
+//        mMap.clear();
+        polyline = mMap.addPolyline(polyOptions);
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (LatLng latLng : list)
+            builder.include(latLng);
+    }
+
+    public void getRoute()
+    {
+        LatLng origin = new LatLng(51.8583878, 4.677771099999973);
+        LatLng destination = new LatLng(51.5719149, 4.768323000000009);
+
+        AppContext.getInstance(context).getRouteManager().getDirections(origin, destination, new DirectionsListener() {
+            @Override
+            public void onReceivedDirections(List<LatLng> directionList) {
+                Log.e("DATARECEIVEDDIRECTIONS1234567891", String.valueOf(directionList));
+                drawPolyLineOnMap(directionList);
+            }
+
+            @Override
+            public void onError(Error error) {
+
+            }
+        });
     }
 }

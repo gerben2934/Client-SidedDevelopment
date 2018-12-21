@@ -113,8 +113,7 @@ public class HistoryFragment extends Fragment {
     public static void updateRecyclerView(Parked parked, boolean addToView) {
         if(addToView)
         {
-//            parkeds.add(0, parked);
-//            mAdapter.notifyItemInserted(0);
+            parkeds.add(0, parked);
             mAdapter.notifyDataSetChanged();
             mRecyclerView.scrollToPosition(0);
         }
@@ -122,6 +121,5 @@ public class HistoryFragment extends Fragment {
             parkeds.remove(parked);
             mAdapter.notifyItemRemoved(0);
         }
-
     }
 }

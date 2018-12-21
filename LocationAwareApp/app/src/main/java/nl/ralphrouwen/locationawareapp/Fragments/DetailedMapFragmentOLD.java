@@ -22,8 +22,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Locale;
 
-import nl.ralphrouwen.locationawareapp.Helper.GPSTracker;
-import nl.ralphrouwen.locationawareapp.Helper.LocationListener;
+import nl.ralphrouwen.locationawareapp.Helper.listeners.LocationListener;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
 
@@ -35,7 +34,6 @@ public class DetailedMapFragmentOLD extends Fragment implements OnMapReadyCallba
     private Marker marker;
     private OnFragmentInteractionListener mListener;
     private Context context;
-    private GPSTracker gpsTracker;
     private Location parkedLocation;
     private Geocoder geocoder;
     boolean startup = true;
@@ -92,7 +90,6 @@ public class DetailedMapFragmentOLD extends Fragment implements OnMapReadyCallba
     public void onAttach(Context context1) {
         super.onAttach(context1);
         context = context1;
-        gpsTracker = new GPSTracker(context, this::onLocationListener);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
