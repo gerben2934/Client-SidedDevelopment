@@ -26,4 +26,8 @@
     <string name="yes">JA</string>
     <string name="no">NEE</string>
     <string name="month">" Maanden"</string>
+    <string name="notificationTitle">De locatie van je auto is ingesteld!</string>
+    <string name="notificationText1">De locatie van je auto is:</string>
+    <string name="notificationText2">U heeft nog voor</string>
+    <string name="notificationText3">minuten parkeergeld betaald.</string>
 </resources>

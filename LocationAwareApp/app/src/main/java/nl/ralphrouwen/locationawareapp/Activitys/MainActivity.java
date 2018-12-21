@@ -1,21 +1,18 @@
 package nl.ralphrouwen.locationawareapp.Activitys;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,9 +27,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,28 +35,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.joda.time.DateTime;
-import org.joda.time.Period;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
-import nl.ralphrouwen.locationawareapp.Adapters.ParkedAdapter;
-import nl.ralphrouwen.locationawareapp.Fragments.DetailedParkedMapFragment;
 import nl.ralphrouwen.locationawareapp.Fragments.HistoryFragment;
 import nl.ralphrouwen.locationawareapp.Fragments.MapFragment;
 import nl.ralphrouwen.locationawareapp.Helper.InputFilterMinMax;
 import nl.ralphrouwen.locationawareapp.Helper.Constants;
-import nl.ralphrouwen.locationawareapp.Models.Car;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
+import nl.ralphrouwen.locationawareapp.NotificationHelper;
 import nl.ralphrouwen.locationawareapp.R;
 
 public class MainActivity extends AppCompatActivity implements MapFragment.OnFragmentInteractionListener, HistoryFragment.OnFragmentInteractionListener {
@@ -85,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     private TextView textMinutes;
 
     private RecyclerView.LayoutManager mLayoutManager;
+    private NotificationCompat.Builder notificationBuilder;
+    private NotificationHelper notificationHelper;
     private static Geocoder geocoder;
     private Context mContext;
 
@@ -99,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         parkButtonPressed = false;
         bindComponents();
         fillComponents();
+
+        notificationHelper = new NotificationHelper(this);
         parkbutton = findViewById(R.id.parkbutton);
         mLayoutManager = new LinearLayoutManager(this);
         geocoder = new Geocoder(mContext, Locale.getDefault());
@@ -119,8 +111,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         }
     }
 
-    private void createSignInIntent()
-    {
+    private void createSignInIntent() {
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build()
@@ -162,12 +153,11 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 
         try {
             addressList = geocoder.getFromLocation(location.latitude, location.longitude, 2);
-            if(addressList != null && addressList.size() != 0) {
+            if (addressList != null && addressList.size() != 0) {
                 addressStr = addressList.get(0).getThoroughfare() + " ";
                 addressStr += addressList.get(0).getSubThoroughfare() + ", ";
-                addressStr += addressList.get(0).getLocality(); }
-            else
-            {
+                addressStr += addressList.get(0).getLocality();
+            } else {
                 Log.i("NULL or count() = 0", "");
             }
         } catch (IOException e) {
@@ -198,12 +188,11 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     end = end.plusHours(values.get(1));
                     end = end.plusMinutes(values.get(2));
 
-                    currentParked = new Parked(UniqueID, (float)currentLocation.longitude, (float)currentLocation.latitude, begin, end, true, getAddress(currentLocation));
-                    parkeds.add(0, currentParked);
+                    currentParked = new Parked(UniqueID, (float) currentLocation.longitude, (float) currentLocation.latitude, begin, end, true, getAddress(currentLocation));
+                    //parkeds.add(0, currentParked);
                     editDays.setText("");
                     editHours.setText("");
                     editMinutes.setText("");
-
                     Log.e("arraylistsize", String.valueOf(UniqueID));
 
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -213,15 +202,13 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                             .getInstance()
                             .getReference(Constants.FIREBASE_CHILD_PARKS)
                             .child(uid);
-                    Parked firebaseParked = new Parked(UniqueID, (float)currentLocation.longitude,(float) currentLocation.latitude, begin.getMillis(), end.getMillis(), false, getAddress(currentLocation));
+                    Parked firebaseParked = new Parked(UniqueID, (float) currentLocation.longitude, (float) currentLocation.latitude, begin.getMillis(), end.getMillis(), false, getAddress(currentLocation));
                     restaurantRef.child("parks").child(String.valueOf(firebaseParked.getId())).setValue(firebaseParked);
 
-                    String info = getResources().getString(R.string.address) + " " + getAddress(currentLocation)
-                            + "\r\n" + getResources().getString(R.string.payedTill) + currentParked.getEndTime().toString("hh:mm, MMM d yyyy");
-                    MapFragment.setParkedMarker(currentLocation, info);
-
-//                    HistoryFragment.updateRecyclerView(currentParked, true);
+                    MapFragment.setParkedMarker(currentParked);
                     dialog.dismiss();
+
+                    createNofitication(currentParked);
                 }
             });
 
@@ -272,6 +259,43 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         }
     }
 
+    //First: check if currentLocation != null
+    //Create the notification
+    public void createNofitication(Parked currentParked) {
+        String title = getResources().getString(R.string.notificationTitle);
+        LatLng parkedLocation = new LatLng(currentParked.getLatitude(), currentParked.getLongitude());
+        String body = getResources().getString(R.string.notificationText1) + getAddress(parkedLocation) + ".\r\n" +
+                getResources().getString(R.string.notificationText1) + "15" +
+                currentParked.getParkedTime(mContext);
+
+        //create Notification here!
+        postNotification(1, title, body);
+        notificationHelper.getNotification1(title, body);
+    }
+
+    //Post the notifications//
+    public void postNotification(int id, String title, String body) {
+        Notification.Builder notificationBuilder = null;
+        notificationBuilder = notificationHelper.getNotification1(title, body);
+
+        //For different notifications!
+        /*switch (id) {
+            case notification_one:
+                notificationBuilder = notificationHelper.getNotification1(title,
+                        getString(R.string.channel_one_body));
+                break;
+
+            case notification_two:
+                notificationBuilder = notificationHelper.getNotification2(title,
+                        getString(R.string.channel_two_body));
+                break;
+        }*/
+
+        if (notificationBuilder != null) {
+            notificationHelper.notify(id, notificationBuilder);
+        }
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
 
@@ -296,8 +320,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         editMinutes.setFilters(new InputFilter[]{new InputFilterMinMax(0, 59), new InputFilter.LengthFilter(2)});
     }
 
-    public ArrayList<Integer> getValues()
-    {
+    public ArrayList<Integer> getValues() {
         ArrayList<Integer> values = new ArrayList<>();
 
         values.add(getInt(editDays.getText().toString(), 0));
@@ -306,8 +329,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         return values;
     }
 
-    public void generateParkeds()
-    {
+    public void generateParkeds() {
 
         //login:
         // sign in with email:
@@ -321,19 +343,28 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 .getReference(Constants.FIREBASE_CHILD_PARKS)
                 .child(uid)
                 .child("parks");
+
 ////
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 HistoryFragment.refreshRecylcerView();
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren())
-                {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     Parked parked = dataSnapshot1.getValue(Parked.class);
                     parked.convertEndTime();
                     parked.convertStartTime();
                     parkeds.add(parked);
                     HistoryFragment.updateRecyclerView(parked, true);
                     Log.e("datasnapshot", parked.toString());
+                }
+                Log.i("PARKED SIZE: HF ", "PArked: " + parkeds.size());
+                for (int i = 0; i < parkeds.size(); i++) {
+                    Parked parked = parkeds.get(i);
+                    if (i == parkeds.size() && parkeds.get(parkeds.size()).isValid()) {
+                        MapFragment.setParkedMarker(parked);
+                    } else {
+                        MapFragment.setMarker(parked);
+                    }
                 }
             }
 
@@ -343,8 +374,6 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 Log.e("mapppp", String.valueOf(databaseError));
             }
         });
-
-
 
 //        DateTime dateTime = new DateTime(2000,01,11,23,10);
 //                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -380,8 +409,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 //        }
     }
 
-    private void buildHistoryFragment()
-    {
+    private void buildHistoryFragment() {
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         HistoryFragment hf = HistoryFragment.newInstance(parkeds);
         fragmentManager.beginTransaction().replace(R.id.fragment_history, hf).commit();
@@ -397,7 +425,6 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 value = defaultValue;
             }
         }
-
         return value;
     }
 
@@ -406,5 +433,9 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         startMain.addCategory(Intent.CATEGORY_HOME);
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
+    }
+
+    public void checkForParked() {
+
     }
 }

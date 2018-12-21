@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -32,18 +31,22 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import nl.ralphrouwen.locationawareapp.Activitys.MainActivity;
 import nl.ralphrouwen.locationawareapp.Helper.GPSTracker;
 import nl.ralphrouwen.locationawareapp.Helper.LocationListener;
+import nl.ralphrouwen.locationawareapp.LocationPermissionRequest;
+import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
 
 
@@ -62,6 +65,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private LocationCallback mLocationCallback;
     private Location currentLocation;
 
+    private static ArrayList<Marker> markers;
     private static Marker parkedMarker;
     private static String parkedInfo;
 
@@ -123,39 +127,56 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-//        mMap.setMyLocationEnabled(true);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setRotateGesturesEnabled(true);
-        mMap.getUiSettings().setScrollGesturesEnabled(true);
-        mMap.getUiSettings().setTiltGesturesEnabled(false);
-        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-            @Override
-            public View getInfoWindow(Marker marker) {
-                return null;
+        if (LocationPermissionRequest.requestPermission(this))
+        {
+            try {
+                mMap.setMyLocationEnabled(true);
             }
+            catch (SecurityException sx) {sx.printStackTrace();}
 
-            @Override
-            public View getInfoContents(Marker marker) {
-                LinearLayout info = new LinearLayout(context);
-                info.setOrientation(LinearLayout.VERTICAL);
+/*
+            mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14.0f));
+                    return false;
+                }
+            });*/
+            mMap.getUiSettings().setZoomControlsEnabled(true);
+            mMap.getUiSettings().setRotateGesturesEnabled(true);
+            mMap.getUiSettings().setScrollGesturesEnabled(true);
+            mMap.getUiSettings().setTiltGesturesEnabled(false);
+            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    return null;
+                }
 
-                TextView title = new TextView(context);
-                title.setTextColor(Color.BLACK);
-                title.setGravity(Gravity.CENTER);
-                title.setTypeface(null, Typeface.BOLD);
-                title.setText(marker.getTitle());
+                @Override
+                public View getInfoContents(Marker marker) {
+                    LinearLayout info = new LinearLayout(context);
+                    info.setOrientation(LinearLayout.VERTICAL);
 
-                TextView snippet = new TextView(context);
-                snippet.setTextColor(Color.GRAY);
-                snippet.setText(marker.getSnippet());
+                    TextView title = new TextView(context);
+                    title.setTextColor(Color.BLACK);
+                    title.setGravity(Gravity.CENTER);
+                    title.setTypeface(null, Typeface.BOLD);
+                    title.setText(marker.getTitle());
 
-                info.addView(title);
-                info.addView(snippet);
+                    TextView snippet = new TextView(context);
+                    snippet.setTextColor(Color.GRAY);
+                    snippet.setText(marker.getSnippet());
 
-                return info;
-            }
-        });
-        setupLocation();
+                    info.addView(title);
+                    info.addView(snippet);
+
+                    return info;
+                }
+            });
+            setupLocation();
+        }
+        else
+            return;
     }
 
     public void setupLocation()
@@ -175,7 +196,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 currentLocation = locationResult.getLastLocation();
 //                startLocation(locationResult.getLastLocation());
                 updateLocation(currentLocation);
-                Log.e("LOG!!!!!", String.valueOf(currentLocation));
+                //Log.e("LOG!!!!!", String.valueOf(currentLocation));
             }
         }, Looper.myLooper());
     }
@@ -200,15 +221,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public void updateLocation(Location location)
     {
-        if(!startup)
+/*        if(startup)
         {
+            //alle markers verwijderen.
+            //Markers.get(0) (eigen locatie) updaten met location!
+            //alle markers opnieuw tekenen
+
+//            for (int i = 0; i < markers.size(); i++)
+//            {
+//                if(i == 0)
+//                {
+//                    Marker oldLocationMarker = markers.get(0);
+//                    Marker newLocationMarker = new Marker()
+//                    markers.get(0).get
+//                }
+//            }
+
             LatLng parkedLocation = parkedMarker.getPosition();
             mMap.clear();
             setParkedMarker(parkedLocation, parkedInfo);
-        }
-        mMap.clear();
+        }*/
+
         myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(myLocation).title("Your Location!"));
+        //mMap.addMarker(new MarkerOptions().position(myLocation).title("Your Location!"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14.0f));
     }
 
@@ -242,13 +277,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return myLocation;
     }
 
-    public static void setParkedMarker(LatLng location, String info)
+    public static void setParkedMarker(Parked parked)
     {
-        parkedInfo = info;
+        LatLng location = new LatLng(parked.getLatitude(), parked.getLongitude());
         String address = MainActivity.getAddress(location);
-        parkedMarker = mMap.addMarker(new MarkerOptions().position(location).title(context.getResources().getString(R.string.carLocation)).snippet(info));
+        String info = context.getResources().getString(R.string.address) + " " + MainActivity.getAddress(location)
+                + "\r\n" + context.getResources().getString(R.string.payedTill) + parked.getEndTime().toString("hh:mm, MMM d yyyy");
+        parkedMarker = mMap.addMarker(new MarkerOptions().position(location).title(context.getResources().getString(R.string.carLocation))
+                .snippet(info).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
         CameraPosition parkedmarker = CameraPosition.builder().target(location).zoom(14).build();
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(parkedmarker));
+    }
+
+    public static void setMarker(Parked parked)
+    {
+        LatLng location = new LatLng(parked.getLatitude(), parked.getLongitude());
+        String info = context.getResources().getString(R.string.address) + " " + MainActivity.getAddress(location);
+        mMap.addMarker(new MarkerOptions().position(location).title(MainActivity.getAddress(location))
+                .snippet(info).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
     }
 
     public static void removeParkedMarker() {

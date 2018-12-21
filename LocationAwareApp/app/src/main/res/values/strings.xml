@@ -28,4 +28,10 @@
     <string name="removeCarLocationText">Are you sure you want to remove your car location from the map? Warning! This can not be undone!</string>
     <string name="yes">YES</string>
     <string name="no">NO</string>
+    <string name="notificationChannel_ID" translatable="false">12345</string>
+    <string name="notificationChannel_name" translatable="false">chanel1</string>
+    <string name="notificationTitle">Your car location is set!</string>
+    <string name="notificationText1">Your car location is: </string>
+    <string name="notificationText2">You have payed parking for</string>
+    <string name="notificationText3">minutes.</string>
 </resources>
