@@ -30,8 +30,10 @@
     <string name="no">NO</string>
     <string name="notificationChannel_ID" translatable="false">12345</string>
     <string name="notificationChannel_name" translatable="false">chanel1</string>
-    <string name="notificationTitle">Your car location is set!</string>
-    <string name="notificationText1">Your car location is: </string>
-    <string name="notificationText2">You have payed parking for</string>
-    <string name="notificationText3">minutes.</string>
+    <string name="notificationReminderTitle1">Attention!</string>
+    <string name="notificationReminderText1">Your car location is: </string>
+    <string name="notificationReminderText2">You have payed parking for</string>
+    <string name="notificationReminderText3">more minutes.</string>
+    <string name="notificationFinalTitle">Your car parking ended</string>
+    <string name="notificationFinalText">Click here to start the navigation back to your car!</string>
 </resources>

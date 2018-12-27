@@ -45,8 +45,6 @@ import java.util.Locale;
 
 import nl.ralphrouwen.locationawareapp.Activitys.AppContext;
 import nl.ralphrouwen.locationawareapp.Activitys.MainActivity;
-import nl.ralphrouwen.locationawareapp.Helper.GPSTracker;
-import nl.ralphrouwen.locationawareapp.Helper.LocationListener;
 import nl.ralphrouwen.locationawareapp.LocationPermissionRequest;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;

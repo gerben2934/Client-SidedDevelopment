@@ -1,4 +1,4 @@
-package nl.ralphrouwen.locationawareapp;
+package nl.ralphrouwen.locationawareapp.Notification;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -8,7 +8,10 @@ import android.os.Build;
 
 import android.app.NotificationManager;
 import android.graphics.Color;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
+import nl.ralphrouwen.locationawareapp.R;
 
 public class NotificationHelper extends ContextWrapper {
 
@@ -41,26 +44,48 @@ public class NotificationHelper extends ContextWrapper {
 
             notificationManager.createNotificationChannel(notificationChannel);
         } else {
-            Log.i("VERSION TO LOW", "Make sure your version is above Android 26!");
+            //Log.i("VERSION TO LOW", "Make sure your version is above Android 26!");
         }
 
     }
 
     //Create the notification that’ll be posted to Channel One//
-
     public Notification.Builder getNotification1(String title, String body) {
-        Log.i("VERSION", "Version: " + Build.VERSION.SDK_INT);
+        //Log.i("VERSION", "Version: " + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Log.i("YES", "YESSS");
+            //Log.i("YES", "YESSS");
             return new Notification.Builder(getApplicationContext(), CHANNEL_ONE_ID)
                     .setContentTitle(title)
                     .setContentText(body)
                     .setSmallIcon(R.drawable.appicon1)
+                    .setStyle(new Notification.BigTextStyle().bigText(body))
                     .setAutoCancel(true);
         }
 
-        Log.i("VERSION TO LOW", "Make sure your version is above Android 26!");
+        //Log.i("VERSION TO LOW", "Make sure your version is above Android 26!");
         return null;
+    }
+
+    public void postNotification(int id, String title, String body) {
+        Notification.Builder notificationBuilder = null;
+        notificationBuilder = getNotification1(title, body);
+
+        //For different notifications!
+        /*switch (id) {
+            case notification_one:
+                notificationBuilder = notificationHelper.getNotification1(title,
+                        getString(R.string.channel_one_body));
+                break;
+
+            case notification_two:
+                notificationBuilder = notificationHelper.getNotification2(title,
+                        getString(R.string.channel_two_body));
+                break;
+        }*/
+
+        if (notificationBuilder != null) {
+            notify(id, notificationBuilder);
+        }
     }
 
     public void notify(int id, Notification.Builder notification) {

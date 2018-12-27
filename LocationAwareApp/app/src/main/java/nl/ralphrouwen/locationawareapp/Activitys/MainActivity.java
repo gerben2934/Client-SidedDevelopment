@@ -2,7 +2,6 @@ package nl.ralphrouwen.locationawareapp.Activitys;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Notification;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
@@ -25,7 +25,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.VolleyError;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.maps.model.LatLng;
@@ -49,16 +48,9 @@ import nl.ralphrouwen.locationawareapp.Fragments.HistoryFragment;
 import nl.ralphrouwen.locationawareapp.Fragments.MapFragment;
 import nl.ralphrouwen.locationawareapp.Helper.InputFilterMinMax;
 import nl.ralphrouwen.locationawareapp.Helper.Constants;
-import nl.ralphrouwen.locationawareapp.Helper.MovieCastDirectionsProvider;
-import nl.ralphrouwen.locationawareapp.Helper.RestProvider;
-import nl.ralphrouwen.locationawareapp.Helper.interfaces.DirectionsProvider;
-import nl.ralphrouwen.locationawareapp.Helper.listeners.DirectionsProviderListener;
-import nl.ralphrouwen.locationawareapp.Helper.listeners.RestProviderListener;
-import nl.ralphrouwen.locationawareapp.Models.Car;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
-import nl.ralphrouwen.locationawareapp.NotificationHelper;
+import nl.ralphrouwen.locationawareapp.Notification.NotificationHelper;
 import nl.ralphrouwen.locationawareapp.R;
-import nl.ralphrouwen.locationawareapp.business.listeners.DirectionsListener;
 
 public class MainActivity extends AppCompatActivity implements MapFragment.OnFragmentInteractionListener, HistoryFragment.OnFragmentInteractionListener {
 
@@ -69,10 +61,13 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     private Parked currentParked;
 
     private ImageButton parkbutton;
-    boolean parkButtonPressed;
+    private boolean parkButtonPressed;
 
     private static final int RC_SIGN_IN = 123;
+    //private static final long PRETIME = 900000; //15 minuten
+    private static final long PRETIME = 30000; //30seconden
 
+    //Textfields/textviews
     private EditText editDays;
     private EditText editHours;
     private EditText editMinutes;
@@ -85,9 +80,8 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     private NotificationHelper notificationHelper;
     private static Geocoder geocoder;
     private Context mContext;
-
-    DirectionsProvider directionsProvider;
-    RestProvider restProvider;
+    private CountDownTimer countDownTimer1;
+    private CountDownTimer countDownTimer2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,12 +192,12 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     end = end.plusMinutes(values.get(2));
 
                     currentParked = new Parked(UniqueID, (float) currentLocation.longitude, (float) currentLocation.latitude, begin, end, true, getAddress(currentLocation));
-                    //parkeds.add(0, currentParked);
                     editDays.setText("");
                     editHours.setText("");
                     editMinutes.setText("");
                     Log.e("arraylistsize", String.valueOf(UniqueID));
 
+                    //Firebase deel:
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     String uid = user.getUid();
                     Log.e("userLogin!", uid);
@@ -217,7 +211,17 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     MapFragment.setParkedMarker(currentParked);
                     dialog.dismiss();
 
-                    createNofitication(currentParked);
+                    long millis = end.getMillis() - begin.getMillis();
+                    //create notification when the parking is not valid anymore:
+                    createNofitication(millis, false);
+
+                    //create 15 min before end reminder notification:
+                    if (millis > PRETIME) {
+                        millis -= PRETIME;
+                    }
+                    createNofitication(millis, true);
+
+                    Toast.makeText(mContext, R.string.notificationReminderTitle1, 3);
                 }
             });
 
@@ -234,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
             AlertDialog alertSet = setLocationBuilder.create();
             alertSet.show();
 
-
         } else {
             AlertDialog.Builder removeLocationBuilder = new AlertDialog.Builder(this);
             removeLocationBuilder.setTitle(getApplication().getString(R.string.removeCarLocationTitle));
@@ -246,10 +249,9 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     parkButtonPressed = false;
                     // Do nothing but close the dialog
                     Log.i("Dialog: ", "Clicked YES, closing dialog!");
-//                    parkeds.remove(0);
-//                    HistoryFragment.updateRecyclerView(parkeds.get(0), false);
                     MapFragment.removeParkedMarker();
-                    //remove last parked object from list
+                    countDownTimer1.cancel();
+                    countDownTimer2.cancel();
                     dialog.dismiss();
                 }
             });
@@ -262,7 +264,6 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     dialog.dismiss();
                 }
             });
-
             AlertDialog alertSet = removeLocationBuilder.create();
             alertSet.show();
         }
@@ -270,38 +271,49 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 
     //First: check if currentLocation != null
     //Create the notification
-    public void createNofitication(Parked currentParked) {
-        String title = getResources().getString(R.string.notificationTitle);
-        LatLng parkedLocation = new LatLng(currentParked.getLatitude(), currentParked.getLongitude());
-        String body = getResources().getString(R.string.notificationText1) + getAddress(parkedLocation) + ".\r\n" +
-                getResources().getString(R.string.notificationText1) + "15" +
-                currentParked.getParkedTime(mContext);
+    public void createNofitication(Long millis, boolean reminder) {
+        if (reminder) //reminder notification 15 min before end
+        {
+            String title = getResources().getString(R.string.notificationReminderTitle1);
+            String body = getResources().getString(R.string.notificationReminderText2) + " " + (PRETIME/60000) + " " + getResources().getString(R.string.notificationReminderText3);
 
-        //create Notification here!
-        postNotification(1, title, body);
-        notificationHelper.getNotification1(title, body);
-    }
+            countDownTimer1 = new CountDownTimer(millis, 1000) {
+                @Override
+                public void onTick(long timeLeft) {
+                    Log.i("TIME", "Time left: " + timeLeft);
+                }
 
-    //Post the notifications//
-    public void postNotification(int id, String title, String body) {
-        Notification.Builder notificationBuilder = null;
-        notificationBuilder = notificationHelper.getNotification1(title, body);
+                @Override
+                public void onFinish() {
+                    Log.e("REMINDER", "Time lefft!!");
+                    notificationHelper.postNotification(1, title, body);
+                    notificationHelper.getNotification1(title, body);
+                }
+            }.start();
 
-        //For different notifications!
-        /*switch (id) {
-            case notification_one:
-                notificationBuilder = notificationHelper.getNotification1(title,
-                        getString(R.string.channel_one_body));
-                break;
 
-            case notification_two:
-                notificationBuilder = notificationHelper.getNotification2(title,
-                        getString(R.string.channel_two_body));
-                break;
-        }*/
+        } else { // actual notification!
+            String title = getResources().getString(R.string.notificationFinalTitle);
+            String body = getResources().getString(R.string.notificationFinalText);
 
-        if (notificationBuilder != null) {
-            notificationHelper.notify(id, notificationBuilder);
+            countDownTimer2 = new CountDownTimer(millis, 1000) {
+                @Override
+                public void onTick(long timeLeft) {
+                    Log.i("TIME", "Time left: " + timeLeft);
+                }
+
+                @Override
+                public void onFinish() {
+                    Log.e("FINISHED", "Time is over!");
+                    notificationHelper.postNotification(2, title, body);
+                    notificationHelper.getNotification1(title, body);
+
+                    //set parked object: valid to false, since the parked is not valid anymore, because the timer ran out.
+                    parkeds.get(parkeds.size() - 1).setValid(false);
+                    parkbutton.setImageResource(R.drawable.parkbutton5);
+                    parkButtonPressed = false;
+                }
+            }.start();
         }
     }
 
@@ -345,6 +357,10 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         // rasrouwe@avans.nl
         // ralph123
 
+        //login:
+        // pedooren@avans.nl
+        // kaaskaas (?)
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
         DatabaseReference reference = FirebaseDatabase
@@ -362,11 +378,10 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     Parked parked = dataSnapshot1.getValue(Parked.class);
                     parked.convertEndTime();
                     parked.convertStartTime();
-//                    parkeds.add(parked);
                     HistoryFragment.updateRecyclerView(parked, true);
-                    Log.e("datasnapshot", parked.toString());
+                    //Log.e("datasnapshot", parked.toString());
                 }
-                Log.i("PARKED SIZE: HF ", "PArked: " + parkeds.size());
+                //Log.i("PARKED SIZE: HF ", "PArked: " + parkeds.size());
                 for (int i = 0; i < parkeds.size(); i++) {
                     Parked parked = parkeds.get(i);
                     if (i == parkeds.size() && parkeds.get(parkeds.size()).isValid()) {
@@ -377,10 +392,9 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 }
             }
 
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("mapppp", String.valueOf(databaseError));
+                //Log.e("mapppp", String.valueOf(databaseError));
             }
         });
     }
@@ -410,9 +424,5 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         startMain.addCategory(Intent.CATEGORY_HOME);
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
-    }
-
-    public void checkForParked() {
-
     }
 }
