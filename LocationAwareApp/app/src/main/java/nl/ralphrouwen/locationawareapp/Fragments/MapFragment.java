@@ -72,7 +72,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private Polyline polyline;
 
-
     public MapFragment() {
     }
 
@@ -139,14 +138,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
             catch (SecurityException sx) {sx.printStackTrace();}
 
-/*
-            mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                @Override
-                public boolean onMyLocationButtonClick() {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14.0f));
-                    return false;
-                }
-            });*/
             mMap.getUiSettings().setZoomControlsEnabled(true);
             mMap.getUiSettings().setRotateGesturesEnabled(true);
             mMap.getUiSettings().setScrollGesturesEnabled(true);
@@ -248,7 +239,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }*/
 
         myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        //mMap.addMarker(new MarkerOptions().position(myLocation).title("Your Location!"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14.0f));
     }
 
@@ -287,7 +277,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         LatLng location = new LatLng(parked.getLatitude(), parked.getLongitude());
         String address = MainActivity.getAddress(location);
         String info = context.getResources().getString(R.string.address) + " " + MainActivity.getAddress(location)
-                + "\r\n" + context.getResources().getString(R.string.payedTill) + parked.getEndTime().toString("hh:mm, MMM d yyyy");
+                + "\r\n" + context.getResources().getString(R.string.payedTill) + " " + parked.getEndTime().toString("hh:mm, MMM d yyyy");
         parkedMarker = mMap.addMarker(new MarkerOptions().position(location).title(context.getResources().getString(R.string.carLocation))
                 .snippet(info).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
         CameraPosition parkedmarker = CameraPosition.builder().target(location).zoom(14).build();

@@ -309,9 +309,12 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     notificationHelper.getNotification1(title, body);
 
                     //set parked object: valid to false, since the parked is not valid anymore, because the timer ran out.
-                    parkeds.get(parkeds.size() - 1).setValid(false);
+                    Parked lastParked = parkeds.get(parkeds.size() -1);
+                    lastParked.setValid(false);
                     parkbutton.setImageResource(R.drawable.parkbutton5);
                     parkButtonPressed = false;
+                    MapFragment.removeParkedMarker();
+                    MapFragment.setMarker(lastParked);
                 }
             }.start();
         }
@@ -384,9 +387,10 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 //Log.i("PARKED SIZE: HF ", "PArked: " + parkeds.size());
                 for (int i = 0; i < parkeds.size(); i++) {
                     Parked parked = parkeds.get(i);
-                    if (i == parkeds.size() && parkeds.get(parkeds.size()).isValid()) {
+                    if (parked.equals(currentParked)) {
                         MapFragment.setParkedMarker(parked);
-                    } else {
+                    }
+                    else {
                         MapFragment.setMarker(parked);
                     }
                 }
