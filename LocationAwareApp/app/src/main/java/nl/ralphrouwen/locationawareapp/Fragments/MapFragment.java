@@ -130,7 +130,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        getRoute();
+//        getRoute();
         if (LocationPermissionRequest.requestPermission(this))
         {
             try {
@@ -239,7 +239,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }*/
 
         myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14.0f));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14.0f));
     }
 
     private double distance(double lat1, double lng1, double lat2, double lng2) {

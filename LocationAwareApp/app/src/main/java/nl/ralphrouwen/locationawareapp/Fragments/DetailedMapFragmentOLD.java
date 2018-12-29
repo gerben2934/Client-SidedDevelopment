@@ -33,6 +33,7 @@ public class DetailedMapFragmentOLD extends Fragment implements OnMapReadyCallba
     private Parked parked;
     private Marker marker;
     private OnFragmentInteractionListener mListener;
+
     private Context context;
     private Location parkedLocation;
     private Geocoder geocoder;

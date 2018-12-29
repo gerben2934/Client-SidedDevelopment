@@ -7,12 +7,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
 import nl.ralphrouwen.locationawareapp.Fragments.DetailedParkedMapFragment;
+import nl.ralphrouwen.locationawareapp.Fragments.MapFragment;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
 
@@ -30,7 +34,9 @@ public class DetailedParked_Activity extends AppCompatActivity implements nl.ral
     TextView deltaTime;  // (end - start) (deltaTime (hh:mm);
     Period timeParked;
     View detailedMapFragment;
+    Button navigateButton;
     //TextView timesParked; (sort on streetName?)
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +56,14 @@ public class DetailedParked_Activity extends AppCompatActivity implements nl.ral
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         DetailedParkedMapFragment ff = DetailedParkedMapFragment.newInstance(parked);
         fragmentManager.beginTransaction().replace(R.id.mapdetailed_fragment, ff).commit();
+        navigateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LatLng destination = new LatLng(parked.getLatitude(), parked.getLongitude());
+                LatLng orgin = MapFragment.getMyLocation();
+                ff.getRoute(orgin, destination);
+            }
+        });
     }
 
     public void BindComponents()
@@ -60,6 +74,7 @@ public class DetailedParked_Activity extends AppCompatActivity implements nl.ral
         startTime = findViewById(R.id.parkedDetailed_startTime);
         endTime = findViewById(R.id.parkedDetailed_endTime);
         deltaTime = findViewById(R.id.parkedDetailed_deltaTime);
+        navigateButton = findViewById(R.id.detaillednavigateID);
     }
 
     public void SetTextViews() {

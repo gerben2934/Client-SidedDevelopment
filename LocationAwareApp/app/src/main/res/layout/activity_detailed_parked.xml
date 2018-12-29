@@ -77,6 +77,23 @@
         android:layout_marginEnd="192dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_begin="192dp"
+        app:layout_constraintGuide_end="192dp"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/detaillednavigateID"
+        style="@style/FirebaseUI.Button.AccountChooser.FacebookButton"
+        android:layout_width="213dp"
+        android:layout_height="74dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Navigate back!"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/parkedDetailed_endTime" />
 </android.support.constraint.ConstraintLayout>
