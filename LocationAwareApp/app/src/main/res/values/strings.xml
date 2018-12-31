@@ -4,7 +4,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
-    <string name="street_name">Streetname:</string>
+    <string name="location">Location:</string>
     <string name="date">Date:</string>
     <string name="time">Time:</string>
     <string name="start_time">Start time:</string>

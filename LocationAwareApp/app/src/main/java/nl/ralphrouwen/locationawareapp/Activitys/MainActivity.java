@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -205,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                             .getInstance()
                             .getReference(Constants.FIREBASE_CHILD_PARKS)
                             .child(uid);
-                    Parked firebaseParked = new Parked(UniqueID, (float) currentLocation.longitude, (float) currentLocation.latitude, begin.getMillis(), end.getMillis(), false, getAddress(currentLocation));
+                    Parked firebaseParked = new Parked(UniqueID, (float) currentLocation.longitude, (float) currentLocation.latitude, begin.getMillis(), end.getMillis(), true, getAddress(currentLocation));
                     restaurantRef.child("parks").child(String.valueOf(firebaseParked.getId())).setValue(firebaseParked);
 
                     MapFragment.setParkedMarker(currentParked);
@@ -311,6 +312,21 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     //set parked object: valid to false, since the parked is not valid anymore, because the timer ran out.
                     Parked lastParked = parkeds.get(parkeds.size() -1);
                     lastParked.setValid(false);
+                    LatLng l = new LatLng((double)lastParked.getLatitude(), (double)lastParked.getLongitude());
+
+                    Parked firebaseParked = new Parked(lastParked.getId(), (float) l.longitude, (float) l.latitude, lastParked.getStartTime().getMillis(), lastParked.getEndTime().getMillis(), true, lastParked.getStreetName());
+
+
+                    //setValid(); moet in de database juist op valid worden gezet!
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    String uid = user.getUid();
+                    Log.e("userLogin!", uid);
+                    DatabaseReference restaurantRef = FirebaseDatabase
+                            .getInstance()
+                            .getReference(Constants.FIREBASE_CHILD_PARKS)
+                            .child(uid);
+                    //restaurantRef.child("parks").child(String.valueOf(lastParked.getId())).setValue(lastParked);
+                    Log.e("NEW PARKED OBJECT: ", ": " + restaurantRef.child("parks").child(String.valueOf(lastParked.getId()).toString()));
                     parkbutton.setImageResource(R.drawable.parkbutton5);
                     parkButtonPressed = false;
                     MapFragment.removeParkedMarker();

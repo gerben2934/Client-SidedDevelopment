@@ -27,14 +27,14 @@ public class DetailedParked_Activity extends AppCompatActivity implements nl.ral
     public Parked parked;
     private Context context;
 
-    TextView streetName;
-    TextView date; //dd:mm:yyyy (01-01-2018
-    TextView startTime; //startTime (hh:mm)
-    TextView endTime; //endTime (hh:mm)
-    TextView deltaTime;  // (end - start) (deltaTime (hh:mm);
-    Period timeParked;
-    View detailedMapFragment;
-    Button navigateButton;
+    private TextView streetName;
+    private TextView date; //dd:mm:yyyy (01-01-2018
+    private TextView startTime; //startTime (hh:mm)
+    private TextView endTime; //endTime (hh:mm)
+    private TextView deltaTime;  // (end - start) (deltaTime (hh:mm);
+    private Period timeParked;
+    private View detailedMapFragment;
+    private Button navigateButton;
     //TextView timesParked; (sort on streetName?)
 
 
@@ -70,16 +70,29 @@ public class DetailedParked_Activity extends AppCompatActivity implements nl.ral
     {
         //detailedMapFragment = findViewById(R.id.mapdetailed_fragment);
         streetName = findViewById(R.id.parkedDetailed_streetName);
+        streetName.setBackground(getResources().getDrawable(R.drawable.textviewborder2));
         date = findViewById(R.id.parkedDetailed_date);
+        date.setBackground(getResources().getDrawable(R.drawable.textviewborder2));
         startTime = findViewById(R.id.parkedDetailed_startTime);
+        startTime.setBackground(getResources().getDrawable(R.drawable.textviewborder2));
         endTime = findViewById(R.id.parkedDetailed_endTime);
+        endTime.setBackground(getResources().getDrawable(R.drawable.textviewborder2));
         deltaTime = findViewById(R.id.parkedDetailed_deltaTime);
+        deltaTime.setBackground(getResources().getDrawable(R.drawable.textviewborder2));
         navigateButton = findViewById(R.id.detaillednavigateID);
+
+        if(!parked.isValid())
+        {
+            navigateButton.setVisibility(View.INVISIBLE);
+        }
+        else {
+            navigateButton.setVisibility(View.VISIBLE);
+        }
     }
 
     public void SetTextViews() {
         //detailedMapFragment.inflate
-        streetName.setText(context.getResources().getString(R.string.street_name) + " " + parked.getStreetName());
+        streetName.setText(context.getResources().getString(R.string.location) + " " + parked.getStreetName());
         date.setText(dateFormatter());
         startTime.setText(timeFormatter(true));
         endTime.setText(timeFormatter(false));

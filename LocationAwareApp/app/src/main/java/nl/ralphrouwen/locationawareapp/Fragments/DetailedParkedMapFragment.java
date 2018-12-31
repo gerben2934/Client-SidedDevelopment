@@ -110,10 +110,14 @@ public class DetailedParkedMapFragment extends Fragment implements OnMapReadyCal
         mGoogleMap = googleMap;
         if (LocationPermissionRequest.requestPermission(this))
         {
-            try {
-                googleMap.setMyLocationEnabled(true);
+            if(parked.isValid())
+            {
+                try {
+                    googleMap.setMyLocationEnabled(true);
+                }
+                catch (SecurityException sx) {sx.printStackTrace();}
             }
-            catch (SecurityException sx) {sx.printStackTrace();}
+
             mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
             mGoogleMap.getUiSettings().setAllGesturesEnabled(false);
             mGoogleMap.getUiSettings().setRotateGesturesEnabled(true);
