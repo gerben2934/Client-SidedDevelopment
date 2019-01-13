@@ -10,12 +10,19 @@ import android.os.Build;
 
 import android.app.NotificationManager;
 import android.graphics.Color;
+import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
+import java.util.Optional;
+
+import nl.ralphrouwen.locationawareapp.Activitys.DetailedParked_Activity;
 import nl.ralphrouwen.locationawareapp.Activitys.MainActivity;
+import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
+
+import static nl.ralphrouwen.locationawareapp.Activitys.MainActivity.PARKED_URL;
 
 public class NotificationHelper extends ContextWrapper {
 
@@ -53,10 +60,28 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     //Create the notification that’ll be posted to Channel One//
-    public Notification.Builder getNotification1(String title, String body) {
+    public Notification.Builder getNotification1(String title, String body, Optional<Parked> parked) {
+        Intent resultIntent;
+        // 2 verschillende notificaties:
+        //bij 1: homeactivity
+        //bij 2: detailed activitiy met het object
+        if (parked.isPresent() && parked != null) {
+            resultIntent = new Intent(this, DetailedParked_Activity.class);
+            resultIntent.putExtra(PARKED_URL, (Parcelable) parked.get());
 
+
+/*            Intent mainActivityIntent = new Intent(this, MainActivity.class);
+            //put backstack intent:
+            PendingIntent backToMain = android.app.TaskStackBuilder.create(context)
+                    .addNextIntentWithParentStack(mainActivityIntent)
+                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            context.getApplicationContext().startActivity(intent);*/
+
+
+        } else {
+            resultIntent = new Intent(this, MainActivity.class);
+        }
         //Create intent you want to start-up when clicked on the notification:
-        Intent resultIntent = new Intent(this, MainActivity.class);
         // Create the TaskStackBuilder and add the intent, which inflates the back stack
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addNextIntentWithParentStack(resultIntent);
@@ -79,9 +104,14 @@ public class NotificationHelper extends ContextWrapper {
         return null;
     }
 
-    public void postNotification(int id, String title, String body) {
+    public void postNotification(int id, String title, String body, Optional<Parked> parked) {
         Notification.Builder notificationBuilder = null;
-        notificationBuilder = getNotification1(title, body);
+
+        if (parked.isPresent() && parked != null) { //actual navigation notification
+            notificationBuilder = getNotification1(title, body, Optional.ofNullable(parked.get()));
+        } else { //reminder
+            notificationBuilder = getNotification1(title, body, Optional.empty());
+        }
 
         if (notificationBuilder != null) {
             notify(id, notificationBuilder);

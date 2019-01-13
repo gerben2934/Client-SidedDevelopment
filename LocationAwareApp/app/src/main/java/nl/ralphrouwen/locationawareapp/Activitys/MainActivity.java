@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import nl.ralphrouwen.locationawareapp.Fragments.HistoryFragment;
 import nl.ralphrouwen.locationawareapp.Fragments.MapFragment;
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
 
     private static final int RC_SIGN_IN = 123;
     //private static final long PRETIME = 900000; //15 minuten
+    //For testing:
     private static final long PRETIME = 30000; //30seconden
 
     //Textfields/textviews
@@ -281,14 +283,14 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
             countDownTimer1 = new CountDownTimer(millis, 1000) {
                 @Override
                 public void onTick(long timeLeft) {
-                    Log.i("TIME", "Time left: " + timeLeft);
+                    //Log.i("TIME", "Time left: " + timeLeft);
                 }
 
                 @Override
                 public void onFinish() {
-                    Log.e("REMINDER", "Time lefft!!");
-                    notificationHelper.postNotification(1, title, body);
-                    notificationHelper.getNotification1(title, body);
+                    //Log.e("REMINDER", "Time lefft!!");
+                    notificationHelper.postNotification(1, title, body, Optional.empty());
+                    notificationHelper.getNotification1(title, body, Optional.empty());
                 }
             }.start();
 
@@ -306,31 +308,40 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 @Override
                 public void onFinish() {
                     Log.e("FINISHED", "Time is over!");
-                    notificationHelper.postNotification(2, title, body);
-                    notificationHelper.getNotification1(title, body);
+                    Parked parked = parkeds.get(parkeds.size() -1);
+                    notificationHelper.postNotification(2, title, body, Optional.ofNullable(parked));
+                    notificationHelper.getNotification1(title, body, java.util.Optional.ofNullable(parked));
 
                     //set parked object: valid to false, since the parked is not valid anymore, because the timer ran out.
                     Parked lastParked = parkeds.get(parkeds.size() -1);
+                    Log.e("LASTPARKED: ", "LastParked Object: " + lastParked.toString());
                     lastParked.setValid(false);
+
                     LatLng l = new LatLng((double)lastParked.getLatitude(), (double)lastParked.getLongitude());
 
-                    Parked firebaseParked = new Parked(lastParked.getId(), (float) l.longitude, (float) l.latitude, lastParked.getStartTime().getMillis(), lastParked.getEndTime().getMillis(), true, lastParked.getStreetName());
+                    //1 nu lastParked omzetten naar een lastFireBaseParked object!
+                    //2 het object vervangen meth et nieuwe object (valid = false);
 
+                    Parked firebaseParked = new Parked(lastParked.getId(), (float) l.longitude, (float) l.latitude, lastParked.getStarttimelong(), lastParked.getEndtimelong(), true, lastParked.getStreetName());
 
-                    //setValid(); moet in de database juist op valid worden gezet!
+                    //Log.e("newFireBaseParked: ", "New firebase parked Object: " + firebaseParked.toString());
+
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     String uid = user.getUid();
-                    Log.e("userLogin!", uid);
+                    //Log.e("userLogin!", uid);
                     DatabaseReference restaurantRef = FirebaseDatabase
                             .getInstance()
                             .getReference(Constants.FIREBASE_CHILD_PARKS)
                             .child(uid);
-                    //restaurantRef.child("parks").child(String.valueOf(lastParked.getId())).setValue(lastParked);
-                    Log.e("NEW PARKED OBJECT: ", ": " + restaurantRef.child("parks").child(String.valueOf(lastParked.getId()).toString()));
+
+                    restaurantRef.child("parks").child(String.valueOf(lastParked.getId())).setValue(firebaseParked);
+                    //Log.e("NEW PARKED OBJECT: ", ": " + restaurantRef.child("parks").child(String.valueOf(lastParked.getId()).toString()));
+
                     parkbutton.setImageResource(R.drawable.parkbutton5);
                     parkButtonPressed = false;
                     MapFragment.removeParkedMarker();
                     MapFragment.setMarker(lastParked);
+                    System.out.println("new object ?" + restaurantRef.child("parks").child(String.valueOf(firebaseParked.getId())).toString());
                 }
             }.start();
         }
@@ -407,7 +418,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                         MapFragment.setParkedMarker(parked);
                     }
                     else {
-                        MapFragment.setMarker(parked);
+                        //MapFragment.setMarker(parked);
                     }
                 }
             }

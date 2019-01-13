@@ -36,4 +36,5 @@
     <string name="notificationReminderText3">more minutes.</string>
     <string name="notificationFinalTitle">Your car parking ended</string>
     <string name="notificationFinalText">Click here to start the navigation back to your car!</string>
+    <string name="carlocation">Your car is here!</string>
 </resources>

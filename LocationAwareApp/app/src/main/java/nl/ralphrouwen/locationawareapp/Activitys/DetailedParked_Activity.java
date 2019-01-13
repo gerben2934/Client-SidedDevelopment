@@ -3,6 +3,7 @@ package nl.ralphrouwen.locationawareapp.Activitys;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -129,4 +130,11 @@ public class DetailedParked_Activity extends AppCompatActivity implements nl.ral
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+/*    @Override
+    public void onBackPressed() {
+        Intent startMainActivity = new Intent(context, MainActivity.class);
+        startMainActivity.addCategory(Intent.CATEGORY_DEFAULT);
+        startActivity(startMainActivity);
+    }*/
 }

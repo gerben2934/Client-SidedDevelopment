@@ -287,9 +287,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public static void setMarker(Parked parked)
     {
         LatLng location = new LatLng(parked.getLatitude(), parked.getLongitude());
+        String title = context.getResources().getString(R.string.carlocation);
         String info = context.getResources().getString(R.string.address) + " " + MainActivity.getAddress(location);
-        mMap.addMarker(new MarkerOptions().position(location).title(MainActivity.getAddress(location))
-                .snippet(info).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        mMap.addMarker(new MarkerOptions().position(location).title(title)
+                .snippet(info).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
     }
 
     public static void removeParkedMarker() {
