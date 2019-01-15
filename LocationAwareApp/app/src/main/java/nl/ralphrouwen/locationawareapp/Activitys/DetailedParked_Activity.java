@@ -44,6 +44,8 @@ public class DetailedParked_Activity extends AppCompatActivity implements nl.ral
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
         setContentView(R.layout.activity_detailed_parked);
+        overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right);
+
 
         Intent intent = getIntent();
         parked = intent.getParcelableExtra(PARKED_URL);
@@ -125,6 +127,18 @@ public class DetailedParked_Activity extends AppCompatActivity implements nl.ral
         }
         return time;
     }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.fui_slide_in_right, R.anim.fui_slide_out_left);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
 
     @Override
     public void onFragmentInteraction(Uri uri) {

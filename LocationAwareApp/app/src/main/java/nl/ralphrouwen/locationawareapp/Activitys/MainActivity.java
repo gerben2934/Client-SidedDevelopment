@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 createSignInIntent();
                 //Inloggen is mislukt
             }
+            overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right);
         }
     }
 

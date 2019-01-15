@@ -1,5 +1,6 @@
 package nl.ralphrouwen.locationawareapp.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
@@ -89,6 +90,7 @@ public class ParkedAdapter extends RecyclerView.Adapter<ParkedAdapter.ParkedView
                 Intent intent = new Intent(context, DetailedParked_Activity.class);
                 intent.putExtra(PARKED_URL, (Parcelable) parked);
                 context.getApplicationContext().startActivity(intent);
+                ((Activity) context).overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right);
             });
         }
     }
