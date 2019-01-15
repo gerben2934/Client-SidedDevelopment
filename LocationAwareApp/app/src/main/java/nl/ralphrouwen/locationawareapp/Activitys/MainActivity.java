@@ -307,13 +307,12 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 @Override
                 public void onFinish() {
                     Log.e("FINISHED", "Time is over!");
-                    Parked parked = parkeds.get(parkeds.size() -1);
+                    Parked parked = parkeds.get(0);
                     notificationHelper.postNotification(2, title, body, Optional.ofNullable(parked));
                     notificationHelper.getNotification1(title, body, java.util.Optional.ofNullable(parked));
 
                     //set parked object: valid to false, since the parked is not valid anymore, because the timer ran out.
-                    Parked lastParked = parkeds.get(parkeds.size() -1);
-                    Log.e("LASTPARKED: ", "LastParked Object: " + lastParked.toString());
+                    Parked lastParked = parkeds.get(0);
                     lastParked.setValid(false);
 
                     LatLng l = new LatLng((double)lastParked.getLatitude(), (double)lastParked.getLongitude());
@@ -321,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                     //1 nu lastParked omzetten naar een lastFireBaseParked object!
                     //2 het object vervangen meth et nieuwe object (valid = false);
 
-                    Parked firebaseParked = new Parked(lastParked.getId(), (float) l.longitude, (float) l.latitude, lastParked.getStarttimelong(), lastParked.getEndtimelong(), true, lastParked.getStreetName());
+                    Parked firebaseParked = new Parked(parkeds.size(), (float) l.longitude, (float) l.latitude, lastParked.getStarttimelong(), lastParked.getEndtimelong(), false, lastParked.getStreetName());
 
                     //Log.e("newFireBaseParked: ", "New firebase parked Object: " + firebaseParked.toString());
 
