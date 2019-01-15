@@ -217,29 +217,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public void updateLocation(Location location)
     {
-/*        if(startup)
-        {
-            //alle markers verwijderen.
-            //Markers.get(0) (eigen locatie) updaten met location!
-            //alle markers opnieuw tekenen
-
-//            for (int i = 0; i < markers.size(); i++)
-//            {
-//                if(i == 0)
-//                {
-//                    Marker oldLocationMarker = markers.get(0);
-//                    Marker newLocationMarker = new Marker()
-//                    markers.get(0).get
-//                }
-//            }
-
-            LatLng parkedLocation = parkedMarker.getPosition();
-            mMap.clear();
-            setParkedMarker(parkedLocation, parkedInfo);
-        }*/
-
         myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14.0f));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14.0f));
     }
 
     private double distance(double lat1, double lng1, double lat2, double lng2) {

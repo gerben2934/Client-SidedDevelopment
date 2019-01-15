@@ -130,11 +130,4 @@ public class DetailedParked_Activity extends AppCompatActivity implements nl.ral
     public void onFragmentInteraction(Uri uri) {
 
     }
-
-/*    @Override
-    public void onBackPressed() {
-        Intent startMainActivity = new Intent(context, MainActivity.class);
-        startMainActivity.addCategory(Intent.CATEGORY_DEFAULT);
-        startActivity(startMainActivity);
-    }*/
 }

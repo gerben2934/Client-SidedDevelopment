@@ -13,9 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
-import org.joda.time.Period;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
 
 import java.util.ArrayList;
 
