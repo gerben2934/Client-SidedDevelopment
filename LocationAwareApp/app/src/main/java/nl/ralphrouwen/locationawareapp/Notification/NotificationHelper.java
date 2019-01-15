@@ -11,7 +11,6 @@ import android.os.Build;
 import android.app.NotificationManager;
 import android.graphics.Color;
 import android.os.Parcelable;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
@@ -62,12 +61,16 @@ public class NotificationHelper extends ContextWrapper {
     //Create the notification that’ll be posted to Channel One//
     public Notification.Builder getNotification1(String title, String body, Optional<Parked> parked) {
         Intent resultIntent;
+
         // 2 verschillende notificaties:
         //bij 1: homeactivity
         //bij 2: detailed activitiy met het object
         if (parked.isPresent() && parked != null) {
             resultIntent = new Intent(this, DetailedParked_Activity.class);
             resultIntent.putExtra(PARKED_URL, (Parcelable) parked.get());
+            //resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
 
 
 /*            Intent mainActivityIntent = new Intent(this, MainActivity.class);
@@ -80,24 +83,50 @@ public class NotificationHelper extends ContextWrapper {
 
         } else {
             resultIntent = new Intent(this, MainActivity.class);
+            resultIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            //resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         }
         //Create intent you want to start-up when clicked on the notification:
         // Create the TaskStackBuilder and add the intent, which inflates the back stack
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addNextIntentWithParentStack(resultIntent);
-        // Get the PendingIntent containing the entire back stack
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //Log.i("YES", "YESSS");
-            return new Notification.Builder(getApplicationContext(), CHANNEL_ONE_ID)
-                    .setContentTitle(title)
-                    .setContentText(body)
-                    .setSmallIcon(R.drawable.appicon2)
-                    .setStyle(new Notification.BigTextStyle().bigText(body))
-                    .setContentIntent(resultPendingIntent)
-                    .setAutoCancel(true);
+            if(parked.isPresent() && parked != null)
+            {
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                stackBuilder.addParentStack(DetailedParked_Activity.class);
+                stackBuilder.addNextIntent(resultIntent);
+
+                PendingIntent resultPendingIntent =
+                        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+                Log.e("FINAL Notification", "Optie 1");
+                return new Notification.Builder(getApplicationContext(), CHANNEL_ONE_ID)
+                        .setContentTitle(title)
+                        .setContentText(body)
+                        .setSmallIcon(R.drawable.appicon2)
+                        .setStyle(new Notification.BigTextStyle().bigText(body))
+                        .setContentIntent(resultPendingIntent)
+                        .setAutoCancel(true);
+            } else {
+
+                Intent mainScreenIntent = new Intent(this, MainActivity.class);
+
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                stackBuilder.addNextIntent(mainScreenIntent);
+
+                PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                Log.e("REMINDER Notification", "Optie 2");
+                return new Notification.Builder(getApplicationContext(), CHANNEL_ONE_ID)
+                        .setContentTitle(title)
+                        .setContentText(body)
+                        .setSmallIcon(R.drawable.appicon2)
+                        .setStyle(new Notification.BigTextStyle().bigText(body))
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+            }
         }
 
         //Log.i("VERSION TO LOW", "Make sure your version is above Android 26!");
