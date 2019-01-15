@@ -33,4 +33,5 @@
     <string name="notificationFinalTitle">Uw parkeerkaart is verlopen.</string>
     <string name="notificationFinalText">Klik hier om de routebeschrijving naar uw auto te starten!</string>
     <string name="carlocation">Uw auto staat hier!</string>
+    <string name="timesEmpty">Parkeer tijd is leeg, vul eerst een tijd in!</string>
 </resources>

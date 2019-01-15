@@ -11,6 +11,7 @@ import android.os.Build;
 import android.app.NotificationManager;
 import android.graphics.Color;
 import android.os.Parcelable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
@@ -21,6 +22,7 @@ import nl.ralphrouwen.locationawareapp.Activitys.MainActivity;
 import nl.ralphrouwen.locationawareapp.Models.Parked;
 import nl.ralphrouwen.locationawareapp.R;
 
+import static nl.ralphrouwen.locationawareapp.Activitys.MainActivity.ACTIVITY_EXTRA;
 import static nl.ralphrouwen.locationawareapp.Activitys.MainActivity.PARKED_URL;
 
 public class NotificationHelper extends ContextWrapper {
@@ -61,64 +63,51 @@ public class NotificationHelper extends ContextWrapper {
     //Create the notification that’ll be posted to Channel One//
     public Notification.Builder getNotification1(String title, String body, Optional<Parked> parked) {
         Intent resultIntent;
+        Intent existingMainActivityIntent;
 
-        // 2 verschillende notificaties:
-        //bij 1: homeactivity
-        //bij 2: detailed activitiy met het object
-        if (parked.isPresent() && parked != null) {
-            resultIntent = new Intent(this, DetailedParked_Activity.class);
-            resultIntent.putExtra(PARKED_URL, (Parcelable) parked.get());
-            //resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { //Final notification
+            if (parked.isPresent() && parked != null) {
 
+                //De bestaande intent uit je geschiedenis; Hierop verderbouwen!
+                existingMainActivityIntent = this.getPackageManager().getLaunchIntentForPackage(this.getPackageName());
 
+                existingMainActivityIntent.setPackage(null); // The golden row !!!
+                //existingMainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                existingMainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                existingMainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
 
-/*            Intent mainActivityIntent = new Intent(this, MainActivity.class);
-            //put backstack intent:
-            PendingIntent backToMain = android.app.TaskStackBuilder.create(context)
-                    .addNextIntentWithParentStack(mainActivityIntent)
-                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-            context.getApplicationContext().startActivity(intent);*/
-
-
-        } else {
-            resultIntent = new Intent(this, MainActivity.class);
-            resultIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            //resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        }
-        //Create intent you want to start-up when clicked on the notification:
-        // Create the TaskStackBuilder and add the intent, which inflates the back stack
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if(parked.isPresent() && parked != null)
-            {
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-                stackBuilder.addParentStack(DetailedParked_Activity.class);
-                stackBuilder.addNextIntent(resultIntent);
-
-                PendingIntent resultPendingIntent =
-                        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
+                resultIntent = new Intent(this, DetailedParked_Activity.class);
+                resultIntent.putExtra(ACTIVITY_EXTRA, DetailedParked_Activity.class.getName());
+                resultIntent.putExtra(PARKED_URL, (Parcelable) parked.get());
 
                 Log.e("FINAL Notification", "Optie 1");
+
+                PendingIntent pendingIntent = PendingIntent.getActivities(this, 10, new Intent[] { existingMainActivityIntent, resultIntent }, PendingIntent.FLAG_ONE_SHOT);
+
                 return new Notification.Builder(getApplicationContext(), CHANNEL_ONE_ID)
                         .setContentTitle(title)
                         .setContentText(body)
                         .setSmallIcon(R.drawable.appicon2)
                         .setStyle(new Notification.BigTextStyle().bigText(body))
-                        .setContentIntent(resultPendingIntent)
+                        .setContentIntent(pendingIntent)
                         .setAutoCancel(true);
-            } else {
 
-                Intent mainScreenIntent = new Intent(this, MainActivity.class);
+            } else {
+                resultIntent = new Intent(this, MainActivity.class);
+                resultIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                //resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                Log.e("REMINDER Notification", "Optie 2");
+
+                Intent mainScreenIntent = this.getPackageManager().getLaunchIntentForPackage(this.getPackageName());
+                mainScreenIntent.setPackage(null); // The golden row !!!
+                mainScreenIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
                 TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
                 stackBuilder.addNextIntent(mainScreenIntent);
 
                 PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                Log.e("REMINDER Notification", "Optie 2");
                 return new Notification.Builder(getApplicationContext(), CHANNEL_ONE_ID)
                         .setContentTitle(title)
                         .setContentText(body)
@@ -129,7 +118,7 @@ public class NotificationHelper extends ContextWrapper {
             }
         }
 
-        //Log.i("VERSION TO LOW", "Make sure your version is above Android 26!");
+        Log.i("VERSION TO LOW", "Make sure your version is above Android 26!");
         return null;
     }
 

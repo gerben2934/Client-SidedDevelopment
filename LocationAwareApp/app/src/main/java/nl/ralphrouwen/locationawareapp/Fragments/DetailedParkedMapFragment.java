@@ -83,10 +83,6 @@ public class DetailedParkedMapFragment extends Fragment implements OnMapReadyCal
         //Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_detailed_map, container, false);
         context = container.getContext();
-/*        Bundle args = new Bundle();
-        args.putParcelable(TAG, (Parcelable) parked);
-        this.setArguments(args);*/
-
         return mView;
     }
 

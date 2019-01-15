@@ -20,7 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activitys.StartupActivity" android:theme="@style/SplashTheme">
+        <activity android:name=".Activitys.StartupActivity" android:theme="@style/SplashTheme"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -39,11 +40,12 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".Activitys.MainActivity"
-            android:launchMode="singleTask"></activity>
-        <activity android:name=".Activitys.DetailedParked_Activity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Activitys.MainActivity"/></activity>
+            android:launchMode="singleInstance">
+        </activity>
+        <activity android:name=".Activitys.DetailedParked_Activity"
+            android:parentActivityName=".Activitys.MainActivity"
+            android:launchMode="singleInstance">
+        </activity>
     </application>
 
 </manifest>

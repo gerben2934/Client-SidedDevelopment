@@ -37,4 +37,5 @@
     <string name="notificationFinalTitle">Your car parking ended</string>
     <string name="notificationFinalText">Click here to start the navigation back to your car!</string>
     <string name="carlocation">Your car is here!</string>
+    <string name="timesEmpty">Park duration is empty, fill in a time first!</string>
 </resources>

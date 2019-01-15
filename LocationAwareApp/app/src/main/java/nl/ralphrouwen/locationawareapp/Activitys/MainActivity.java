@@ -56,6 +56,7 @@ import nl.ralphrouwen.locationawareapp.R;
 public class MainActivity extends AppCompatActivity implements MapFragment.OnFragmentInteractionListener, HistoryFragment.OnFragmentInteractionListener {
 
     public static final String PARKEDLIST_URL = "parkedListURL";
+    public static final String ACTIVITY_EXTRA = "activity";
 
     public static final String PARKED_URL = "parkedURL";
     private ArrayList<Parked> parkeds = new ArrayList<>();
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         buildHistoryFragment();
         createSignInIntent();
@@ -102,6 +104,20 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
         mLayoutManager = new LinearLayoutManager(this);
         geocoder = new Geocoder(mContext, Locale.getDefault());
     }
+
+/*    @Override
+    protected void onResume() {
+        Log.e("ONRESUME!", "Resumse");
+        super.onResume();
+
+*//*        if (getIntent().getStringExtra(ACTIVITY_EXTRA) != null) {
+            startActivity(new Intent(getIntent()).setClassName(this, getIntent().getStringExtra(ACTIVITY_EXTRA)));
+            getIntent().getExtras().clear();
+        } else
+        {
+
+        }*//*
+    }*/
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -183,11 +199,16 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnFra
                 public void onClick(DialogInterface dialog, int which) {
                     // Do nothing but close the dialog
                     Log.i("Dialog: ", "Clicked YES, closing dialog!");
+                    ArrayList<Integer> values = getValues();
+                    if (values.get(0).equals(0) && values.get(1).equals(0) && values.get(2).equals(0))
+                    {
+                        Toast.makeText(mContext, R.string.timesEmpty, 5).show();
+                        return;
+                    }
                     parkbutton.setImageResource(R.drawable.parkbutton3);
                     parkButtonPressed = true;
                     int UniqueID = parkeds.size() + 1;
                     LatLng currentLocation = MapFragment.getMyLocation();
-                    ArrayList<Integer> values = getValues();
 
                     DateTime begin = DateTime.now();
                     DateTime end = begin.plusDays(values.get(0));

@@ -68,8 +68,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static ArrayList<Marker> markers;
     private static Marker parkedMarker;
-    private static String parkedInfo;
-
     private Polyline polyline;
 
     public MapFragment() {
@@ -192,7 +190,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 currentLocation = locationResult.getLastLocation();
 //                startLocation(locationResult.getLastLocation());
                 updateLocation(currentLocation);
-                //Log.e("LOG!!!!!", String.valueOf(currentLocation));
             }
         }, Looper.myLooper());
     }

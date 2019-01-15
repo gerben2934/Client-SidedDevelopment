@@ -3,7 +3,6 @@ package nl.ralphrouwen.locationawareapp.Activitys;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -71,7 +70,6 @@ public class DetailedParked_Activity extends AppCompatActivity implements nl.ral
 
     public void BindComponents()
     {
-        //detailedMapFragment = findViewById(R.id.mapdetailed_fragment);
         streetName = findViewById(R.id.parkedDetailed_streetName);
         streetName.setBackground(getResources().getDrawable(R.drawable.textviewborder2));
         date = findViewById(R.id.parkedDetailed_date);
