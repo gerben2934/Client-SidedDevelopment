@@ -88,6 +88,7 @@ public class ParkedAdapter extends RecyclerView.Adapter<ParkedAdapter.ParkedView
                 Parked parked = parkingHistory.get(getAdapterPosition());
                 Intent intent = new Intent(context, DetailedParked_Activity.class);
                 intent.putExtra(PARKED_URL, (Parcelable) parked);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.getApplicationContext().startActivity(intent);
                 ((Activity) context).overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right);
             });
